@@ -1,0 +1,2 @@
+# Relayer
+Relayer is a decentralized BTC cross-chain bridge between Chakra and BTC. Relayer consists of two separate services: HeaderOracle, which synchronizes BTC block headers to Chakra, and MsgRelayer, which is responsible for transmitting BTC cross-chain messages and proofs to Chakra.
