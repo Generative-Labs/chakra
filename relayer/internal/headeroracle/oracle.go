@@ -10,7 +10,7 @@ type HeaderOracle struct {
 }
 
 func New(cfg *Config) (*HeaderOracle, error) {
-	btcRPCClient, err := btc.CrateBtcRPCClient(&cfg.BtcRPCConfig)
+	btcRPCClient, err := btc.CrateBtcRPCClient(&cfg.BtcRPC)
 	if err != nil {
 		return nil, err
 	}

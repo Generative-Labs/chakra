@@ -1,0 +1,21 @@
+# This is a sample configuration file for the header oracle service
+
+btc-rpc:
+  network-name: testnet
+  rpc-host: localhost:18332
+  rpc-user: myuser
+  rpc-pass: secr3t
+  disable-tls: false
+
+chakra:
+  rpc:
+    http-url: http://localhost:8545
+    chain-id: my-chain-id
+  wallet:
+    private-key: abcdefghijklmnopqrstuvwxyz0123456789
+
+oracle:
+  start-block-height: 1000
+  header-queue-contract-address: 0x1234567890ABCDEF1234567890ABCDEF12345678
+  poll-interval: 60
+  blocks-until-finalization: 0

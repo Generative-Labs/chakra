@@ -11,7 +11,6 @@ import (
 )
 
 func init() {
-	viper.AutomaticEnv()
 	viper.SetConfigType("yaml")
 
 	viper.SetConfigName("header-oracle")
