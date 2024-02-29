@@ -24,7 +24,7 @@ type OracleConfig struct {
 	// HeaderQueueContractAddress defines the address of the Btc Header queue contract on the Chakra network.
 	HeaderQueueContractAddress string `mapstructure:"header-queue-contract-address"`
 
-	// PollInterval defines the interval for querying whether BTC generates new block.
+	// PollInterval defines the interval for querying BTC RPC.
 	PollInterval uint32 `mapstructure:"poll-interval"`
 
 	// BlocksUntilFinalization defines the number of block confirmations required for a block to be considered finalized.

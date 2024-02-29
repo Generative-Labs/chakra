@@ -1,8 +1,8 @@
 package chakra
 
 type RPCConfig struct {
-	HTTPProvider string `mapstructure:"http-url"`
-	ChainID      string `mapstructure:"chain-id"`
+	URL     string `mapstructure:"http-url"`
+	ChainID string `mapstructure:"chain-id"`
 }
 
 type WalletConfig struct {

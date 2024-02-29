@@ -17,5 +17,5 @@ chakra:
 oracle:
   start-block-height: 1000
   header-queue-contract-address: 0x1234567890ABCDEF1234567890ABCDEF12345678
-  poll-interval: 60
+  poll-interval: 6
   blocks-until-finalization: 0
