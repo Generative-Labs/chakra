@@ -2,6 +2,7 @@ package chakra
 
 import (
 	"context"
+	"errors"
 
 	starknetrpc "github.com/NethermindEth/starknet.go/rpc"
 	"github.com/btcsuite/btcd/wire"
@@ -15,8 +16,8 @@ func NewChakraProvider(ctx context.Context, rpcURL string) (*starknetrpc.Provide
 	}
 
 	p := starknetrpc.NewProvider(c)
-	if err != nil {
-		return nil, err
+	if p == nil {
+		return nil, errors.New("new chakra provider has error")
 	}
 	return p, nil
 }

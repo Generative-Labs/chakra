@@ -25,12 +25,12 @@ func Run() {
 	var config headeroracle.Config
 	err := viper.Unmarshal(&config)
 	if err != nil {
-		log.Fatal().Msgf("Fatal error decode config into struct: %s ", err)
+		log.Fatal().Msgf("❌ Fatal error decode config into struct: %s ", err)
 	}
 
 	headerOracle, err := headeroracle.New(&config)
 	if err != nil {
-		log.Fatal().Msgf("Fatal error create btc header oracle service failed: %s ", err)
+		log.Fatal().Msgf("❌ Fatal error create btc header oracle service failed: %s ", err)
 	}
 
 	sigCh := make(chan os.Signal, 1)
@@ -43,5 +43,7 @@ func Run() {
 		headerOracle.Stop()
 	}()
 
-	headerOracle.Start()
+	if err := headerOracle.Start(); err != nil {
+		log.Error().Msgf("❌ Run header oracle has error: %s", err)
+	}
 }
