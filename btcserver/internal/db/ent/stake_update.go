@@ -27,13 +27,13 @@ func (su *StakeUpdate) Where(ps ...predicate.Stake) *StakeUpdate {
 	return su
 }
 
-// SetStaker sets the "staker" field.
+// SetStaker sets the "Staker" field.
 func (su *StakeUpdate) SetStaker(s string) *StakeUpdate {
 	su.mutation.SetStaker(s)
 	return su
 }
 
-// SetNillableStaker sets the "staker" field if the given value is not nil.
+// SetNillableStaker sets the "Staker" field if the given value is not nil.
 func (su *StakeUpdate) SetNillableStaker(s *string) *StakeUpdate {
 	if s != nil {
 		su.SetStaker(*s)
@@ -41,13 +41,13 @@ func (su *StakeUpdate) SetNillableStaker(s *string) *StakeUpdate {
 	return su
 }
 
-// SetTx sets the "tx" field.
+// SetTx sets the "Tx" field.
 func (su *StakeUpdate) SetTx(s string) *StakeUpdate {
 	su.mutation.SetTx(s)
 	return su
 }
 
-// SetNillableTx sets the "tx" field if the given value is not nil.
+// SetNillableTx sets the "Tx" field if the given value is not nil.
 func (su *StakeUpdate) SetNillableTx(s *string) *StakeUpdate {
 	if s != nil {
 		su.SetTx(*s)
@@ -55,118 +55,118 @@ func (su *StakeUpdate) SetNillableTx(s *string) *StakeUpdate {
 	return su
 }
 
-// SetStart sets the "start" field.
-func (su *StakeUpdate) SetStart(i int64) *StakeUpdate {
+// SetStart sets the "Start" field.
+func (su *StakeUpdate) SetStart(u uint64) *StakeUpdate {
 	su.mutation.ResetStart()
-	su.mutation.SetStart(i)
+	su.mutation.SetStart(u)
 	return su
 }
 
-// SetNillableStart sets the "start" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableStart(i *int64) *StakeUpdate {
-	if i != nil {
-		su.SetStart(*i)
+// SetNillableStart sets the "Start" field if the given value is not nil.
+func (su *StakeUpdate) SetNillableStart(u *uint64) *StakeUpdate {
+	if u != nil {
+		su.SetStart(*u)
 	}
 	return su
 }
 
-// AddStart adds i to the "start" field.
-func (su *StakeUpdate) AddStart(i int64) *StakeUpdate {
-	su.mutation.AddStart(i)
+// AddStart adds u to the "Start" field.
+func (su *StakeUpdate) AddStart(u int64) *StakeUpdate {
+	su.mutation.AddStart(u)
 	return su
 }
 
-// SetDuration sets the "duration" field.
-func (su *StakeUpdate) SetDuration(i int64) *StakeUpdate {
+// SetDuration sets the "Duration" field.
+func (su *StakeUpdate) SetDuration(u uint64) *StakeUpdate {
 	su.mutation.ResetDuration()
-	su.mutation.SetDuration(i)
+	su.mutation.SetDuration(u)
 	return su
 }
 
-// SetNillableDuration sets the "duration" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableDuration(i *int64) *StakeUpdate {
-	if i != nil {
-		su.SetDuration(*i)
+// SetNillableDuration sets the "Duration" field if the given value is not nil.
+func (su *StakeUpdate) SetNillableDuration(u *uint64) *StakeUpdate {
+	if u != nil {
+		su.SetDuration(*u)
 	}
 	return su
 }
 
-// AddDuration adds i to the "duration" field.
-func (su *StakeUpdate) AddDuration(i int64) *StakeUpdate {
-	su.mutation.AddDuration(i)
+// AddDuration adds u to the "Duration" field.
+func (su *StakeUpdate) AddDuration(u int64) *StakeUpdate {
+	su.mutation.AddDuration(u)
 	return su
 }
 
-// SetAmount sets the "amount" field.
-func (su *StakeUpdate) SetAmount(i int64) *StakeUpdate {
+// SetAmount sets the "Amount" field.
+func (su *StakeUpdate) SetAmount(u uint64) *StakeUpdate {
 	su.mutation.ResetAmount()
-	su.mutation.SetAmount(i)
+	su.mutation.SetAmount(u)
 	return su
 }
 
-// SetNillableAmount sets the "amount" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableAmount(i *int64) *StakeUpdate {
-	if i != nil {
-		su.SetAmount(*i)
+// SetNillableAmount sets the "Amount" field if the given value is not nil.
+func (su *StakeUpdate) SetNillableAmount(u *uint64) *StakeUpdate {
+	if u != nil {
+		su.SetAmount(*u)
 	}
 	return su
 }
 
-// AddAmount adds i to the "amount" field.
-func (su *StakeUpdate) AddAmount(i int64) *StakeUpdate {
-	su.mutation.AddAmount(i)
+// AddAmount adds u to the "Amount" field.
+func (su *StakeUpdate) AddAmount(u int64) *StakeUpdate {
+	su.mutation.AddAmount(u)
 	return su
 }
 
-// SetReceiver sets the "receiver" field.
-func (su *StakeUpdate) SetReceiver(s string) *StakeUpdate {
-	su.mutation.SetReceiver(s)
+// SetRewardReceiver sets the "RewardReceiver" field.
+func (su *StakeUpdate) SetRewardReceiver(s string) *StakeUpdate {
+	su.mutation.SetRewardReceiver(s)
 	return su
 }
 
-// SetNillableReceiver sets the "receiver" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableReceiver(s *string) *StakeUpdate {
+// SetNillableRewardReceiver sets the "RewardReceiver" field if the given value is not nil.
+func (su *StakeUpdate) SetNillableRewardReceiver(s *string) *StakeUpdate {
 	if s != nil {
-		su.SetReceiver(*s)
+		su.SetRewardReceiver(*s)
 	}
 	return su
 }
 
-// SetFinalized sets the "finalized" field.
-func (su *StakeUpdate) SetFinalized(b bool) *StakeUpdate {
-	su.mutation.SetFinalized(b)
+// SetFinalizedStatus sets the "FinalizedStatus" field.
+func (su *StakeUpdate) SetFinalizedStatus(b bool) *StakeUpdate {
+	su.mutation.SetFinalizedStatus(b)
 	return su
 }
 
-// SetNillableFinalized sets the "finalized" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableFinalized(b *bool) *StakeUpdate {
+// SetNillableFinalizedStatus sets the "FinalizedStatus" field if the given value is not nil.
+func (su *StakeUpdate) SetNillableFinalizedStatus(b *bool) *StakeUpdate {
 	if b != nil {
-		su.SetFinalized(*b)
+		su.SetFinalizedStatus(*b)
 	}
 	return su
 }
 
-// SetEnd sets the "end" field.
-func (su *StakeUpdate) SetEnd(b bool) *StakeUpdate {
-	su.mutation.SetEnd(b)
+// SetReleaseStatus sets the "ReleaseStatus" field.
+func (su *StakeUpdate) SetReleaseStatus(b bool) *StakeUpdate {
+	su.mutation.SetReleaseStatus(b)
 	return su
 }
 
-// SetNillableEnd sets the "end" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableEnd(b *bool) *StakeUpdate {
+// SetNillableReleaseStatus sets the "ReleaseStatus" field if the given value is not nil.
+func (su *StakeUpdate) SetNillableReleaseStatus(b *bool) *StakeUpdate {
 	if b != nil {
-		su.SetEnd(*b)
+		su.SetReleaseStatus(*b)
 	}
 	return su
 }
 
-// SetBtcSig sets the "btc_sig" field.
+// SetBtcSig sets the "BtcSig" field.
 func (su *StakeUpdate) SetBtcSig(s string) *StakeUpdate {
 	su.mutation.SetBtcSig(s)
 	return su
 }
 
-// SetNillableBtcSig sets the "btc_sig" field if the given value is not nil.
+// SetNillableBtcSig sets the "BtcSig" field if the given value is not nil.
 func (su *StakeUpdate) SetNillableBtcSig(s *string) *StakeUpdate {
 	if s != nil {
 		su.SetBtcSig(*s)
@@ -174,17 +174,38 @@ func (su *StakeUpdate) SetNillableBtcSig(s *string) *StakeUpdate {
 	return su
 }
 
-// SetReceiverSig sets the "receiver_sig" field.
+// SetReceiverSig sets the "ReceiverSig" field.
 func (su *StakeUpdate) SetReceiverSig(s string) *StakeUpdate {
 	su.mutation.SetReceiverSig(s)
 	return su
 }
 
-// SetNillableReceiverSig sets the "receiver_sig" field if the given value is not nil.
+// SetNillableReceiverSig sets the "ReceiverSig" field if the given value is not nil.
 func (su *StakeUpdate) SetNillableReceiverSig(s *string) *StakeUpdate {
 	if s != nil {
 		su.SetReceiverSig(*s)
 	}
+	return su
+}
+
+// SetTimestamp sets the "Timestamp" field.
+func (su *StakeUpdate) SetTimestamp(u uint64) *StakeUpdate {
+	su.mutation.ResetTimestamp()
+	su.mutation.SetTimestamp(u)
+	return su
+}
+
+// SetNillableTimestamp sets the "Timestamp" field if the given value is not nil.
+func (su *StakeUpdate) SetNillableTimestamp(u *uint64) *StakeUpdate {
+	if u != nil {
+		su.SetTimestamp(*u)
+	}
+	return su
+}
+
+// AddTimestamp adds u to the "Timestamp" field.
+func (su *StakeUpdate) AddTimestamp(u int64) *StakeUpdate {
+	su.mutation.AddTimestamp(u)
 	return su
 }
 
@@ -224,17 +245,17 @@ func (su *StakeUpdate) ExecX(ctx context.Context) {
 func (su *StakeUpdate) check() error {
 	if v, ok := su.mutation.Staker(); ok {
 		if err := stake.StakerValidator(v); err != nil {
-			return &ValidationError{Name: "staker", err: fmt.Errorf(`ent: validator failed for field "Stake.staker": %w`, err)}
+			return &ValidationError{Name: "Staker", err: fmt.Errorf(`ent: validator failed for field "Stake.Staker": %w`, err)}
 		}
 	}
 	if v, ok := su.mutation.GetTx(); ok {
 		if err := stake.TxValidator(v); err != nil {
-			return &ValidationError{Name: "tx", err: fmt.Errorf(`ent: validator failed for field "Stake.tx": %w`, err)}
+			return &ValidationError{Name: "Tx", err: fmt.Errorf(`ent: validator failed for field "Stake.Tx": %w`, err)}
 		}
 	}
-	if v, ok := su.mutation.Receiver(); ok {
-		if err := stake.ReceiverValidator(v); err != nil {
-			return &ValidationError{Name: "receiver", err: fmt.Errorf(`ent: validator failed for field "Stake.receiver": %w`, err)}
+	if v, ok := su.mutation.RewardReceiver(); ok {
+		if err := stake.RewardReceiverValidator(v); err != nil {
+			return &ValidationError{Name: "RewardReceiver", err: fmt.Errorf(`ent: validator failed for field "Stake.RewardReceiver": %w`, err)}
 		}
 	}
 	return nil
@@ -259,37 +280,43 @@ func (su *StakeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.SetField(stake.FieldTx, field.TypeString, value)
 	}
 	if value, ok := su.mutation.Start(); ok {
-		_spec.SetField(stake.FieldStart, field.TypeInt64, value)
+		_spec.SetField(stake.FieldStart, field.TypeUint64, value)
 	}
 	if value, ok := su.mutation.AddedStart(); ok {
-		_spec.AddField(stake.FieldStart, field.TypeInt64, value)
+		_spec.AddField(stake.FieldStart, field.TypeUint64, value)
 	}
 	if value, ok := su.mutation.Duration(); ok {
-		_spec.SetField(stake.FieldDuration, field.TypeInt64, value)
+		_spec.SetField(stake.FieldDuration, field.TypeUint64, value)
 	}
 	if value, ok := su.mutation.AddedDuration(); ok {
-		_spec.AddField(stake.FieldDuration, field.TypeInt64, value)
+		_spec.AddField(stake.FieldDuration, field.TypeUint64, value)
 	}
 	if value, ok := su.mutation.Amount(); ok {
-		_spec.SetField(stake.FieldAmount, field.TypeInt64, value)
+		_spec.SetField(stake.FieldAmount, field.TypeUint64, value)
 	}
 	if value, ok := su.mutation.AddedAmount(); ok {
-		_spec.AddField(stake.FieldAmount, field.TypeInt64, value)
+		_spec.AddField(stake.FieldAmount, field.TypeUint64, value)
 	}
-	if value, ok := su.mutation.Receiver(); ok {
-		_spec.SetField(stake.FieldReceiver, field.TypeString, value)
+	if value, ok := su.mutation.RewardReceiver(); ok {
+		_spec.SetField(stake.FieldRewardReceiver, field.TypeString, value)
 	}
-	if value, ok := su.mutation.Finalized(); ok {
-		_spec.SetField(stake.FieldFinalized, field.TypeBool, value)
+	if value, ok := su.mutation.FinalizedStatus(); ok {
+		_spec.SetField(stake.FieldFinalizedStatus, field.TypeBool, value)
 	}
-	if value, ok := su.mutation.End(); ok {
-		_spec.SetField(stake.FieldEnd, field.TypeBool, value)
+	if value, ok := su.mutation.ReleaseStatus(); ok {
+		_spec.SetField(stake.FieldReleaseStatus, field.TypeBool, value)
 	}
 	if value, ok := su.mutation.BtcSig(); ok {
 		_spec.SetField(stake.FieldBtcSig, field.TypeString, value)
 	}
 	if value, ok := su.mutation.ReceiverSig(); ok {
 		_spec.SetField(stake.FieldReceiverSig, field.TypeString, value)
+	}
+	if value, ok := su.mutation.Timestamp(); ok {
+		_spec.SetField(stake.FieldTimestamp, field.TypeUint64, value)
+	}
+	if value, ok := su.mutation.AddedTimestamp(); ok {
+		_spec.AddField(stake.FieldTimestamp, field.TypeUint64, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, su.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -311,13 +338,13 @@ type StakeUpdateOne struct {
 	mutation *StakeMutation
 }
 
-// SetStaker sets the "staker" field.
+// SetStaker sets the "Staker" field.
 func (suo *StakeUpdateOne) SetStaker(s string) *StakeUpdateOne {
 	suo.mutation.SetStaker(s)
 	return suo
 }
 
-// SetNillableStaker sets the "staker" field if the given value is not nil.
+// SetNillableStaker sets the "Staker" field if the given value is not nil.
 func (suo *StakeUpdateOne) SetNillableStaker(s *string) *StakeUpdateOne {
 	if s != nil {
 		suo.SetStaker(*s)
@@ -325,13 +352,13 @@ func (suo *StakeUpdateOne) SetNillableStaker(s *string) *StakeUpdateOne {
 	return suo
 }
 
-// SetTx sets the "tx" field.
+// SetTx sets the "Tx" field.
 func (suo *StakeUpdateOne) SetTx(s string) *StakeUpdateOne {
 	suo.mutation.SetTx(s)
 	return suo
 }
 
-// SetNillableTx sets the "tx" field if the given value is not nil.
+// SetNillableTx sets the "Tx" field if the given value is not nil.
 func (suo *StakeUpdateOne) SetNillableTx(s *string) *StakeUpdateOne {
 	if s != nil {
 		suo.SetTx(*s)
@@ -339,118 +366,118 @@ func (suo *StakeUpdateOne) SetNillableTx(s *string) *StakeUpdateOne {
 	return suo
 }
 
-// SetStart sets the "start" field.
-func (suo *StakeUpdateOne) SetStart(i int64) *StakeUpdateOne {
+// SetStart sets the "Start" field.
+func (suo *StakeUpdateOne) SetStart(u uint64) *StakeUpdateOne {
 	suo.mutation.ResetStart()
-	suo.mutation.SetStart(i)
+	suo.mutation.SetStart(u)
 	return suo
 }
 
-// SetNillableStart sets the "start" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableStart(i *int64) *StakeUpdateOne {
-	if i != nil {
-		suo.SetStart(*i)
+// SetNillableStart sets the "Start" field if the given value is not nil.
+func (suo *StakeUpdateOne) SetNillableStart(u *uint64) *StakeUpdateOne {
+	if u != nil {
+		suo.SetStart(*u)
 	}
 	return suo
 }
 
-// AddStart adds i to the "start" field.
-func (suo *StakeUpdateOne) AddStart(i int64) *StakeUpdateOne {
-	suo.mutation.AddStart(i)
+// AddStart adds u to the "Start" field.
+func (suo *StakeUpdateOne) AddStart(u int64) *StakeUpdateOne {
+	suo.mutation.AddStart(u)
 	return suo
 }
 
-// SetDuration sets the "duration" field.
-func (suo *StakeUpdateOne) SetDuration(i int64) *StakeUpdateOne {
+// SetDuration sets the "Duration" field.
+func (suo *StakeUpdateOne) SetDuration(u uint64) *StakeUpdateOne {
 	suo.mutation.ResetDuration()
-	suo.mutation.SetDuration(i)
+	suo.mutation.SetDuration(u)
 	return suo
 }
 
-// SetNillableDuration sets the "duration" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableDuration(i *int64) *StakeUpdateOne {
-	if i != nil {
-		suo.SetDuration(*i)
+// SetNillableDuration sets the "Duration" field if the given value is not nil.
+func (suo *StakeUpdateOne) SetNillableDuration(u *uint64) *StakeUpdateOne {
+	if u != nil {
+		suo.SetDuration(*u)
 	}
 	return suo
 }
 
-// AddDuration adds i to the "duration" field.
-func (suo *StakeUpdateOne) AddDuration(i int64) *StakeUpdateOne {
-	suo.mutation.AddDuration(i)
+// AddDuration adds u to the "Duration" field.
+func (suo *StakeUpdateOne) AddDuration(u int64) *StakeUpdateOne {
+	suo.mutation.AddDuration(u)
 	return suo
 }
 
-// SetAmount sets the "amount" field.
-func (suo *StakeUpdateOne) SetAmount(i int64) *StakeUpdateOne {
+// SetAmount sets the "Amount" field.
+func (suo *StakeUpdateOne) SetAmount(u uint64) *StakeUpdateOne {
 	suo.mutation.ResetAmount()
-	suo.mutation.SetAmount(i)
+	suo.mutation.SetAmount(u)
 	return suo
 }
 
-// SetNillableAmount sets the "amount" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableAmount(i *int64) *StakeUpdateOne {
-	if i != nil {
-		suo.SetAmount(*i)
+// SetNillableAmount sets the "Amount" field if the given value is not nil.
+func (suo *StakeUpdateOne) SetNillableAmount(u *uint64) *StakeUpdateOne {
+	if u != nil {
+		suo.SetAmount(*u)
 	}
 	return suo
 }
 
-// AddAmount adds i to the "amount" field.
-func (suo *StakeUpdateOne) AddAmount(i int64) *StakeUpdateOne {
-	suo.mutation.AddAmount(i)
+// AddAmount adds u to the "Amount" field.
+func (suo *StakeUpdateOne) AddAmount(u int64) *StakeUpdateOne {
+	suo.mutation.AddAmount(u)
 	return suo
 }
 
-// SetReceiver sets the "receiver" field.
-func (suo *StakeUpdateOne) SetReceiver(s string) *StakeUpdateOne {
-	suo.mutation.SetReceiver(s)
+// SetRewardReceiver sets the "RewardReceiver" field.
+func (suo *StakeUpdateOne) SetRewardReceiver(s string) *StakeUpdateOne {
+	suo.mutation.SetRewardReceiver(s)
 	return suo
 }
 
-// SetNillableReceiver sets the "receiver" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableReceiver(s *string) *StakeUpdateOne {
+// SetNillableRewardReceiver sets the "RewardReceiver" field if the given value is not nil.
+func (suo *StakeUpdateOne) SetNillableRewardReceiver(s *string) *StakeUpdateOne {
 	if s != nil {
-		suo.SetReceiver(*s)
+		suo.SetRewardReceiver(*s)
 	}
 	return suo
 }
 
-// SetFinalized sets the "finalized" field.
-func (suo *StakeUpdateOne) SetFinalized(b bool) *StakeUpdateOne {
-	suo.mutation.SetFinalized(b)
+// SetFinalizedStatus sets the "FinalizedStatus" field.
+func (suo *StakeUpdateOne) SetFinalizedStatus(b bool) *StakeUpdateOne {
+	suo.mutation.SetFinalizedStatus(b)
 	return suo
 }
 
-// SetNillableFinalized sets the "finalized" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableFinalized(b *bool) *StakeUpdateOne {
+// SetNillableFinalizedStatus sets the "FinalizedStatus" field if the given value is not nil.
+func (suo *StakeUpdateOne) SetNillableFinalizedStatus(b *bool) *StakeUpdateOne {
 	if b != nil {
-		suo.SetFinalized(*b)
+		suo.SetFinalizedStatus(*b)
 	}
 	return suo
 }
 
-// SetEnd sets the "end" field.
-func (suo *StakeUpdateOne) SetEnd(b bool) *StakeUpdateOne {
-	suo.mutation.SetEnd(b)
+// SetReleaseStatus sets the "ReleaseStatus" field.
+func (suo *StakeUpdateOne) SetReleaseStatus(b bool) *StakeUpdateOne {
+	suo.mutation.SetReleaseStatus(b)
 	return suo
 }
 
-// SetNillableEnd sets the "end" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableEnd(b *bool) *StakeUpdateOne {
+// SetNillableReleaseStatus sets the "ReleaseStatus" field if the given value is not nil.
+func (suo *StakeUpdateOne) SetNillableReleaseStatus(b *bool) *StakeUpdateOne {
 	if b != nil {
-		suo.SetEnd(*b)
+		suo.SetReleaseStatus(*b)
 	}
 	return suo
 }
 
-// SetBtcSig sets the "btc_sig" field.
+// SetBtcSig sets the "BtcSig" field.
 func (suo *StakeUpdateOne) SetBtcSig(s string) *StakeUpdateOne {
 	suo.mutation.SetBtcSig(s)
 	return suo
 }
 
-// SetNillableBtcSig sets the "btc_sig" field if the given value is not nil.
+// SetNillableBtcSig sets the "BtcSig" field if the given value is not nil.
 func (suo *StakeUpdateOne) SetNillableBtcSig(s *string) *StakeUpdateOne {
 	if s != nil {
 		suo.SetBtcSig(*s)
@@ -458,17 +485,38 @@ func (suo *StakeUpdateOne) SetNillableBtcSig(s *string) *StakeUpdateOne {
 	return suo
 }
 
-// SetReceiverSig sets the "receiver_sig" field.
+// SetReceiverSig sets the "ReceiverSig" field.
 func (suo *StakeUpdateOne) SetReceiverSig(s string) *StakeUpdateOne {
 	suo.mutation.SetReceiverSig(s)
 	return suo
 }
 
-// SetNillableReceiverSig sets the "receiver_sig" field if the given value is not nil.
+// SetNillableReceiverSig sets the "ReceiverSig" field if the given value is not nil.
 func (suo *StakeUpdateOne) SetNillableReceiverSig(s *string) *StakeUpdateOne {
 	if s != nil {
 		suo.SetReceiverSig(*s)
 	}
+	return suo
+}
+
+// SetTimestamp sets the "Timestamp" field.
+func (suo *StakeUpdateOne) SetTimestamp(u uint64) *StakeUpdateOne {
+	suo.mutation.ResetTimestamp()
+	suo.mutation.SetTimestamp(u)
+	return suo
+}
+
+// SetNillableTimestamp sets the "Timestamp" field if the given value is not nil.
+func (suo *StakeUpdateOne) SetNillableTimestamp(u *uint64) *StakeUpdateOne {
+	if u != nil {
+		suo.SetTimestamp(*u)
+	}
+	return suo
+}
+
+// AddTimestamp adds u to the "Timestamp" field.
+func (suo *StakeUpdateOne) AddTimestamp(u int64) *StakeUpdateOne {
+	suo.mutation.AddTimestamp(u)
 	return suo
 }
 
@@ -521,17 +569,17 @@ func (suo *StakeUpdateOne) ExecX(ctx context.Context) {
 func (suo *StakeUpdateOne) check() error {
 	if v, ok := suo.mutation.Staker(); ok {
 		if err := stake.StakerValidator(v); err != nil {
-			return &ValidationError{Name: "staker", err: fmt.Errorf(`ent: validator failed for field "Stake.staker": %w`, err)}
+			return &ValidationError{Name: "Staker", err: fmt.Errorf(`ent: validator failed for field "Stake.Staker": %w`, err)}
 		}
 	}
 	if v, ok := suo.mutation.GetTx(); ok {
 		if err := stake.TxValidator(v); err != nil {
-			return &ValidationError{Name: "tx", err: fmt.Errorf(`ent: validator failed for field "Stake.tx": %w`, err)}
+			return &ValidationError{Name: "Tx", err: fmt.Errorf(`ent: validator failed for field "Stake.Tx": %w`, err)}
 		}
 	}
-	if v, ok := suo.mutation.Receiver(); ok {
-		if err := stake.ReceiverValidator(v); err != nil {
-			return &ValidationError{Name: "receiver", err: fmt.Errorf(`ent: validator failed for field "Stake.receiver": %w`, err)}
+	if v, ok := suo.mutation.RewardReceiver(); ok {
+		if err := stake.RewardReceiverValidator(v); err != nil {
+			return &ValidationError{Name: "RewardReceiver", err: fmt.Errorf(`ent: validator failed for field "Stake.RewardReceiver": %w`, err)}
 		}
 	}
 	return nil
@@ -573,37 +621,43 @@ func (suo *StakeUpdateOne) sqlSave(ctx context.Context) (_node *Stake, err error
 		_spec.SetField(stake.FieldTx, field.TypeString, value)
 	}
 	if value, ok := suo.mutation.Start(); ok {
-		_spec.SetField(stake.FieldStart, field.TypeInt64, value)
+		_spec.SetField(stake.FieldStart, field.TypeUint64, value)
 	}
 	if value, ok := suo.mutation.AddedStart(); ok {
-		_spec.AddField(stake.FieldStart, field.TypeInt64, value)
+		_spec.AddField(stake.FieldStart, field.TypeUint64, value)
 	}
 	if value, ok := suo.mutation.Duration(); ok {
-		_spec.SetField(stake.FieldDuration, field.TypeInt64, value)
+		_spec.SetField(stake.FieldDuration, field.TypeUint64, value)
 	}
 	if value, ok := suo.mutation.AddedDuration(); ok {
-		_spec.AddField(stake.FieldDuration, field.TypeInt64, value)
+		_spec.AddField(stake.FieldDuration, field.TypeUint64, value)
 	}
 	if value, ok := suo.mutation.Amount(); ok {
-		_spec.SetField(stake.FieldAmount, field.TypeInt64, value)
+		_spec.SetField(stake.FieldAmount, field.TypeUint64, value)
 	}
 	if value, ok := suo.mutation.AddedAmount(); ok {
-		_spec.AddField(stake.FieldAmount, field.TypeInt64, value)
+		_spec.AddField(stake.FieldAmount, field.TypeUint64, value)
 	}
-	if value, ok := suo.mutation.Receiver(); ok {
-		_spec.SetField(stake.FieldReceiver, field.TypeString, value)
+	if value, ok := suo.mutation.RewardReceiver(); ok {
+		_spec.SetField(stake.FieldRewardReceiver, field.TypeString, value)
 	}
-	if value, ok := suo.mutation.Finalized(); ok {
-		_spec.SetField(stake.FieldFinalized, field.TypeBool, value)
+	if value, ok := suo.mutation.FinalizedStatus(); ok {
+		_spec.SetField(stake.FieldFinalizedStatus, field.TypeBool, value)
 	}
-	if value, ok := suo.mutation.End(); ok {
-		_spec.SetField(stake.FieldEnd, field.TypeBool, value)
+	if value, ok := suo.mutation.ReleaseStatus(); ok {
+		_spec.SetField(stake.FieldReleaseStatus, field.TypeBool, value)
 	}
 	if value, ok := suo.mutation.BtcSig(); ok {
 		_spec.SetField(stake.FieldBtcSig, field.TypeString, value)
 	}
 	if value, ok := suo.mutation.ReceiverSig(); ok {
 		_spec.SetField(stake.FieldReceiverSig, field.TypeString, value)
+	}
+	if value, ok := suo.mutation.Timestamp(); ok {
+		_spec.SetField(stake.FieldTimestamp, field.TypeUint64, value)
+	}
+	if value, ok := suo.mutation.AddedTimestamp(); ok {
+		_spec.AddField(stake.FieldTimestamp, field.TypeUint64, value)
 	}
 	_node = &Stake{config: suo.config}
 	_spec.Assign = _node.assignValues

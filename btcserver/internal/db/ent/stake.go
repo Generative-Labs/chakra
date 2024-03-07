@@ -16,26 +16,32 @@ type Stake struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// Staker holds the value of the "staker" field.
-	Staker string `json:"staker,omitempty"`
-	// Tx holds the value of the "tx" field.
-	Tx string `json:"tx,omitempty"`
-	// Start holds the value of the "start" field.
-	Start int64 `json:"start,omitempty"`
-	// Duration holds the value of the "duration" field.
-	Duration int64 `json:"duration,omitempty"`
-	// Amount holds the value of the "amount" field.
-	Amount int64 `json:"amount,omitempty"`
-	// Receiver holds the value of the "receiver" field.
-	Receiver string `json:"receiver,omitempty"`
-	// Finalized holds the value of the "finalized" field.
-	Finalized bool `json:"finalized,omitempty"`
-	// End holds the value of the "end" field.
-	End bool `json:"end,omitempty"`
-	// BtcSig holds the value of the "btc_sig" field.
-	BtcSig string `json:"btc_sig,omitempty"`
-	// ReceiverSig holds the value of the "receiver_sig" field.
-	ReceiverSig  string `json:"receiver_sig,omitempty"`
+	// Staker holds the value of the "Staker" field.
+	Staker string `json:"Staker,omitempty"`
+	// Tx holds the value of the "Tx" field.
+	Tx string `json:"Tx,omitempty"`
+	// Start holds the value of the "Start" field.
+	Start uint64 `json:"Start,omitempty"`
+	// Duration holds the value of the "Duration" field.
+	Duration uint64 `json:"Duration,omitempty"`
+	// Amount holds the value of the "Amount" field.
+	Amount uint64 `json:"Amount,omitempty"`
+	// RewardReceiver holds the value of the "RewardReceiver" field.
+	RewardReceiver string `json:"RewardReceiver,omitempty"`
+	// FinalizedStatus holds the value of the "FinalizedStatus" field.
+	FinalizedStatus bool `json:"FinalizedStatus,omitempty"`
+	// ReleaseStatus holds the value of the "ReleaseStatus" field.
+	ReleaseStatus bool `json:"ReleaseStatus,omitempty"`
+	// BtcSig holds the value of the "BtcSig" field.
+	BtcSig string `json:"BtcSig,omitempty"`
+	// ReceiverSig holds the value of the "ReceiverSig" field.
+	ReceiverSig string `json:"ReceiverSig,omitempty"`
+	// Timestamp holds the value of the "Timestamp" field.
+	Timestamp uint64 `json:"Timestamp,omitempty"`
+	// CreateAt holds the value of the "CreateAt" field.
+	CreateAt uint64 `json:"CreateAt,omitempty"`
+	// UpdateAt holds the value of the "UpdateAt" field.
+	UpdateAt     uint64 `json:"UpdateAt,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -44,11 +50,11 @@ func (*Stake) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case stake.FieldFinalized, stake.FieldEnd:
+		case stake.FieldFinalizedStatus, stake.FieldReleaseStatus:
 			values[i] = new(sql.NullBool)
-		case stake.FieldID, stake.FieldStart, stake.FieldDuration, stake.FieldAmount:
+		case stake.FieldID, stake.FieldStart, stake.FieldDuration, stake.FieldAmount, stake.FieldTimestamp, stake.FieldCreateAt, stake.FieldUpdateAt:
 			values[i] = new(sql.NullInt64)
-		case stake.FieldStaker, stake.FieldTx, stake.FieldReceiver, stake.FieldBtcSig, stake.FieldReceiverSig:
+		case stake.FieldStaker, stake.FieldTx, stake.FieldRewardReceiver, stake.FieldBtcSig, stake.FieldReceiverSig:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -73,63 +79,81 @@ func (s *Stake) assignValues(columns []string, values []any) error {
 			s.ID = int(value.Int64)
 		case stake.FieldStaker:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field staker", values[i])
+				return fmt.Errorf("unexpected type %T for field Staker", values[i])
 			} else if value.Valid {
 				s.Staker = value.String
 			}
 		case stake.FieldTx:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field tx", values[i])
+				return fmt.Errorf("unexpected type %T for field Tx", values[i])
 			} else if value.Valid {
 				s.Tx = value.String
 			}
 		case stake.FieldStart:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field start", values[i])
+				return fmt.Errorf("unexpected type %T for field Start", values[i])
 			} else if value.Valid {
-				s.Start = value.Int64
+				s.Start = uint64(value.Int64)
 			}
 		case stake.FieldDuration:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field duration", values[i])
+				return fmt.Errorf("unexpected type %T for field Duration", values[i])
 			} else if value.Valid {
-				s.Duration = value.Int64
+				s.Duration = uint64(value.Int64)
 			}
 		case stake.FieldAmount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field amount", values[i])
+				return fmt.Errorf("unexpected type %T for field Amount", values[i])
 			} else if value.Valid {
-				s.Amount = value.Int64
+				s.Amount = uint64(value.Int64)
 			}
-		case stake.FieldReceiver:
+		case stake.FieldRewardReceiver:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field receiver", values[i])
+				return fmt.Errorf("unexpected type %T for field RewardReceiver", values[i])
 			} else if value.Valid {
-				s.Receiver = value.String
+				s.RewardReceiver = value.String
 			}
-		case stake.FieldFinalized:
+		case stake.FieldFinalizedStatus:
 			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field finalized", values[i])
+				return fmt.Errorf("unexpected type %T for field FinalizedStatus", values[i])
 			} else if value.Valid {
-				s.Finalized = value.Bool
+				s.FinalizedStatus = value.Bool
 			}
-		case stake.FieldEnd:
+		case stake.FieldReleaseStatus:
 			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field end", values[i])
+				return fmt.Errorf("unexpected type %T for field ReleaseStatus", values[i])
 			} else if value.Valid {
-				s.End = value.Bool
+				s.ReleaseStatus = value.Bool
 			}
 		case stake.FieldBtcSig:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field btc_sig", values[i])
+				return fmt.Errorf("unexpected type %T for field BtcSig", values[i])
 			} else if value.Valid {
 				s.BtcSig = value.String
 			}
 		case stake.FieldReceiverSig:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field receiver_sig", values[i])
+				return fmt.Errorf("unexpected type %T for field ReceiverSig", values[i])
 			} else if value.Valid {
 				s.ReceiverSig = value.String
+			}
+		case stake.FieldTimestamp:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field Timestamp", values[i])
+			} else if value.Valid {
+				s.Timestamp = uint64(value.Int64)
+			}
+		case stake.FieldCreateAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field CreateAt", values[i])
+			} else if value.Valid {
+				s.CreateAt = uint64(value.Int64)
+			}
+		case stake.FieldUpdateAt:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field UpdateAt", values[i])
+			} else if value.Valid {
+				s.UpdateAt = uint64(value.Int64)
 			}
 		default:
 			s.selectValues.Set(columns[i], values[i])
@@ -167,35 +191,44 @@ func (s *Stake) String() string {
 	var builder strings.Builder
 	builder.WriteString("Stake(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", s.ID))
-	builder.WriteString("staker=")
+	builder.WriteString("Staker=")
 	builder.WriteString(s.Staker)
 	builder.WriteString(", ")
-	builder.WriteString("tx=")
+	builder.WriteString("Tx=")
 	builder.WriteString(s.Tx)
 	builder.WriteString(", ")
-	builder.WriteString("start=")
+	builder.WriteString("Start=")
 	builder.WriteString(fmt.Sprintf("%v", s.Start))
 	builder.WriteString(", ")
-	builder.WriteString("duration=")
+	builder.WriteString("Duration=")
 	builder.WriteString(fmt.Sprintf("%v", s.Duration))
 	builder.WriteString(", ")
-	builder.WriteString("amount=")
+	builder.WriteString("Amount=")
 	builder.WriteString(fmt.Sprintf("%v", s.Amount))
 	builder.WriteString(", ")
-	builder.WriteString("receiver=")
-	builder.WriteString(s.Receiver)
+	builder.WriteString("RewardReceiver=")
+	builder.WriteString(s.RewardReceiver)
 	builder.WriteString(", ")
-	builder.WriteString("finalized=")
-	builder.WriteString(fmt.Sprintf("%v", s.Finalized))
+	builder.WriteString("FinalizedStatus=")
+	builder.WriteString(fmt.Sprintf("%v", s.FinalizedStatus))
 	builder.WriteString(", ")
-	builder.WriteString("end=")
-	builder.WriteString(fmt.Sprintf("%v", s.End))
+	builder.WriteString("ReleaseStatus=")
+	builder.WriteString(fmt.Sprintf("%v", s.ReleaseStatus))
 	builder.WriteString(", ")
-	builder.WriteString("btc_sig=")
+	builder.WriteString("BtcSig=")
 	builder.WriteString(s.BtcSig)
 	builder.WriteString(", ")
-	builder.WriteString("receiver_sig=")
+	builder.WriteString("ReceiverSig=")
 	builder.WriteString(s.ReceiverSig)
+	builder.WriteString(", ")
+	builder.WriteString("Timestamp=")
+	builder.WriteString(fmt.Sprintf("%v", s.Timestamp))
+	builder.WriteString(", ")
+	builder.WriteString("CreateAt=")
+	builder.WriteString(fmt.Sprintf("%v", s.CreateAt))
+	builder.WriteString(", ")
+	builder.WriteString("UpdateAt=")
+	builder.WriteString(fmt.Sprintf("%v", s.UpdateAt))
 	builder.WriteByte(')')
 	return builder.String()
 }
