@@ -19,71 +19,89 @@ type StakeCreate struct {
 	hooks    []Hook
 }
 
-// SetStaker sets the "staker" field.
+// SetStaker sets the "Staker" field.
 func (sc *StakeCreate) SetStaker(s string) *StakeCreate {
 	sc.mutation.SetStaker(s)
 	return sc
 }
 
-// SetTx sets the "tx" field.
+// SetTx sets the "Tx" field.
 func (sc *StakeCreate) SetTx(s string) *StakeCreate {
 	sc.mutation.SetTx(s)
 	return sc
 }
 
-// SetStart sets the "start" field.
-func (sc *StakeCreate) SetStart(i int64) *StakeCreate {
-	sc.mutation.SetStart(i)
+// SetStart sets the "Start" field.
+func (sc *StakeCreate) SetStart(u uint64) *StakeCreate {
+	sc.mutation.SetStart(u)
 	return sc
 }
 
-// SetDuration sets the "duration" field.
-func (sc *StakeCreate) SetDuration(i int64) *StakeCreate {
-	sc.mutation.SetDuration(i)
+// SetDuration sets the "Duration" field.
+func (sc *StakeCreate) SetDuration(u uint64) *StakeCreate {
+	sc.mutation.SetDuration(u)
 	return sc
 }
 
-// SetAmount sets the "amount" field.
-func (sc *StakeCreate) SetAmount(i int64) *StakeCreate {
-	sc.mutation.SetAmount(i)
+// SetAmount sets the "Amount" field.
+func (sc *StakeCreate) SetAmount(u uint64) *StakeCreate {
+	sc.mutation.SetAmount(u)
 	return sc
 }
 
-// SetReceiver sets the "receiver" field.
-func (sc *StakeCreate) SetReceiver(s string) *StakeCreate {
-	sc.mutation.SetReceiver(s)
+// SetRewardReceiver sets the "RewardReceiver" field.
+func (sc *StakeCreate) SetRewardReceiver(s string) *StakeCreate {
+	sc.mutation.SetRewardReceiver(s)
 	return sc
 }
 
-// SetFinalized sets the "finalized" field.
-func (sc *StakeCreate) SetFinalized(b bool) *StakeCreate {
-	sc.mutation.SetFinalized(b)
+// SetFinalizedStatus sets the "FinalizedStatus" field.
+func (sc *StakeCreate) SetFinalizedStatus(b bool) *StakeCreate {
+	sc.mutation.SetFinalizedStatus(b)
 	return sc
 }
 
-// SetEnd sets the "end" field.
-func (sc *StakeCreate) SetEnd(b bool) *StakeCreate {
-	sc.mutation.SetEnd(b)
+// SetReleaseStatus sets the "ReleaseStatus" field.
+func (sc *StakeCreate) SetReleaseStatus(b bool) *StakeCreate {
+	sc.mutation.SetReleaseStatus(b)
 	return sc
 }
 
-// SetNillableEnd sets the "end" field if the given value is not nil.
-func (sc *StakeCreate) SetNillableEnd(b *bool) *StakeCreate {
+// SetNillableReleaseStatus sets the "ReleaseStatus" field if the given value is not nil.
+func (sc *StakeCreate) SetNillableReleaseStatus(b *bool) *StakeCreate {
 	if b != nil {
-		sc.SetEnd(*b)
+		sc.SetReleaseStatus(*b)
 	}
 	return sc
 }
 
-// SetBtcSig sets the "btc_sig" field.
+// SetBtcSig sets the "BtcSig" field.
 func (sc *StakeCreate) SetBtcSig(s string) *StakeCreate {
 	sc.mutation.SetBtcSig(s)
 	return sc
 }
 
-// SetReceiverSig sets the "receiver_sig" field.
+// SetReceiverSig sets the "ReceiverSig" field.
 func (sc *StakeCreate) SetReceiverSig(s string) *StakeCreate {
 	sc.mutation.SetReceiverSig(s)
+	return sc
+}
+
+// SetTimestamp sets the "Timestamp" field.
+func (sc *StakeCreate) SetTimestamp(u uint64) *StakeCreate {
+	sc.mutation.SetTimestamp(u)
+	return sc
+}
+
+// SetCreateAt sets the "CreateAt" field.
+func (sc *StakeCreate) SetCreateAt(u uint64) *StakeCreate {
+	sc.mutation.SetCreateAt(u)
+	return sc
+}
+
+// SetUpdateAt sets the "UpdateAt" field.
+func (sc *StakeCreate) SetUpdateAt(u uint64) *StakeCreate {
+	sc.mutation.SetUpdateAt(u)
 	return sc
 }
 
@@ -122,58 +140,67 @@ func (sc *StakeCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (sc *StakeCreate) defaults() {
-	if _, ok := sc.mutation.End(); !ok {
-		v := stake.DefaultEnd
-		sc.mutation.SetEnd(v)
+	if _, ok := sc.mutation.ReleaseStatus(); !ok {
+		v := stake.DefaultReleaseStatus
+		sc.mutation.SetReleaseStatus(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (sc *StakeCreate) check() error {
 	if _, ok := sc.mutation.Staker(); !ok {
-		return &ValidationError{Name: "staker", err: errors.New(`ent: missing required field "Stake.staker"`)}
+		return &ValidationError{Name: "Staker", err: errors.New(`ent: missing required field "Stake.Staker"`)}
 	}
 	if v, ok := sc.mutation.Staker(); ok {
 		if err := stake.StakerValidator(v); err != nil {
-			return &ValidationError{Name: "staker", err: fmt.Errorf(`ent: validator failed for field "Stake.staker": %w`, err)}
+			return &ValidationError{Name: "Staker", err: fmt.Errorf(`ent: validator failed for field "Stake.Staker": %w`, err)}
 		}
 	}
 	if _, ok := sc.mutation.GetTx(); !ok {
-		return &ValidationError{Name: "tx", err: errors.New(`ent: missing required field "Stake.tx"`)}
+		return &ValidationError{Name: "Tx", err: errors.New(`ent: missing required field "Stake.Tx"`)}
 	}
 	if v, ok := sc.mutation.GetTx(); ok {
 		if err := stake.TxValidator(v); err != nil {
-			return &ValidationError{Name: "tx", err: fmt.Errorf(`ent: validator failed for field "Stake.tx": %w`, err)}
+			return &ValidationError{Name: "Tx", err: fmt.Errorf(`ent: validator failed for field "Stake.Tx": %w`, err)}
 		}
 	}
 	if _, ok := sc.mutation.Start(); !ok {
-		return &ValidationError{Name: "start", err: errors.New(`ent: missing required field "Stake.start"`)}
+		return &ValidationError{Name: "Start", err: errors.New(`ent: missing required field "Stake.Start"`)}
 	}
 	if _, ok := sc.mutation.Duration(); !ok {
-		return &ValidationError{Name: "duration", err: errors.New(`ent: missing required field "Stake.duration"`)}
+		return &ValidationError{Name: "Duration", err: errors.New(`ent: missing required field "Stake.Duration"`)}
 	}
 	if _, ok := sc.mutation.Amount(); !ok {
-		return &ValidationError{Name: "amount", err: errors.New(`ent: missing required field "Stake.amount"`)}
+		return &ValidationError{Name: "Amount", err: errors.New(`ent: missing required field "Stake.Amount"`)}
 	}
-	if _, ok := sc.mutation.Receiver(); !ok {
-		return &ValidationError{Name: "receiver", err: errors.New(`ent: missing required field "Stake.receiver"`)}
+	if _, ok := sc.mutation.RewardReceiver(); !ok {
+		return &ValidationError{Name: "RewardReceiver", err: errors.New(`ent: missing required field "Stake.RewardReceiver"`)}
 	}
-	if v, ok := sc.mutation.Receiver(); ok {
-		if err := stake.ReceiverValidator(v); err != nil {
-			return &ValidationError{Name: "receiver", err: fmt.Errorf(`ent: validator failed for field "Stake.receiver": %w`, err)}
+	if v, ok := sc.mutation.RewardReceiver(); ok {
+		if err := stake.RewardReceiverValidator(v); err != nil {
+			return &ValidationError{Name: "RewardReceiver", err: fmt.Errorf(`ent: validator failed for field "Stake.RewardReceiver": %w`, err)}
 		}
 	}
-	if _, ok := sc.mutation.Finalized(); !ok {
-		return &ValidationError{Name: "finalized", err: errors.New(`ent: missing required field "Stake.finalized"`)}
+	if _, ok := sc.mutation.FinalizedStatus(); !ok {
+		return &ValidationError{Name: "FinalizedStatus", err: errors.New(`ent: missing required field "Stake.FinalizedStatus"`)}
 	}
-	if _, ok := sc.mutation.End(); !ok {
-		return &ValidationError{Name: "end", err: errors.New(`ent: missing required field "Stake.end"`)}
+	if _, ok := sc.mutation.ReleaseStatus(); !ok {
+		return &ValidationError{Name: "ReleaseStatus", err: errors.New(`ent: missing required field "Stake.ReleaseStatus"`)}
 	}
 	if _, ok := sc.mutation.BtcSig(); !ok {
-		return &ValidationError{Name: "btc_sig", err: errors.New(`ent: missing required field "Stake.btc_sig"`)}
+		return &ValidationError{Name: "BtcSig", err: errors.New(`ent: missing required field "Stake.BtcSig"`)}
 	}
 	if _, ok := sc.mutation.ReceiverSig(); !ok {
-		return &ValidationError{Name: "receiver_sig", err: errors.New(`ent: missing required field "Stake.receiver_sig"`)}
+		return &ValidationError{Name: "ReceiverSig", err: errors.New(`ent: missing required field "Stake.ReceiverSig"`)}
+	}
+	if _, ok := sc.mutation.Timestamp(); !ok {
+		return &ValidationError{Name: "Timestamp", err: errors.New(`ent: missing required field "Stake.Timestamp"`)}
+	}
+	if _, ok := sc.mutation.CreateAt(); !ok {
+		return &ValidationError{Name: "CreateAt", err: errors.New(`ent: missing required field "Stake.CreateAt"`)}
+	}
+	if _, ok := sc.mutation.UpdateAt(); !ok {
+		return &ValidationError{Name: "UpdateAt", err: errors.New(`ent: missing required field "Stake.UpdateAt"`)}
 	}
 	return nil
 }
@@ -210,28 +237,28 @@ func (sc *StakeCreate) createSpec() (*Stake, *sqlgraph.CreateSpec) {
 		_node.Tx = value
 	}
 	if value, ok := sc.mutation.Start(); ok {
-		_spec.SetField(stake.FieldStart, field.TypeInt64, value)
+		_spec.SetField(stake.FieldStart, field.TypeUint64, value)
 		_node.Start = value
 	}
 	if value, ok := sc.mutation.Duration(); ok {
-		_spec.SetField(stake.FieldDuration, field.TypeInt64, value)
+		_spec.SetField(stake.FieldDuration, field.TypeUint64, value)
 		_node.Duration = value
 	}
 	if value, ok := sc.mutation.Amount(); ok {
-		_spec.SetField(stake.FieldAmount, field.TypeInt64, value)
+		_spec.SetField(stake.FieldAmount, field.TypeUint64, value)
 		_node.Amount = value
 	}
-	if value, ok := sc.mutation.Receiver(); ok {
-		_spec.SetField(stake.FieldReceiver, field.TypeString, value)
-		_node.Receiver = value
+	if value, ok := sc.mutation.RewardReceiver(); ok {
+		_spec.SetField(stake.FieldRewardReceiver, field.TypeString, value)
+		_node.RewardReceiver = value
 	}
-	if value, ok := sc.mutation.Finalized(); ok {
-		_spec.SetField(stake.FieldFinalized, field.TypeBool, value)
-		_node.Finalized = value
+	if value, ok := sc.mutation.FinalizedStatus(); ok {
+		_spec.SetField(stake.FieldFinalizedStatus, field.TypeBool, value)
+		_node.FinalizedStatus = value
 	}
-	if value, ok := sc.mutation.End(); ok {
-		_spec.SetField(stake.FieldEnd, field.TypeBool, value)
-		_node.End = value
+	if value, ok := sc.mutation.ReleaseStatus(); ok {
+		_spec.SetField(stake.FieldReleaseStatus, field.TypeBool, value)
+		_node.ReleaseStatus = value
 	}
 	if value, ok := sc.mutation.BtcSig(); ok {
 		_spec.SetField(stake.FieldBtcSig, field.TypeString, value)
@@ -240,6 +267,18 @@ func (sc *StakeCreate) createSpec() (*Stake, *sqlgraph.CreateSpec) {
 	if value, ok := sc.mutation.ReceiverSig(); ok {
 		_spec.SetField(stake.FieldReceiverSig, field.TypeString, value)
 		_node.ReceiverSig = value
+	}
+	if value, ok := sc.mutation.Timestamp(); ok {
+		_spec.SetField(stake.FieldTimestamp, field.TypeUint64, value)
+		_node.Timestamp = value
+	}
+	if value, ok := sc.mutation.CreateAt(); ok {
+		_spec.SetField(stake.FieldCreateAt, field.TypeUint64, value)
+		_node.CreateAt = value
+	}
+	if value, ok := sc.mutation.UpdateAt(); ok {
+		_spec.SetField(stake.FieldUpdateAt, field.TypeUint64, value)
+		_node.UpdateAt = value
 	}
 	return _node, _spec
 }

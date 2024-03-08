@@ -261,7 +261,7 @@ func (sq *StakeQuery) Clone() *StakeQuery {
 // Example:
 //
 //	var v []struct {
-//		Staker string `json:"staker,omitempty"`
+//		Staker string `json:"Staker,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -284,7 +284,7 @@ func (sq *StakeQuery) GroupBy(field string, fields ...string) *StakeGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Staker string `json:"staker,omitempty"`
+//		Staker string `json:"Staker,omitempty"`
 //	}
 //
 //	client.Stake.Query().

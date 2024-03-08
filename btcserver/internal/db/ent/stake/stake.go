@@ -21,16 +21,22 @@ const (
 	FieldDuration = "duration"
 	// FieldAmount holds the string denoting the amount field in the database.
 	FieldAmount = "amount"
-	// FieldReceiver holds the string denoting the receiver field in the database.
-	FieldReceiver = "receiver"
-	// FieldFinalized holds the string denoting the finalized field in the database.
-	FieldFinalized = "finalized"
-	// FieldEnd holds the string denoting the end field in the database.
-	FieldEnd = "end"
-	// FieldBtcSig holds the string denoting the btc_sig field in the database.
+	// FieldRewardReceiver holds the string denoting the rewardreceiver field in the database.
+	FieldRewardReceiver = "reward_receiver"
+	// FieldFinalizedStatus holds the string denoting the finalizedstatus field in the database.
+	FieldFinalizedStatus = "finalized_status"
+	// FieldReleaseStatus holds the string denoting the releasestatus field in the database.
+	FieldReleaseStatus = "release_status"
+	// FieldBtcSig holds the string denoting the btcsig field in the database.
 	FieldBtcSig = "btc_sig"
-	// FieldReceiverSig holds the string denoting the receiver_sig field in the database.
+	// FieldReceiverSig holds the string denoting the receiversig field in the database.
 	FieldReceiverSig = "receiver_sig"
+	// FieldTimestamp holds the string denoting the timestamp field in the database.
+	FieldTimestamp = "timestamp"
+	// FieldCreateAt holds the string denoting the createat field in the database.
+	FieldCreateAt = "create_at"
+	// FieldUpdateAt holds the string denoting the updateat field in the database.
+	FieldUpdateAt = "update_at"
 	// Table holds the table name of the stake in the database.
 	Table = "stakes"
 )
@@ -43,11 +49,14 @@ var Columns = []string{
 	FieldStart,
 	FieldDuration,
 	FieldAmount,
-	FieldReceiver,
-	FieldFinalized,
-	FieldEnd,
+	FieldRewardReceiver,
+	FieldFinalizedStatus,
+	FieldReleaseStatus,
 	FieldBtcSig,
 	FieldReceiverSig,
+	FieldTimestamp,
+	FieldCreateAt,
+	FieldUpdateAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -61,14 +70,14 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// StakerValidator is a validator for the "staker" field. It is called by the builders before save.
+	// StakerValidator is a validator for the "Staker" field. It is called by the builders before save.
 	StakerValidator func(string) error
-	// TxValidator is a validator for the "tx" field. It is called by the builders before save.
+	// TxValidator is a validator for the "Tx" field. It is called by the builders before save.
 	TxValidator func(string) error
-	// ReceiverValidator is a validator for the "receiver" field. It is called by the builders before save.
-	ReceiverValidator func(string) error
-	// DefaultEnd holds the default value on creation for the "end" field.
-	DefaultEnd bool
+	// RewardReceiverValidator is a validator for the "RewardReceiver" field. It is called by the builders before save.
+	RewardReceiverValidator func(string) error
+	// DefaultReleaseStatus holds the default value on creation for the "ReleaseStatus" field.
+	DefaultReleaseStatus bool
 )
 
 // OrderOption defines the ordering options for the Stake queries.
@@ -79,52 +88,67 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByStaker orders the results by the staker field.
+// ByStaker orders the results by the Staker field.
 func ByStaker(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStaker, opts...).ToFunc()
 }
 
-// ByTx orders the results by the tx field.
+// ByTx orders the results by the Tx field.
 func ByTx(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTx, opts...).ToFunc()
 }
 
-// ByStart orders the results by the start field.
+// ByStart orders the results by the Start field.
 func ByStart(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStart, opts...).ToFunc()
 }
 
-// ByDuration orders the results by the duration field.
+// ByDuration orders the results by the Duration field.
 func ByDuration(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDuration, opts...).ToFunc()
 }
 
-// ByAmount orders the results by the amount field.
+// ByAmount orders the results by the Amount field.
 func ByAmount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAmount, opts...).ToFunc()
 }
 
-// ByReceiver orders the results by the receiver field.
-func ByReceiver(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldReceiver, opts...).ToFunc()
+// ByRewardReceiver orders the results by the RewardReceiver field.
+func ByRewardReceiver(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRewardReceiver, opts...).ToFunc()
 }
 
-// ByFinalized orders the results by the finalized field.
-func ByFinalized(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldFinalized, opts...).ToFunc()
+// ByFinalizedStatus orders the results by the FinalizedStatus field.
+func ByFinalizedStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFinalizedStatus, opts...).ToFunc()
 }
 
-// ByEnd orders the results by the end field.
-func ByEnd(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldEnd, opts...).ToFunc()
+// ByReleaseStatus orders the results by the ReleaseStatus field.
+func ByReleaseStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldReleaseStatus, opts...).ToFunc()
 }
 
-// ByBtcSig orders the results by the btc_sig field.
+// ByBtcSig orders the results by the BtcSig field.
 func ByBtcSig(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBtcSig, opts...).ToFunc()
 }
 
-// ByReceiverSig orders the results by the receiver_sig field.
+// ByReceiverSig orders the results by the ReceiverSig field.
 func ByReceiverSig(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldReceiverSig, opts...).ToFunc()
+}
+
+// ByTimestamp orders the results by the Timestamp field.
+func ByTimestamp(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTimestamp, opts...).ToFunc()
+}
+
+// ByCreateAt orders the results by the CreateAt field.
+func ByCreateAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreateAt, opts...).ToFunc()
+}
+
+// ByUpdateAt orders the results by the UpdateAt field.
+func ByUpdateAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdateAt, opts...).ToFunc()
 }

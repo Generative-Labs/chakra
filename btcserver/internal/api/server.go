@@ -2,8 +2,6 @@ package api
 
 import (
 	"fmt"
-	"net/http"
-
 	"github.com/generativelabs/btcserver/internal/db"
 	"github.com/gin-gonic/gin"
 )
@@ -13,40 +11,35 @@ type Server struct {
 	engine  *gin.Engine
 }
 
-type Staker struct {
-	Staker string `form:"staker"`
-}
-
 func New(backend *db.Backend) *Server {
 	server := &Server{
 		backend: backend,
 	}
 
 	r := gin.Default()
-	r.GET("/stakes", server.GetStakesByStaker)
+	r.Use(CORSMiddleware())
+	SetupRoutes(r, server)
 
+	server.engine = r
 	return server
-}
-
-func (s Server) GetStakesByStaker(c *gin.Context) {
-	var staker Staker
-	err := c.Bind(&staker)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	stakes, err := s.backend.QueryStakesByStaker(staker.Staker)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, stakes)
 }
 
 func (s Server) Run(servicePort int) error {
 	return s.engine.Run(fmt.Sprintf(":%d", servicePort))
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	}
 }

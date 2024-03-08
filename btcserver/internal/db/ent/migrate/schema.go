@@ -13,14 +13,17 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "staker", Type: field.TypeString, Size: 90},
 		{Name: "tx", Type: field.TypeString, Unique: true, Size: 66},
-		{Name: "start", Type: field.TypeInt64},
-		{Name: "duration", Type: field.TypeInt64},
-		{Name: "amount", Type: field.TypeInt64},
-		{Name: "receiver", Type: field.TypeString, Size: 66},
-		{Name: "finalized", Type: field.TypeBool},
-		{Name: "end", Type: field.TypeBool, Default: false},
+		{Name: "start", Type: field.TypeUint64},
+		{Name: "duration", Type: field.TypeUint64},
+		{Name: "amount", Type: field.TypeUint64},
+		{Name: "reward_receiver", Type: field.TypeString, Size: 66},
+		{Name: "finalized_status", Type: field.TypeBool},
+		{Name: "release_status", Type: field.TypeBool, Default: false},
 		{Name: "btc_sig", Type: field.TypeString},
 		{Name: "receiver_sig", Type: field.TypeString},
+		{Name: "timestamp", Type: field.TypeUint64},
+		{Name: "create_at", Type: field.TypeUint64},
+		{Name: "update_at", Type: field.TypeUint64},
 	}
 	// StakesTable holds the schema information for the "stakes" table.
 	StakesTable = &schema.Table{
@@ -34,7 +37,7 @@ var (
 				Columns: []*schema.Column{StakesColumns[1], StakesColumns[2]},
 			},
 			{
-				Name:    "stake_end_tx",
+				Name:    "stake_release_status_tx",
 				Unique:  false,
 				Columns: []*schema.Column{StakesColumns[8], StakesColumns[2]},
 			},
