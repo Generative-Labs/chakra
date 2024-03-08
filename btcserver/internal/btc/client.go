@@ -25,7 +25,7 @@ func New(config Config) (*Client, error) {
 	return &client, nil
 }
 
-func (c *Client) CheckTransactionSignature(rawTx, senderAddress, signature string) {}
+func (c *Client) CheckTransactionSignature(_, _, _ string) {}
 
 func (c *Client) CheckSignature() {}
 
