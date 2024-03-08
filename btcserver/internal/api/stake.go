@@ -1,16 +1,17 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-type HttpRespose struct {
+type HTTPRespose struct {
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data,omitempty"`
 }
 
-func JsonResp(c *gin.Context, code int, res *HttpRespose) {
+func JSONResp(c *gin.Context, code int, res *HTTPRespose) {
 	c.JSON(code, res)
 }
 
@@ -29,7 +30,7 @@ type StakeInfoReq struct {
 	RewardReceiver    string `json:"reward_receiver,omitempty"`
 	BtcSignature      string `json:"btc_signature,omitempty"`
 	ReceiverSignature string `json:"receiver_signature,omitempty"`
-	Timestamp         uint64 `json:"timestamp,omitempty "`
+	Timestamp         uint64 `json:"timestamp,omitempty"`
 }
 
 type StakeInfoResq struct {
@@ -43,26 +44,26 @@ type StakeInfoResq struct {
 
 // GetStakeListByStaker Get staking history
 func (s Server) GetStakeListByStaker(c *gin.Context) {
-	respData := &HttpRespose{Msg: "Ok"}
+	respData := &HTTPRespose{Msg: "Ok"}
 
 	var staker StakerReq
 	if err := c.BindQuery(&staker); err != nil {
 		respData.Msg = err.Error()
-		JsonResp(c, http.StatusBadRequest, respData)
+		JSONResp(c, http.StatusBadRequest, respData)
 		return
 	}
 
 	total, err := s.backend.QueryStakesCountByStaker(staker.Staker)
 	if err != nil {
 		respData.Msg = err.Error()
-		JsonResp(c, http.StatusInternalServerError, respData)
+		JSONResp(c, http.StatusInternalServerError, respData)
 		return
 	}
 
 	stakes, err := s.backend.QueryStakesByStaker(staker.Staker, staker.Page, staker.Size)
 	if err != nil {
 		respData.Msg = err.Error()
-		JsonResp(c, http.StatusInternalServerError, respData)
+		JSONResp(c, http.StatusInternalServerError, respData)
 		return
 	}
 
@@ -82,27 +83,27 @@ func (s Server) GetStakeListByStaker(c *gin.Context) {
 		"total_count": total,
 		"data_list":   srakeList,
 	}
-	JsonResp(c, http.StatusOK, respData)
+	JSONResp(c, http.StatusOK, respData)
 }
 
 // SubmitProofOfStake Submit proof of Stake
 func (s Server) SubmitProofOfStake(c *gin.Context) {
-	respData := &HttpRespose{Msg: "Ok"}
+	respData := &HTTPRespose{Msg: "Ok"}
 
 	var stakeinfo StakeInfoReq
 	if err := c.Bind(&stakeinfo); err != nil {
 		respData.Msg = err.Error()
-		JsonResp(c, http.StatusBadRequest, respData)
+		JSONResp(c, http.StatusBadRequest, respData)
 		return
 	}
 
-	//todo verify BtcSignature
+	// todo verify BtcSignature
 
-	//todo verify ReceiverSignature
+	// todo verify ReceiverSignature
 
-	//todo verify btc lock
+	// todo verify btc lock
 
-	//storage
+	// storage
 	err := s.backend.CreateStake(stakeinfo.Staker,
 		stakeinfo.TxID,
 		stakeinfo.Start,

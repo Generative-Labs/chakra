@@ -7,14 +7,14 @@ import (
 	"github.com/generativelabs/btcserver/internal/db/ent/stake"
 )
 
-//Staker          string `form:"staker" json:"staker,omitempty"`
-//	TxID            string `json:"tx_id,omitempty"`
-//	Start           int64  `json:"start,omitempty"`
-//	Duration        int64  `json:"duration,omitempty"`
-//	Amount          int64  `json:"amount,omitempty"`
-//	ReceiverAddress string `json:"receiver_address,omitempty"`
-//	BtcSignature    string `json:"btc_signature,omitempty"`
-//	RewordSignature string `json:"reword_signature,omitempty"`
+// Staker          string `form:"staker" json:"staker,omitempty"`
+// TxID            string `json:"tx_id,omitempty"`
+// Start           int64  `json:"start,omitempty"`
+// Duration        int64  `json:"duration,omitempty"`
+// Amount          int64  `json:"amount,omitempty"`
+// ReceiverAddress string `json:"receiver_address,omitempty"`
+// BtcSignature    string `json:"btc_signature,omitempty"`
+// RewordSignature string `json:"reword_signature,omitempty"`
 
 func (c *Backend) CreateStake(
 	staker string,
@@ -42,18 +42,18 @@ func (c *Backend) CreateStake(
 	return err
 }
 
-func (c *Backend) UpdateStakeReleaseStatus(staker string, Status bool) error {
+func (c *Backend) UpdateStakeReleaseStatus(staker string, status bool) error {
 	_, err := c.dbClient.Stake.Update().
 		Where(stake.StakerEQ(staker)).
-		SetReleaseStatus(Status).
+		SetReleaseStatus(status).
 		Save(context.Background())
 	return err
 }
 
-func (c *Backend) UpdateStakeFinalizedStatus(staker string, Status bool) error {
+func (c *Backend) UpdateStakeFinalizedStatus(staker string, status bool) error {
 	_, err := c.dbClient.Stake.Update().
 		Where(stake.StakerEQ(staker)).
-		SetFinalizedStatus(Status).
+		SetFinalizedStatus(status).
 		Save(context.Background())
 	return err
 }
