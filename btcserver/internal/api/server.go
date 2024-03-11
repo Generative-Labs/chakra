@@ -1,20 +1,33 @@
 package api
 
 import (
+	"context"
 	"fmt"
+	"github.com/NethermindEth/starknet.go/account"
 	"github.com/generativelabs/btcserver/internal/db"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 type Server struct {
-	backend *db.Backend
-	engine  *gin.Engine
+	Ctx               context.Context
+	backend           *db.Backend
+	engine            *gin.Engine
+	ChakraAccount     *account.Account
+	ContractAddress   string
+	ScheduleTimeWheel time.Time
 }
 
-func New(backend *db.Backend) *Server {
+func New(ctx context.Context, backend *db.Backend, chakraAccount *account.Account, contractAddress string) *Server {
 	server := &Server{
-		backend: backend,
+		Ctx:             ctx,
+		backend:         backend,
+		ChakraAccount:   chakraAccount,
+		ContractAddress: contractAddress,
 	}
+
+	go server.ScheduleTask()
+	go server.AddressesMint()
 
 	r := gin.Default()
 	r.Use(CORSMiddleware())
@@ -24,7 +37,7 @@ func New(backend *db.Backend) *Server {
 	return server
 }
 
-func (s Server) Run(servicePort int) error {
+func (s *Server) Run(servicePort int) error {
 	return s.engine.Run(fmt.Sprintf(":%d", servicePort))
 }
 

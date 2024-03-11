@@ -18,20 +18,24 @@ type Stake struct {
 	ID int `json:"id,omitempty"`
 	// Staker holds the value of the "Staker" field.
 	Staker string `json:"Staker,omitempty"`
+	// StakerPublicKey holds the value of the "StakerPublicKey" field.
+	StakerPublicKey string `json:"StakerPublicKey,omitempty"`
 	// Tx holds the value of the "Tx" field.
 	Tx string `json:"Tx,omitempty"`
 	// Start holds the value of the "Start" field.
 	Start uint64 `json:"Start,omitempty"`
 	// Duration holds the value of the "Duration" field.
 	Duration uint64 `json:"Duration,omitempty"`
+	// Deadline holds the value of the "Deadline" field.
+	Deadline uint64 `json:"Deadline,omitempty"`
 	// Amount holds the value of the "Amount" field.
 	Amount uint64 `json:"Amount,omitempty"`
 	// RewardReceiver holds the value of the "RewardReceiver" field.
 	RewardReceiver string `json:"RewardReceiver,omitempty"`
 	// FinalizedStatus holds the value of the "FinalizedStatus" field.
-	FinalizedStatus bool `json:"FinalizedStatus,omitempty"`
+	FinalizedStatus int `json:"FinalizedStatus,omitempty"`
 	// ReleaseStatus holds the value of the "ReleaseStatus" field.
-	ReleaseStatus bool `json:"ReleaseStatus,omitempty"`
+	ReleaseStatus int `json:"ReleaseStatus,omitempty"`
 	// BtcSig holds the value of the "BtcSig" field.
 	BtcSig string `json:"BtcSig,omitempty"`
 	// ReceiverSig holds the value of the "ReceiverSig" field.
@@ -50,11 +54,9 @@ func (*Stake) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case stake.FieldFinalizedStatus, stake.FieldReleaseStatus:
-			values[i] = new(sql.NullBool)
-		case stake.FieldID, stake.FieldStart, stake.FieldDuration, stake.FieldAmount, stake.FieldTimestamp, stake.FieldCreateAt, stake.FieldUpdateAt:
+		case stake.FieldID, stake.FieldStart, stake.FieldDuration, stake.FieldDeadline, stake.FieldAmount, stake.FieldFinalizedStatus, stake.FieldReleaseStatus, stake.FieldTimestamp, stake.FieldCreateAt, stake.FieldUpdateAt:
 			values[i] = new(sql.NullInt64)
-		case stake.FieldStaker, stake.FieldTx, stake.FieldRewardReceiver, stake.FieldBtcSig, stake.FieldReceiverSig:
+		case stake.FieldStaker, stake.FieldStakerPublicKey, stake.FieldTx, stake.FieldRewardReceiver, stake.FieldBtcSig, stake.FieldReceiverSig:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -83,6 +85,12 @@ func (s *Stake) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				s.Staker = value.String
 			}
+		case stake.FieldStakerPublicKey:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field StakerPublicKey", values[i])
+			} else if value.Valid {
+				s.StakerPublicKey = value.String
+			}
 		case stake.FieldTx:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field Tx", values[i])
@@ -101,6 +109,12 @@ func (s *Stake) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				s.Duration = uint64(value.Int64)
 			}
+		case stake.FieldDeadline:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field Deadline", values[i])
+			} else if value.Valid {
+				s.Deadline = uint64(value.Int64)
+			}
 		case stake.FieldAmount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field Amount", values[i])
@@ -114,16 +128,16 @@ func (s *Stake) assignValues(columns []string, values []any) error {
 				s.RewardReceiver = value.String
 			}
 		case stake.FieldFinalizedStatus:
-			if value, ok := values[i].(*sql.NullBool); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field FinalizedStatus", values[i])
 			} else if value.Valid {
-				s.FinalizedStatus = value.Bool
+				s.FinalizedStatus = int(value.Int64)
 			}
 		case stake.FieldReleaseStatus:
-			if value, ok := values[i].(*sql.NullBool); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field ReleaseStatus", values[i])
 			} else if value.Valid {
-				s.ReleaseStatus = value.Bool
+				s.ReleaseStatus = int(value.Int64)
 			}
 		case stake.FieldBtcSig:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -194,6 +208,9 @@ func (s *Stake) String() string {
 	builder.WriteString("Staker=")
 	builder.WriteString(s.Staker)
 	builder.WriteString(", ")
+	builder.WriteString("StakerPublicKey=")
+	builder.WriteString(s.StakerPublicKey)
+	builder.WriteString(", ")
 	builder.WriteString("Tx=")
 	builder.WriteString(s.Tx)
 	builder.WriteString(", ")
@@ -202,6 +219,9 @@ func (s *Stake) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("Duration=")
 	builder.WriteString(fmt.Sprintf("%v", s.Duration))
+	builder.WriteString(", ")
+	builder.WriteString("Deadline=")
+	builder.WriteString(fmt.Sprintf("%v", s.Deadline))
 	builder.WriteString(", ")
 	builder.WriteString("Amount=")
 	builder.WriteString(fmt.Sprintf("%v", s.Amount))

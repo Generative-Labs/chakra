@@ -22,17 +22,19 @@ type StakerReq struct {
 
 type StakeInfoReq struct {
 	Staker            string `form:"staker" json:"staker,omitempty"`
+	StakerPublicKey   string `form:"staker_public_key" json:"staker_public_key,omitempty"`
 	TxID              string `json:"tx_id,omitempty"`
 	Start             uint64 `json:"start,omitempty"`
 	Duration          uint64 `json:"duration,omitempty"`
 	Amount            uint64 `json:"amount,omitempty"`
+	Reward            uint64 `json:"reward,omitempty"`
 	RewardReceiver    string `json:"reward_receiver,omitempty"`
 	BtcSignature      string `json:"btc_signature,omitempty"`
 	ReceiverSignature string `json:"receiver_signature,omitempty"`
-	Timestamp         uint64 `json:"timestamp,omitempty "`
+	Timestamp         uint64 `json:"timestamp,omitempty"`
 }
 
-type StakeInfoResq struct {
+type StakeInfoResp struct {
 	Staker         string `json:"staker,omitempty"`
 	Tx             string `json:"tx,omitempty"`
 	Start          uint64 `json:"start,omitempty"`
@@ -42,7 +44,7 @@ type StakeInfoResq struct {
 }
 
 // GetStakeListByStaker Get staking history
-func (s Server) GetStakeListByStaker(c *gin.Context) {
+func (s *Server) GetStakeListByStaker(c *gin.Context) {
 	respData := &HttpRespose{Msg: "Ok"}
 
 	var staker StakerReq
@@ -66,9 +68,9 @@ func (s Server) GetStakeListByStaker(c *gin.Context) {
 		return
 	}
 
-	srakeList := make([]*StakeInfoResq, 0)
+	srakeList := make([]*StakeInfoResp, 0)
 	for _, s := range stakes {
-		srakeList = append(srakeList, &StakeInfoResq{
+		srakeList = append(srakeList, &StakeInfoResp{
 			s.Staker,
 			s.Tx,
 			s.Start,
@@ -86,7 +88,7 @@ func (s Server) GetStakeListByStaker(c *gin.Context) {
 }
 
 // SubmitProofOfStake Submit proof of Stake
-func (s Server) SubmitProofOfStake(c *gin.Context) {
+func (s *Server) SubmitProofOfStake(c *gin.Context) {
 	respData := &HttpRespose{Msg: "Ok"}
 
 	var stakeinfo StakeInfoReq
@@ -96,14 +98,13 @@ func (s Server) SubmitProofOfStake(c *gin.Context) {
 		return
 	}
 
-	//todo verify BtcSignature
-
 	//todo verify ReceiverSignature
 
 	//todo verify btc lock
 
 	//storage
 	err := s.backend.CreateStake(stakeinfo.Staker,
+		stakeinfo.StakerPublicKey,
 		stakeinfo.TxID,
 		stakeinfo.Start,
 		stakeinfo.Duration,

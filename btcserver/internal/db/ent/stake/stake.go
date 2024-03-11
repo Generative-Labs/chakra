@@ -13,12 +13,16 @@ const (
 	FieldID = "id"
 	// FieldStaker holds the string denoting the staker field in the database.
 	FieldStaker = "staker"
+	// FieldStakerPublicKey holds the string denoting the stakerpublickey field in the database.
+	FieldStakerPublicKey = "staker_public_key"
 	// FieldTx holds the string denoting the tx field in the database.
 	FieldTx = "tx"
 	// FieldStart holds the string denoting the start field in the database.
 	FieldStart = "start"
 	// FieldDuration holds the string denoting the duration field in the database.
 	FieldDuration = "duration"
+	// FieldDeadline holds the string denoting the deadline field in the database.
+	FieldDeadline = "deadline"
 	// FieldAmount holds the string denoting the amount field in the database.
 	FieldAmount = "amount"
 	// FieldRewardReceiver holds the string denoting the rewardreceiver field in the database.
@@ -45,9 +49,11 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldStaker,
+	FieldStakerPublicKey,
 	FieldTx,
 	FieldStart,
 	FieldDuration,
+	FieldDeadline,
 	FieldAmount,
 	FieldRewardReceiver,
 	FieldFinalizedStatus,
@@ -76,8 +82,10 @@ var (
 	TxValidator func(string) error
 	// RewardReceiverValidator is a validator for the "RewardReceiver" field. It is called by the builders before save.
 	RewardReceiverValidator func(string) error
+	// DefaultFinalizedStatus holds the default value on creation for the "FinalizedStatus" field.
+	DefaultFinalizedStatus int
 	// DefaultReleaseStatus holds the default value on creation for the "ReleaseStatus" field.
-	DefaultReleaseStatus bool
+	DefaultReleaseStatus int
 )
 
 // OrderOption defines the ordering options for the Stake queries.
@@ -93,6 +101,11 @@ func ByStaker(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStaker, opts...).ToFunc()
 }
 
+// ByStakerPublicKey orders the results by the StakerPublicKey field.
+func ByStakerPublicKey(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStakerPublicKey, opts...).ToFunc()
+}
+
 // ByTx orders the results by the Tx field.
 func ByTx(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTx, opts...).ToFunc()
@@ -106,6 +119,11 @@ func ByStart(opts ...sql.OrderTermOption) OrderOption {
 // ByDuration orders the results by the Duration field.
 func ByDuration(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDuration, opts...).ToFunc()
+}
+
+// ByDeadline orders the results by the Deadline field.
+func ByDeadline(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeadline, opts...).ToFunc()
 }
 
 // ByAmount orders the results by the Amount field.

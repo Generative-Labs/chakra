@@ -57,6 +57,11 @@ func Staker(v string) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldStaker, v))
 }
 
+// StakerPublicKey applies equality check predicate on the "StakerPublicKey" field. It's identical to StakerPublicKeyEQ.
+func StakerPublicKey(v string) predicate.Stake {
+	return predicate.Stake(sql.FieldEQ(FieldStakerPublicKey, v))
+}
+
 // Tx applies equality check predicate on the "Tx" field. It's identical to TxEQ.
 func Tx(v string) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldTx, v))
@@ -72,6 +77,11 @@ func Duration(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldDuration, v))
 }
 
+// Deadline applies equality check predicate on the "Deadline" field. It's identical to DeadlineEQ.
+func Deadline(v uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldEQ(FieldDeadline, v))
+}
+
 // Amount applies equality check predicate on the "Amount" field. It's identical to AmountEQ.
 func Amount(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldAmount, v))
@@ -83,12 +93,12 @@ func RewardReceiver(v string) predicate.Stake {
 }
 
 // FinalizedStatus applies equality check predicate on the "FinalizedStatus" field. It's identical to FinalizedStatusEQ.
-func FinalizedStatus(v bool) predicate.Stake {
+func FinalizedStatus(v int) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldFinalizedStatus, v))
 }
 
 // ReleaseStatus applies equality check predicate on the "ReleaseStatus" field. It's identical to ReleaseStatusEQ.
-func ReleaseStatus(v bool) predicate.Stake {
+func ReleaseStatus(v int) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldReleaseStatus, v))
 }
 
@@ -180,6 +190,71 @@ func StakerEqualFold(v string) predicate.Stake {
 // StakerContainsFold applies the ContainsFold predicate on the "Staker" field.
 func StakerContainsFold(v string) predicate.Stake {
 	return predicate.Stake(sql.FieldContainsFold(FieldStaker, v))
+}
+
+// StakerPublicKeyEQ applies the EQ predicate on the "StakerPublicKey" field.
+func StakerPublicKeyEQ(v string) predicate.Stake {
+	return predicate.Stake(sql.FieldEQ(FieldStakerPublicKey, v))
+}
+
+// StakerPublicKeyNEQ applies the NEQ predicate on the "StakerPublicKey" field.
+func StakerPublicKeyNEQ(v string) predicate.Stake {
+	return predicate.Stake(sql.FieldNEQ(FieldStakerPublicKey, v))
+}
+
+// StakerPublicKeyIn applies the In predicate on the "StakerPublicKey" field.
+func StakerPublicKeyIn(vs ...string) predicate.Stake {
+	return predicate.Stake(sql.FieldIn(FieldStakerPublicKey, vs...))
+}
+
+// StakerPublicKeyNotIn applies the NotIn predicate on the "StakerPublicKey" field.
+func StakerPublicKeyNotIn(vs ...string) predicate.Stake {
+	return predicate.Stake(sql.FieldNotIn(FieldStakerPublicKey, vs...))
+}
+
+// StakerPublicKeyGT applies the GT predicate on the "StakerPublicKey" field.
+func StakerPublicKeyGT(v string) predicate.Stake {
+	return predicate.Stake(sql.FieldGT(FieldStakerPublicKey, v))
+}
+
+// StakerPublicKeyGTE applies the GTE predicate on the "StakerPublicKey" field.
+func StakerPublicKeyGTE(v string) predicate.Stake {
+	return predicate.Stake(sql.FieldGTE(FieldStakerPublicKey, v))
+}
+
+// StakerPublicKeyLT applies the LT predicate on the "StakerPublicKey" field.
+func StakerPublicKeyLT(v string) predicate.Stake {
+	return predicate.Stake(sql.FieldLT(FieldStakerPublicKey, v))
+}
+
+// StakerPublicKeyLTE applies the LTE predicate on the "StakerPublicKey" field.
+func StakerPublicKeyLTE(v string) predicate.Stake {
+	return predicate.Stake(sql.FieldLTE(FieldStakerPublicKey, v))
+}
+
+// StakerPublicKeyContains applies the Contains predicate on the "StakerPublicKey" field.
+func StakerPublicKeyContains(v string) predicate.Stake {
+	return predicate.Stake(sql.FieldContains(FieldStakerPublicKey, v))
+}
+
+// StakerPublicKeyHasPrefix applies the HasPrefix predicate on the "StakerPublicKey" field.
+func StakerPublicKeyHasPrefix(v string) predicate.Stake {
+	return predicate.Stake(sql.FieldHasPrefix(FieldStakerPublicKey, v))
+}
+
+// StakerPublicKeyHasSuffix applies the HasSuffix predicate on the "StakerPublicKey" field.
+func StakerPublicKeyHasSuffix(v string) predicate.Stake {
+	return predicate.Stake(sql.FieldHasSuffix(FieldStakerPublicKey, v))
+}
+
+// StakerPublicKeyEqualFold applies the EqualFold predicate on the "StakerPublicKey" field.
+func StakerPublicKeyEqualFold(v string) predicate.Stake {
+	return predicate.Stake(sql.FieldEqualFold(FieldStakerPublicKey, v))
+}
+
+// StakerPublicKeyContainsFold applies the ContainsFold predicate on the "StakerPublicKey" field.
+func StakerPublicKeyContainsFold(v string) predicate.Stake {
+	return predicate.Stake(sql.FieldContainsFold(FieldStakerPublicKey, v))
 }
 
 // TxEQ applies the EQ predicate on the "Tx" field.
@@ -327,6 +402,46 @@ func DurationLTE(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldLTE(FieldDuration, v))
 }
 
+// DeadlineEQ applies the EQ predicate on the "Deadline" field.
+func DeadlineEQ(v uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldEQ(FieldDeadline, v))
+}
+
+// DeadlineNEQ applies the NEQ predicate on the "Deadline" field.
+func DeadlineNEQ(v uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldNEQ(FieldDeadline, v))
+}
+
+// DeadlineIn applies the In predicate on the "Deadline" field.
+func DeadlineIn(vs ...uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldIn(FieldDeadline, vs...))
+}
+
+// DeadlineNotIn applies the NotIn predicate on the "Deadline" field.
+func DeadlineNotIn(vs ...uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldNotIn(FieldDeadline, vs...))
+}
+
+// DeadlineGT applies the GT predicate on the "Deadline" field.
+func DeadlineGT(v uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldGT(FieldDeadline, v))
+}
+
+// DeadlineGTE applies the GTE predicate on the "Deadline" field.
+func DeadlineGTE(v uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldGTE(FieldDeadline, v))
+}
+
+// DeadlineLT applies the LT predicate on the "Deadline" field.
+func DeadlineLT(v uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldLT(FieldDeadline, v))
+}
+
+// DeadlineLTE applies the LTE predicate on the "Deadline" field.
+func DeadlineLTE(v uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldLTE(FieldDeadline, v))
+}
+
 // AmountEQ applies the EQ predicate on the "Amount" field.
 func AmountEQ(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldAmount, v))
@@ -433,23 +548,83 @@ func RewardReceiverContainsFold(v string) predicate.Stake {
 }
 
 // FinalizedStatusEQ applies the EQ predicate on the "FinalizedStatus" field.
-func FinalizedStatusEQ(v bool) predicate.Stake {
+func FinalizedStatusEQ(v int) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldFinalizedStatus, v))
 }
 
 // FinalizedStatusNEQ applies the NEQ predicate on the "FinalizedStatus" field.
-func FinalizedStatusNEQ(v bool) predicate.Stake {
+func FinalizedStatusNEQ(v int) predicate.Stake {
 	return predicate.Stake(sql.FieldNEQ(FieldFinalizedStatus, v))
 }
 
+// FinalizedStatusIn applies the In predicate on the "FinalizedStatus" field.
+func FinalizedStatusIn(vs ...int) predicate.Stake {
+	return predicate.Stake(sql.FieldIn(FieldFinalizedStatus, vs...))
+}
+
+// FinalizedStatusNotIn applies the NotIn predicate on the "FinalizedStatus" field.
+func FinalizedStatusNotIn(vs ...int) predicate.Stake {
+	return predicate.Stake(sql.FieldNotIn(FieldFinalizedStatus, vs...))
+}
+
+// FinalizedStatusGT applies the GT predicate on the "FinalizedStatus" field.
+func FinalizedStatusGT(v int) predicate.Stake {
+	return predicate.Stake(sql.FieldGT(FieldFinalizedStatus, v))
+}
+
+// FinalizedStatusGTE applies the GTE predicate on the "FinalizedStatus" field.
+func FinalizedStatusGTE(v int) predicate.Stake {
+	return predicate.Stake(sql.FieldGTE(FieldFinalizedStatus, v))
+}
+
+// FinalizedStatusLT applies the LT predicate on the "FinalizedStatus" field.
+func FinalizedStatusLT(v int) predicate.Stake {
+	return predicate.Stake(sql.FieldLT(FieldFinalizedStatus, v))
+}
+
+// FinalizedStatusLTE applies the LTE predicate on the "FinalizedStatus" field.
+func FinalizedStatusLTE(v int) predicate.Stake {
+	return predicate.Stake(sql.FieldLTE(FieldFinalizedStatus, v))
+}
+
 // ReleaseStatusEQ applies the EQ predicate on the "ReleaseStatus" field.
-func ReleaseStatusEQ(v bool) predicate.Stake {
+func ReleaseStatusEQ(v int) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldReleaseStatus, v))
 }
 
 // ReleaseStatusNEQ applies the NEQ predicate on the "ReleaseStatus" field.
-func ReleaseStatusNEQ(v bool) predicate.Stake {
+func ReleaseStatusNEQ(v int) predicate.Stake {
 	return predicate.Stake(sql.FieldNEQ(FieldReleaseStatus, v))
+}
+
+// ReleaseStatusIn applies the In predicate on the "ReleaseStatus" field.
+func ReleaseStatusIn(vs ...int) predicate.Stake {
+	return predicate.Stake(sql.FieldIn(FieldReleaseStatus, vs...))
+}
+
+// ReleaseStatusNotIn applies the NotIn predicate on the "ReleaseStatus" field.
+func ReleaseStatusNotIn(vs ...int) predicate.Stake {
+	return predicate.Stake(sql.FieldNotIn(FieldReleaseStatus, vs...))
+}
+
+// ReleaseStatusGT applies the GT predicate on the "ReleaseStatus" field.
+func ReleaseStatusGT(v int) predicate.Stake {
+	return predicate.Stake(sql.FieldGT(FieldReleaseStatus, v))
+}
+
+// ReleaseStatusGTE applies the GTE predicate on the "ReleaseStatus" field.
+func ReleaseStatusGTE(v int) predicate.Stake {
+	return predicate.Stake(sql.FieldGTE(FieldReleaseStatus, v))
+}
+
+// ReleaseStatusLT applies the LT predicate on the "ReleaseStatus" field.
+func ReleaseStatusLT(v int) predicate.Stake {
+	return predicate.Stake(sql.FieldLT(FieldReleaseStatus, v))
+}
+
+// ReleaseStatusLTE applies the LTE predicate on the "ReleaseStatus" field.
+func ReleaseStatusLTE(v int) predicate.Stake {
+	return predicate.Stake(sql.FieldLTE(FieldReleaseStatus, v))
 }
 
 // BtcSigEQ applies the EQ predicate on the "BtcSig" field.

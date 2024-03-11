@@ -25,6 +25,12 @@ func (sc *StakeCreate) SetStaker(s string) *StakeCreate {
 	return sc
 }
 
+// SetStakerPublicKey sets the "StakerPublicKey" field.
+func (sc *StakeCreate) SetStakerPublicKey(s string) *StakeCreate {
+	sc.mutation.SetStakerPublicKey(s)
+	return sc
+}
+
 // SetTx sets the "Tx" field.
 func (sc *StakeCreate) SetTx(s string) *StakeCreate {
 	sc.mutation.SetTx(s)
@@ -43,6 +49,12 @@ func (sc *StakeCreate) SetDuration(u uint64) *StakeCreate {
 	return sc
 }
 
+// SetDeadline sets the "Deadline" field.
+func (sc *StakeCreate) SetDeadline(u uint64) *StakeCreate {
+	sc.mutation.SetDeadline(u)
+	return sc
+}
+
 // SetAmount sets the "Amount" field.
 func (sc *StakeCreate) SetAmount(u uint64) *StakeCreate {
 	sc.mutation.SetAmount(u)
@@ -56,21 +68,29 @@ func (sc *StakeCreate) SetRewardReceiver(s string) *StakeCreate {
 }
 
 // SetFinalizedStatus sets the "FinalizedStatus" field.
-func (sc *StakeCreate) SetFinalizedStatus(b bool) *StakeCreate {
-	sc.mutation.SetFinalizedStatus(b)
+func (sc *StakeCreate) SetFinalizedStatus(i int) *StakeCreate {
+	sc.mutation.SetFinalizedStatus(i)
+	return sc
+}
+
+// SetNillableFinalizedStatus sets the "FinalizedStatus" field if the given value is not nil.
+func (sc *StakeCreate) SetNillableFinalizedStatus(i *int) *StakeCreate {
+	if i != nil {
+		sc.SetFinalizedStatus(*i)
+	}
 	return sc
 }
 
 // SetReleaseStatus sets the "ReleaseStatus" field.
-func (sc *StakeCreate) SetReleaseStatus(b bool) *StakeCreate {
-	sc.mutation.SetReleaseStatus(b)
+func (sc *StakeCreate) SetReleaseStatus(i int) *StakeCreate {
+	sc.mutation.SetReleaseStatus(i)
 	return sc
 }
 
 // SetNillableReleaseStatus sets the "ReleaseStatus" field if the given value is not nil.
-func (sc *StakeCreate) SetNillableReleaseStatus(b *bool) *StakeCreate {
-	if b != nil {
-		sc.SetReleaseStatus(*b)
+func (sc *StakeCreate) SetNillableReleaseStatus(i *int) *StakeCreate {
+	if i != nil {
+		sc.SetReleaseStatus(*i)
 	}
 	return sc
 }
@@ -140,6 +160,10 @@ func (sc *StakeCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (sc *StakeCreate) defaults() {
+	if _, ok := sc.mutation.FinalizedStatus(); !ok {
+		v := stake.DefaultFinalizedStatus
+		sc.mutation.SetFinalizedStatus(v)
+	}
 	if _, ok := sc.mutation.ReleaseStatus(); !ok {
 		v := stake.DefaultReleaseStatus
 		sc.mutation.SetReleaseStatus(v)
@@ -156,6 +180,9 @@ func (sc *StakeCreate) check() error {
 			return &ValidationError{Name: "Staker", err: fmt.Errorf(`ent: validator failed for field "Stake.Staker": %w`, err)}
 		}
 	}
+	if _, ok := sc.mutation.StakerPublicKey(); !ok {
+		return &ValidationError{Name: "StakerPublicKey", err: errors.New(`ent: missing required field "Stake.StakerPublicKey"`)}
+	}
 	if _, ok := sc.mutation.GetTx(); !ok {
 		return &ValidationError{Name: "Tx", err: errors.New(`ent: missing required field "Stake.Tx"`)}
 	}
@@ -169,6 +196,9 @@ func (sc *StakeCreate) check() error {
 	}
 	if _, ok := sc.mutation.Duration(); !ok {
 		return &ValidationError{Name: "Duration", err: errors.New(`ent: missing required field "Stake.Duration"`)}
+	}
+	if _, ok := sc.mutation.Deadline(); !ok {
+		return &ValidationError{Name: "Deadline", err: errors.New(`ent: missing required field "Stake.Deadline"`)}
 	}
 	if _, ok := sc.mutation.Amount(); !ok {
 		return &ValidationError{Name: "Amount", err: errors.New(`ent: missing required field "Stake.Amount"`)}
@@ -232,6 +262,10 @@ func (sc *StakeCreate) createSpec() (*Stake, *sqlgraph.CreateSpec) {
 		_spec.SetField(stake.FieldStaker, field.TypeString, value)
 		_node.Staker = value
 	}
+	if value, ok := sc.mutation.StakerPublicKey(); ok {
+		_spec.SetField(stake.FieldStakerPublicKey, field.TypeString, value)
+		_node.StakerPublicKey = value
+	}
 	if value, ok := sc.mutation.GetTx(); ok {
 		_spec.SetField(stake.FieldTx, field.TypeString, value)
 		_node.Tx = value
@@ -244,6 +278,10 @@ func (sc *StakeCreate) createSpec() (*Stake, *sqlgraph.CreateSpec) {
 		_spec.SetField(stake.FieldDuration, field.TypeUint64, value)
 		_node.Duration = value
 	}
+	if value, ok := sc.mutation.Deadline(); ok {
+		_spec.SetField(stake.FieldDeadline, field.TypeUint64, value)
+		_node.Deadline = value
+	}
 	if value, ok := sc.mutation.Amount(); ok {
 		_spec.SetField(stake.FieldAmount, field.TypeUint64, value)
 		_node.Amount = value
@@ -253,11 +291,11 @@ func (sc *StakeCreate) createSpec() (*Stake, *sqlgraph.CreateSpec) {
 		_node.RewardReceiver = value
 	}
 	if value, ok := sc.mutation.FinalizedStatus(); ok {
-		_spec.SetField(stake.FieldFinalizedStatus, field.TypeBool, value)
+		_spec.SetField(stake.FieldFinalizedStatus, field.TypeInt, value)
 		_node.FinalizedStatus = value
 	}
 	if value, ok := sc.mutation.ReleaseStatus(); ok {
-		_spec.SetField(stake.FieldReleaseStatus, field.TypeBool, value)
+		_spec.SetField(stake.FieldReleaseStatus, field.TypeInt, value)
 		_node.ReleaseStatus = value
 	}
 	if value, ok := sc.mutation.BtcSig(); ok {

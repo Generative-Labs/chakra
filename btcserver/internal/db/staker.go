@@ -2,23 +2,14 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/generativelabs/btcserver/internal/db/ent"
 	"github.com/generativelabs/btcserver/internal/db/ent/stake"
 )
 
-//Staker          string `form:"staker" json:"staker,omitempty"`
-//	TxID            string `json:"tx_id,omitempty"`
-//	Start           int64  `json:"start,omitempty"`
-//	Duration        int64  `json:"duration,omitempty"`
-//	Amount          int64  `json:"amount,omitempty"`
-//	ReceiverAddress string `json:"receiver_address,omitempty"`
-//	BtcSignature    string `json:"btc_signature,omitempty"`
-//	RewordSignature string `json:"reword_signature,omitempty"`
-
 func (c *Backend) CreateStake(
-	staker string,
-	txID string,
+	staker, stakerPublicKey, txID string,
 	start uint64,
 	duration uint64,
 	amount uint64,
@@ -29,9 +20,11 @@ func (c *Backend) CreateStake(
 ) error {
 	_, err := c.dbClient.Stake.Create().
 		SetStaker(staker).
+		SetStakerPublicKey(stakerPublicKey).
 		SetTx(txID).
 		SetStart(start).
 		SetDuration(duration).
+		SetDeadline(start + duration).
 		SetAmount(amount).
 		SetRewardReceiver(rewardReceiver).
 		SetBtcSig(btcSignature).
@@ -42,7 +35,7 @@ func (c *Backend) CreateStake(
 	return err
 }
 
-func (c *Backend) UpdateStakeReleaseStatus(staker string, Status bool) error {
+func (c *Backend) UpdateStakeReleaseStatus(staker string, Status int) error {
 	_, err := c.dbClient.Stake.Update().
 		Where(stake.StakerEQ(staker)).
 		SetReleaseStatus(Status).
@@ -50,7 +43,7 @@ func (c *Backend) UpdateStakeReleaseStatus(staker string, Status bool) error {
 	return err
 }
 
-func (c *Backend) UpdateStakeFinalizedStatus(staker string, Status bool) error {
+func (c *Backend) UpdateStakeFinalizedStatus(staker string, Status int) error {
 	_, err := c.dbClient.Stake.Update().
 		Where(stake.StakerEQ(staker)).
 		SetFinalizedStatus(Status).
@@ -80,7 +73,41 @@ func (c *Backend) QueryStakesCountByStaker(staker string) (int, error) {
 		Count(context.Background())
 }
 
-func (c *Backend) QueryNotEndStatesTx(limit int) ([]string, error) {
-	return c.dbClient.Stake.Query().Where(stake.ReleaseStatus(false)).
-		Limit(limit).Select(stake.FieldTx).Strings(context.Background())
+func (c *Backend) QueryNotReleaseStatesTx(page int, size int) ([]string, error) {
+	if page <= 0 {
+		page = 1
+	}
+	if size <= 0 {
+		size = 20
+	}
+	offset := (page - 1) * size
+
+	return c.dbClient.Stake.Query().
+		Where(stake.ReleaseStatus(0)).
+		Offset(offset).
+		Limit(size).
+		Select(stake.FieldTx).
+		Strings(context.Background())
+}
+
+func (c *Backend) QueryAllNotReleaseStatesTx() ([]string, error) {
+	return c.dbClient.Stake.Query().
+		Where(stake.ReleaseStatus(0)).
+		Select(stake.FieldTx).
+		Strings(context.Background())
+}
+
+// Query all txids that have not yet been locked up
+func (c *Backend) QueryAllNotYetLockedUpTx() ([]string, error) {
+	return c.dbClient.Stake.Query().
+		Where(stake.DeadlineLTE(uint64(time.Now().UnixMilli()))).
+		Select(stake.FieldTx).
+		Strings(context.Background())
+}
+
+func (c *Backend) QueryAllAlreadyLockedUpTx() ([]string, error) {
+	return c.dbClient.Stake.Query().
+		Where(stake.DeadlineGTE(uint64(time.Now().UnixMilli()))).
+		Select(stake.FieldTx).
+		Strings(context.Background())
 }

@@ -17,9 +17,11 @@ type Config struct {
 	} `mapstructure:"btc"`
 
 	Chakra struct {
-		URL        string `mapstructure:"http-url"`
-		ChainID    string `mapstructure:"chain-id"`
-		PrivateKey string `mapstructure:"private-key"`
+		URL             string `mapstructure:"http-url"`
+		ChainID         string `mapstructure:"chain-id"`
+		PrivateKey      string `mapstructure:"private-key"`
+		Address         string `mapstructure:"address"`
+		ContractAddress string `mapstructure:"contract-address"`
 	} `mapstructure:"chakra"`
 
 	Mysql db.Config `mapstructure:"mysql"`

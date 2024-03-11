@@ -41,6 +41,20 @@ func (su *StakeUpdate) SetNillableStaker(s *string) *StakeUpdate {
 	return su
 }
 
+// SetStakerPublicKey sets the "StakerPublicKey" field.
+func (su *StakeUpdate) SetStakerPublicKey(s string) *StakeUpdate {
+	su.mutation.SetStakerPublicKey(s)
+	return su
+}
+
+// SetNillableStakerPublicKey sets the "StakerPublicKey" field if the given value is not nil.
+func (su *StakeUpdate) SetNillableStakerPublicKey(s *string) *StakeUpdate {
+	if s != nil {
+		su.SetStakerPublicKey(*s)
+	}
+	return su
+}
+
 // SetTx sets the "Tx" field.
 func (su *StakeUpdate) SetTx(s string) *StakeUpdate {
 	su.mutation.SetTx(s)
@@ -97,6 +111,27 @@ func (su *StakeUpdate) AddDuration(u int64) *StakeUpdate {
 	return su
 }
 
+// SetDeadline sets the "Deadline" field.
+func (su *StakeUpdate) SetDeadline(u uint64) *StakeUpdate {
+	su.mutation.ResetDeadline()
+	su.mutation.SetDeadline(u)
+	return su
+}
+
+// SetNillableDeadline sets the "Deadline" field if the given value is not nil.
+func (su *StakeUpdate) SetNillableDeadline(u *uint64) *StakeUpdate {
+	if u != nil {
+		su.SetDeadline(*u)
+	}
+	return su
+}
+
+// AddDeadline adds u to the "Deadline" field.
+func (su *StakeUpdate) AddDeadline(u int64) *StakeUpdate {
+	su.mutation.AddDeadline(u)
+	return su
+}
+
 // SetAmount sets the "Amount" field.
 func (su *StakeUpdate) SetAmount(u uint64) *StakeUpdate {
 	su.mutation.ResetAmount()
@@ -133,30 +168,44 @@ func (su *StakeUpdate) SetNillableRewardReceiver(s *string) *StakeUpdate {
 }
 
 // SetFinalizedStatus sets the "FinalizedStatus" field.
-func (su *StakeUpdate) SetFinalizedStatus(b bool) *StakeUpdate {
-	su.mutation.SetFinalizedStatus(b)
+func (su *StakeUpdate) SetFinalizedStatus(i int) *StakeUpdate {
+	su.mutation.ResetFinalizedStatus()
+	su.mutation.SetFinalizedStatus(i)
 	return su
 }
 
 // SetNillableFinalizedStatus sets the "FinalizedStatus" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableFinalizedStatus(b *bool) *StakeUpdate {
-	if b != nil {
-		su.SetFinalizedStatus(*b)
+func (su *StakeUpdate) SetNillableFinalizedStatus(i *int) *StakeUpdate {
+	if i != nil {
+		su.SetFinalizedStatus(*i)
 	}
+	return su
+}
+
+// AddFinalizedStatus adds i to the "FinalizedStatus" field.
+func (su *StakeUpdate) AddFinalizedStatus(i int) *StakeUpdate {
+	su.mutation.AddFinalizedStatus(i)
 	return su
 }
 
 // SetReleaseStatus sets the "ReleaseStatus" field.
-func (su *StakeUpdate) SetReleaseStatus(b bool) *StakeUpdate {
-	su.mutation.SetReleaseStatus(b)
+func (su *StakeUpdate) SetReleaseStatus(i int) *StakeUpdate {
+	su.mutation.ResetReleaseStatus()
+	su.mutation.SetReleaseStatus(i)
 	return su
 }
 
 // SetNillableReleaseStatus sets the "ReleaseStatus" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableReleaseStatus(b *bool) *StakeUpdate {
-	if b != nil {
-		su.SetReleaseStatus(*b)
+func (su *StakeUpdate) SetNillableReleaseStatus(i *int) *StakeUpdate {
+	if i != nil {
+		su.SetReleaseStatus(*i)
 	}
+	return su
+}
+
+// AddReleaseStatus adds i to the "ReleaseStatus" field.
+func (su *StakeUpdate) AddReleaseStatus(i int) *StakeUpdate {
+	su.mutation.AddReleaseStatus(i)
 	return su
 }
 
@@ -276,6 +325,9 @@ func (su *StakeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := su.mutation.Staker(); ok {
 		_spec.SetField(stake.FieldStaker, field.TypeString, value)
 	}
+	if value, ok := su.mutation.StakerPublicKey(); ok {
+		_spec.SetField(stake.FieldStakerPublicKey, field.TypeString, value)
+	}
 	if value, ok := su.mutation.GetTx(); ok {
 		_spec.SetField(stake.FieldTx, field.TypeString, value)
 	}
@@ -291,6 +343,12 @@ func (su *StakeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := su.mutation.AddedDuration(); ok {
 		_spec.AddField(stake.FieldDuration, field.TypeUint64, value)
 	}
+	if value, ok := su.mutation.Deadline(); ok {
+		_spec.SetField(stake.FieldDeadline, field.TypeUint64, value)
+	}
+	if value, ok := su.mutation.AddedDeadline(); ok {
+		_spec.AddField(stake.FieldDeadline, field.TypeUint64, value)
+	}
 	if value, ok := su.mutation.Amount(); ok {
 		_spec.SetField(stake.FieldAmount, field.TypeUint64, value)
 	}
@@ -301,10 +359,16 @@ func (su *StakeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.SetField(stake.FieldRewardReceiver, field.TypeString, value)
 	}
 	if value, ok := su.mutation.FinalizedStatus(); ok {
-		_spec.SetField(stake.FieldFinalizedStatus, field.TypeBool, value)
+		_spec.SetField(stake.FieldFinalizedStatus, field.TypeInt, value)
+	}
+	if value, ok := su.mutation.AddedFinalizedStatus(); ok {
+		_spec.AddField(stake.FieldFinalizedStatus, field.TypeInt, value)
 	}
 	if value, ok := su.mutation.ReleaseStatus(); ok {
-		_spec.SetField(stake.FieldReleaseStatus, field.TypeBool, value)
+		_spec.SetField(stake.FieldReleaseStatus, field.TypeInt, value)
+	}
+	if value, ok := su.mutation.AddedReleaseStatus(); ok {
+		_spec.AddField(stake.FieldReleaseStatus, field.TypeInt, value)
 	}
 	if value, ok := su.mutation.BtcSig(); ok {
 		_spec.SetField(stake.FieldBtcSig, field.TypeString, value)
@@ -348,6 +412,20 @@ func (suo *StakeUpdateOne) SetStaker(s string) *StakeUpdateOne {
 func (suo *StakeUpdateOne) SetNillableStaker(s *string) *StakeUpdateOne {
 	if s != nil {
 		suo.SetStaker(*s)
+	}
+	return suo
+}
+
+// SetStakerPublicKey sets the "StakerPublicKey" field.
+func (suo *StakeUpdateOne) SetStakerPublicKey(s string) *StakeUpdateOne {
+	suo.mutation.SetStakerPublicKey(s)
+	return suo
+}
+
+// SetNillableStakerPublicKey sets the "StakerPublicKey" field if the given value is not nil.
+func (suo *StakeUpdateOne) SetNillableStakerPublicKey(s *string) *StakeUpdateOne {
+	if s != nil {
+		suo.SetStakerPublicKey(*s)
 	}
 	return suo
 }
@@ -408,6 +486,27 @@ func (suo *StakeUpdateOne) AddDuration(u int64) *StakeUpdateOne {
 	return suo
 }
 
+// SetDeadline sets the "Deadline" field.
+func (suo *StakeUpdateOne) SetDeadline(u uint64) *StakeUpdateOne {
+	suo.mutation.ResetDeadline()
+	suo.mutation.SetDeadline(u)
+	return suo
+}
+
+// SetNillableDeadline sets the "Deadline" field if the given value is not nil.
+func (suo *StakeUpdateOne) SetNillableDeadline(u *uint64) *StakeUpdateOne {
+	if u != nil {
+		suo.SetDeadline(*u)
+	}
+	return suo
+}
+
+// AddDeadline adds u to the "Deadline" field.
+func (suo *StakeUpdateOne) AddDeadline(u int64) *StakeUpdateOne {
+	suo.mutation.AddDeadline(u)
+	return suo
+}
+
 // SetAmount sets the "Amount" field.
 func (suo *StakeUpdateOne) SetAmount(u uint64) *StakeUpdateOne {
 	suo.mutation.ResetAmount()
@@ -444,30 +543,44 @@ func (suo *StakeUpdateOne) SetNillableRewardReceiver(s *string) *StakeUpdateOne 
 }
 
 // SetFinalizedStatus sets the "FinalizedStatus" field.
-func (suo *StakeUpdateOne) SetFinalizedStatus(b bool) *StakeUpdateOne {
-	suo.mutation.SetFinalizedStatus(b)
+func (suo *StakeUpdateOne) SetFinalizedStatus(i int) *StakeUpdateOne {
+	suo.mutation.ResetFinalizedStatus()
+	suo.mutation.SetFinalizedStatus(i)
 	return suo
 }
 
 // SetNillableFinalizedStatus sets the "FinalizedStatus" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableFinalizedStatus(b *bool) *StakeUpdateOne {
-	if b != nil {
-		suo.SetFinalizedStatus(*b)
+func (suo *StakeUpdateOne) SetNillableFinalizedStatus(i *int) *StakeUpdateOne {
+	if i != nil {
+		suo.SetFinalizedStatus(*i)
 	}
+	return suo
+}
+
+// AddFinalizedStatus adds i to the "FinalizedStatus" field.
+func (suo *StakeUpdateOne) AddFinalizedStatus(i int) *StakeUpdateOne {
+	suo.mutation.AddFinalizedStatus(i)
 	return suo
 }
 
 // SetReleaseStatus sets the "ReleaseStatus" field.
-func (suo *StakeUpdateOne) SetReleaseStatus(b bool) *StakeUpdateOne {
-	suo.mutation.SetReleaseStatus(b)
+func (suo *StakeUpdateOne) SetReleaseStatus(i int) *StakeUpdateOne {
+	suo.mutation.ResetReleaseStatus()
+	suo.mutation.SetReleaseStatus(i)
 	return suo
 }
 
 // SetNillableReleaseStatus sets the "ReleaseStatus" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableReleaseStatus(b *bool) *StakeUpdateOne {
-	if b != nil {
-		suo.SetReleaseStatus(*b)
+func (suo *StakeUpdateOne) SetNillableReleaseStatus(i *int) *StakeUpdateOne {
+	if i != nil {
+		suo.SetReleaseStatus(*i)
 	}
+	return suo
+}
+
+// AddReleaseStatus adds i to the "ReleaseStatus" field.
+func (suo *StakeUpdateOne) AddReleaseStatus(i int) *StakeUpdateOne {
+	suo.mutation.AddReleaseStatus(i)
 	return suo
 }
 
@@ -617,6 +730,9 @@ func (suo *StakeUpdateOne) sqlSave(ctx context.Context) (_node *Stake, err error
 	if value, ok := suo.mutation.Staker(); ok {
 		_spec.SetField(stake.FieldStaker, field.TypeString, value)
 	}
+	if value, ok := suo.mutation.StakerPublicKey(); ok {
+		_spec.SetField(stake.FieldStakerPublicKey, field.TypeString, value)
+	}
 	if value, ok := suo.mutation.GetTx(); ok {
 		_spec.SetField(stake.FieldTx, field.TypeString, value)
 	}
@@ -632,6 +748,12 @@ func (suo *StakeUpdateOne) sqlSave(ctx context.Context) (_node *Stake, err error
 	if value, ok := suo.mutation.AddedDuration(); ok {
 		_spec.AddField(stake.FieldDuration, field.TypeUint64, value)
 	}
+	if value, ok := suo.mutation.Deadline(); ok {
+		_spec.SetField(stake.FieldDeadline, field.TypeUint64, value)
+	}
+	if value, ok := suo.mutation.AddedDeadline(); ok {
+		_spec.AddField(stake.FieldDeadline, field.TypeUint64, value)
+	}
 	if value, ok := suo.mutation.Amount(); ok {
 		_spec.SetField(stake.FieldAmount, field.TypeUint64, value)
 	}
@@ -642,10 +764,16 @@ func (suo *StakeUpdateOne) sqlSave(ctx context.Context) (_node *Stake, err error
 		_spec.SetField(stake.FieldRewardReceiver, field.TypeString, value)
 	}
 	if value, ok := suo.mutation.FinalizedStatus(); ok {
-		_spec.SetField(stake.FieldFinalizedStatus, field.TypeBool, value)
+		_spec.SetField(stake.FieldFinalizedStatus, field.TypeInt, value)
+	}
+	if value, ok := suo.mutation.AddedFinalizedStatus(); ok {
+		_spec.AddField(stake.FieldFinalizedStatus, field.TypeInt, value)
 	}
 	if value, ok := suo.mutation.ReleaseStatus(); ok {
-		_spec.SetField(stake.FieldReleaseStatus, field.TypeBool, value)
+		_spec.SetField(stake.FieldReleaseStatus, field.TypeInt, value)
+	}
+	if value, ok := suo.mutation.AddedReleaseStatus(); ok {
+		_spec.AddField(stake.FieldReleaseStatus, field.TypeInt, value)
 	}
 	if value, ok := suo.mutation.BtcSig(); ok {
 		_spec.SetField(stake.FieldBtcSig, field.TypeString, value)

@@ -12,13 +12,15 @@ var (
 	StakesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "staker", Type: field.TypeString, Size: 90},
+		{Name: "staker_public_key", Type: field.TypeString},
 		{Name: "tx", Type: field.TypeString, Unique: true, Size: 66},
 		{Name: "start", Type: field.TypeUint64},
 		{Name: "duration", Type: field.TypeUint64},
+		{Name: "deadline", Type: field.TypeUint64},
 		{Name: "amount", Type: field.TypeUint64},
 		{Name: "reward_receiver", Type: field.TypeString, Size: 66},
-		{Name: "finalized_status", Type: field.TypeBool},
-		{Name: "release_status", Type: field.TypeBool, Default: false},
+		{Name: "finalized_status", Type: field.TypeInt, Default: 0},
+		{Name: "release_status", Type: field.TypeInt, Default: 0},
 		{Name: "btc_sig", Type: field.TypeString},
 		{Name: "receiver_sig", Type: field.TypeString},
 		{Name: "timestamp", Type: field.TypeUint64},
@@ -34,12 +36,12 @@ var (
 			{
 				Name:    "stake_staker_tx",
 				Unique:  false,
-				Columns: []*schema.Column{StakesColumns[1], StakesColumns[2]},
+				Columns: []*schema.Column{StakesColumns[1], StakesColumns[3]},
 			},
 			{
 				Name:    "stake_release_status_tx",
 				Unique:  false,
-				Columns: []*schema.Column{StakesColumns[8], StakesColumns[2]},
+				Columns: []*schema.Column{StakesColumns[10], StakesColumns[3]},
 			},
 		},
 	}
