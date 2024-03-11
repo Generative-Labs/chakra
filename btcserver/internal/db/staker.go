@@ -35,18 +35,18 @@ func (c *Backend) CreateStake(
 	return err
 }
 
-func (c *Backend) UpdateStakeReleaseStatus(staker string, Status int) error {
+func (c *Backend) UpdateStakeReleaseStatus(staker string, status int) error {
 	_, err := c.dbClient.Stake.Update().
 		Where(stake.StakerEQ(staker)).
-		SetReleaseStatus(Status).
+		SetReleaseStatus(status).
 		Save(context.Background())
 	return err
 }
 
-func (c *Backend) UpdateStakeFinalizedStatus(staker string, Status int) error {
+func (c *Backend) UpdateStakeFinalizedStatus(staker string, status int) error {
 	_, err := c.dbClient.Stake.Update().
 		Where(stake.StakerEQ(staker)).
-		SetFinalizedStatus(Status).
+		SetFinalizedStatus(status).
 		Save(context.Background())
 	return err
 }
