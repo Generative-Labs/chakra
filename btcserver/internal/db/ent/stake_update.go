@@ -132,6 +132,27 @@ func (su *StakeUpdate) AddDeadline(u int64) *StakeUpdate {
 	return su
 }
 
+// SetReleasingTime sets the "ReleasingTime" field.
+func (su *StakeUpdate) SetReleasingTime(u uint64) *StakeUpdate {
+	su.mutation.ResetReleasingTime()
+	su.mutation.SetReleasingTime(u)
+	return su
+}
+
+// SetNillableReleasingTime sets the "ReleasingTime" field if the given value is not nil.
+func (su *StakeUpdate) SetNillableReleasingTime(u *uint64) *StakeUpdate {
+	if u != nil {
+		su.SetReleasingTime(*u)
+	}
+	return su
+}
+
+// AddReleasingTime adds u to the "ReleasingTime" field.
+func (su *StakeUpdate) AddReleasingTime(u int64) *StakeUpdate {
+	su.mutation.AddReleasingTime(u)
+	return su
+}
+
 // SetAmount sets the "Amount" field.
 func (su *StakeUpdate) SetAmount(u uint64) *StakeUpdate {
 	su.mutation.ResetAmount()
@@ -349,6 +370,12 @@ func (su *StakeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := su.mutation.AddedDeadline(); ok {
 		_spec.AddField(stake.FieldDeadline, field.TypeUint64, value)
 	}
+	if value, ok := su.mutation.ReleasingTime(); ok {
+		_spec.SetField(stake.FieldReleasingTime, field.TypeUint64, value)
+	}
+	if value, ok := su.mutation.AddedReleasingTime(); ok {
+		_spec.AddField(stake.FieldReleasingTime, field.TypeUint64, value)
+	}
 	if value, ok := su.mutation.Amount(); ok {
 		_spec.SetField(stake.FieldAmount, field.TypeUint64, value)
 	}
@@ -504,6 +531,27 @@ func (suo *StakeUpdateOne) SetNillableDeadline(u *uint64) *StakeUpdateOne {
 // AddDeadline adds u to the "Deadline" field.
 func (suo *StakeUpdateOne) AddDeadline(u int64) *StakeUpdateOne {
 	suo.mutation.AddDeadline(u)
+	return suo
+}
+
+// SetReleasingTime sets the "ReleasingTime" field.
+func (suo *StakeUpdateOne) SetReleasingTime(u uint64) *StakeUpdateOne {
+	suo.mutation.ResetReleasingTime()
+	suo.mutation.SetReleasingTime(u)
+	return suo
+}
+
+// SetNillableReleasingTime sets the "ReleasingTime" field if the given value is not nil.
+func (suo *StakeUpdateOne) SetNillableReleasingTime(u *uint64) *StakeUpdateOne {
+	if u != nil {
+		suo.SetReleasingTime(*u)
+	}
+	return suo
+}
+
+// AddReleasingTime adds u to the "ReleasingTime" field.
+func (suo *StakeUpdateOne) AddReleasingTime(u int64) *StakeUpdateOne {
+	suo.mutation.AddReleasingTime(u)
 	return suo
 }
 
@@ -753,6 +801,12 @@ func (suo *StakeUpdateOne) sqlSave(ctx context.Context) (_node *Stake, err error
 	}
 	if value, ok := suo.mutation.AddedDeadline(); ok {
 		_spec.AddField(stake.FieldDeadline, field.TypeUint64, value)
+	}
+	if value, ok := suo.mutation.ReleasingTime(); ok {
+		_spec.SetField(stake.FieldReleasingTime, field.TypeUint64, value)
+	}
+	if value, ok := suo.mutation.AddedReleasingTime(); ok {
+		_spec.AddField(stake.FieldReleasingTime, field.TypeUint64, value)
 	}
 	if value, ok := suo.mutation.Amount(); ok {
 		_spec.SetField(stake.FieldAmount, field.TypeUint64, value)

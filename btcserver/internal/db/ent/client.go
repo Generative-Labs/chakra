@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"github.com/generativelabs/btcserver/internal/db/ent/globalstate"
 	"github.com/generativelabs/btcserver/internal/db/ent/stake"
 )
 
@@ -22,6 +23,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// GlobalState is the client for interacting with the GlobalState builders.
+	GlobalState *GlobalStateClient
 	// Stake is the client for interacting with the Stake builders.
 	Stake *StakeClient
 }
@@ -35,6 +38,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.GlobalState = NewGlobalStateClient(c.config)
 	c.Stake = NewStakeClient(c.config)
 }
 
@@ -126,9 +130,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Stake:  NewStakeClient(cfg),
+		ctx:         ctx,
+		config:      cfg,
+		GlobalState: NewGlobalStateClient(cfg),
+		Stake:       NewStakeClient(cfg),
 	}, nil
 }
 
@@ -146,16 +151,17 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Stake:  NewStakeClient(cfg),
+		ctx:         ctx,
+		config:      cfg,
+		GlobalState: NewGlobalStateClient(cfg),
+		Stake:       NewStakeClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Stake.
+//		GlobalState.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -177,22 +183,159 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.GlobalState.Use(hooks...)
 	c.Stake.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
+	c.GlobalState.Intercept(interceptors...)
 	c.Stake.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
+	case *GlobalStateMutation:
+		return c.GlobalState.mutate(ctx, m)
 	case *StakeMutation:
 		return c.Stake.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
+	}
+}
+
+// GlobalStateClient is a client for the GlobalState schema.
+type GlobalStateClient struct {
+	config
+}
+
+// NewGlobalStateClient returns a client for the GlobalState from the given config.
+func NewGlobalStateClient(c config) *GlobalStateClient {
+	return &GlobalStateClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `globalstate.Hooks(f(g(h())))`.
+func (c *GlobalStateClient) Use(hooks ...Hook) {
+	c.hooks.GlobalState = append(c.hooks.GlobalState, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `globalstate.Intercept(f(g(h())))`.
+func (c *GlobalStateClient) Intercept(interceptors ...Interceptor) {
+	c.inters.GlobalState = append(c.inters.GlobalState, interceptors...)
+}
+
+// Create returns a builder for creating a GlobalState entity.
+func (c *GlobalStateClient) Create() *GlobalStateCreate {
+	mutation := newGlobalStateMutation(c.config, OpCreate)
+	return &GlobalStateCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of GlobalState entities.
+func (c *GlobalStateClient) CreateBulk(builders ...*GlobalStateCreate) *GlobalStateCreateBulk {
+	return &GlobalStateCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *GlobalStateClient) MapCreateBulk(slice any, setFunc func(*GlobalStateCreate, int)) *GlobalStateCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &GlobalStateCreateBulk{err: fmt.Errorf("calling to GlobalStateClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*GlobalStateCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &GlobalStateCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for GlobalState.
+func (c *GlobalStateClient) Update() *GlobalStateUpdate {
+	mutation := newGlobalStateMutation(c.config, OpUpdate)
+	return &GlobalStateUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *GlobalStateClient) UpdateOne(gs *GlobalState) *GlobalStateUpdateOne {
+	mutation := newGlobalStateMutation(c.config, OpUpdateOne, withGlobalState(gs))
+	return &GlobalStateUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *GlobalStateClient) UpdateOneID(id int) *GlobalStateUpdateOne {
+	mutation := newGlobalStateMutation(c.config, OpUpdateOne, withGlobalStateID(id))
+	return &GlobalStateUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for GlobalState.
+func (c *GlobalStateClient) Delete() *GlobalStateDelete {
+	mutation := newGlobalStateMutation(c.config, OpDelete)
+	return &GlobalStateDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *GlobalStateClient) DeleteOne(gs *GlobalState) *GlobalStateDeleteOne {
+	return c.DeleteOneID(gs.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *GlobalStateClient) DeleteOneID(id int) *GlobalStateDeleteOne {
+	builder := c.Delete().Where(globalstate.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &GlobalStateDeleteOne{builder}
+}
+
+// Query returns a query builder for GlobalState.
+func (c *GlobalStateClient) Query() *GlobalStateQuery {
+	return &GlobalStateQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeGlobalState},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a GlobalState entity by its id.
+func (c *GlobalStateClient) Get(ctx context.Context, id int) (*GlobalState, error) {
+	return c.Query().Where(globalstate.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *GlobalStateClient) GetX(ctx context.Context, id int) *GlobalState {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *GlobalStateClient) Hooks() []Hook {
+	return c.hooks.GlobalState
+}
+
+// Interceptors returns the client interceptors.
+func (c *GlobalStateClient) Interceptors() []Interceptor {
+	return c.inters.GlobalState
+}
+
+func (c *GlobalStateClient) mutate(ctx context.Context, m *GlobalStateMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&GlobalStateCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&GlobalStateUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&GlobalStateUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&GlobalStateDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown GlobalState mutation op: %q", m.Op())
 	}
 }
 
@@ -332,9 +475,9 @@ func (c *StakeClient) mutate(ctx context.Context, m *StakeMutation) (Value, erro
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Stake []ent.Hook
+		GlobalState, Stake []ent.Hook
 	}
 	inters struct {
-		Stake []ent.Interceptor
+		GlobalState, Stake []ent.Interceptor
 	}
 )

@@ -3,12 +3,13 @@ package chakra
 import (
 	"context"
 	"errors"
+	"math/big"
+
 	"github.com/NethermindEth/juno/core/felt"
 	"github.com/NethermindEth/starknet.go/account"
 	starknetrpc "github.com/NethermindEth/starknet.go/rpc"
 	"github.com/NethermindEth/starknet.go/utils"
 	"github.com/ethereum/go-ethereum/rpc"
-	"math/big"
 )
 
 func NewChakraProvider(ctx context.Context, rpcUrl string) (*starknetrpc.Provider, error) {
@@ -16,12 +17,7 @@ func NewChakraProvider(ctx context.Context, rpcUrl string) (*starknetrpc.Provide
 	if err != nil {
 		return nil, err
 	}
-
-	p := starknetrpc.NewProvider(c)
-	if err != nil {
-		return nil, err
-	}
-	return p, nil
+	return starknetrpc.NewProvider(c), nil
 }
 
 func NewChakraAccount(privateKey, public_key, account_addr string, provider *starknetrpc.Provider) (*account.Account, error) {

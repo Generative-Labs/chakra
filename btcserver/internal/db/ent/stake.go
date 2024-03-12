@@ -28,6 +28,8 @@ type Stake struct {
 	Duration uint64 `json:"Duration,omitempty"`
 	// Deadline holds the value of the "Deadline" field.
 	Deadline uint64 `json:"Deadline,omitempty"`
+	// ReleasingTime holds the value of the "ReleasingTime" field.
+	ReleasingTime uint64 `json:"ReleasingTime,omitempty"`
 	// Amount holds the value of the "Amount" field.
 	Amount uint64 `json:"Amount,omitempty"`
 	// RewardReceiver holds the value of the "RewardReceiver" field.
@@ -54,7 +56,7 @@ func (*Stake) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case stake.FieldID, stake.FieldStart, stake.FieldDuration, stake.FieldDeadline, stake.FieldAmount, stake.FieldFinalizedStatus, stake.FieldReleaseStatus, stake.FieldTimestamp, stake.FieldCreateAt, stake.FieldUpdateAt:
+		case stake.FieldID, stake.FieldStart, stake.FieldDuration, stake.FieldDeadline, stake.FieldReleasingTime, stake.FieldAmount, stake.FieldFinalizedStatus, stake.FieldReleaseStatus, stake.FieldTimestamp, stake.FieldCreateAt, stake.FieldUpdateAt:
 			values[i] = new(sql.NullInt64)
 		case stake.FieldStaker, stake.FieldStakerPublicKey, stake.FieldTx, stake.FieldRewardReceiver, stake.FieldBtcSig, stake.FieldReceiverSig:
 			values[i] = new(sql.NullString)
@@ -114,6 +116,12 @@ func (s *Stake) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field Deadline", values[i])
 			} else if value.Valid {
 				s.Deadline = uint64(value.Int64)
+			}
+		case stake.FieldReleasingTime:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field ReleasingTime", values[i])
+			} else if value.Valid {
+				s.ReleasingTime = uint64(value.Int64)
 			}
 		case stake.FieldAmount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -222,6 +230,9 @@ func (s *Stake) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("Deadline=")
 	builder.WriteString(fmt.Sprintf("%v", s.Deadline))
+	builder.WriteString(", ")
+	builder.WriteString("ReleasingTime=")
+	builder.WriteString(fmt.Sprintf("%v", s.ReleasingTime))
 	builder.WriteString(", ")
 	builder.WriteString("Amount=")
 	builder.WriteString(fmt.Sprintf("%v", s.Amount))

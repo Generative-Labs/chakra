@@ -6,5 +6,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// GlobalState is the predicate function for globalstate builders.
+type GlobalState func(*sql.Selector)
+
 // Stake is the predicate function for stake builders.
 type Stake func(*sql.Selector)

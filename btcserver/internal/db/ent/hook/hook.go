@@ -9,6 +9,18 @@ import (
 	"github.com/generativelabs/btcserver/internal/db/ent"
 )
 
+// The GlobalStateFunc type is an adapter to allow the use of ordinary
+// function as GlobalState mutator.
+type GlobalStateFunc func(context.Context, *ent.GlobalStateMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f GlobalStateFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.GlobalStateMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.GlobalStateMutation", m)
+}
+
 // The StakeFunc type is an adapter to allow the use of ordinary
 // function as Stake mutator.
 type StakeFunc func(context.Context, *ent.StakeMutation) (ent.Value, error)

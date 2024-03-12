@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/NethermindEth/starknet.go/account"
-
 	"github.com/generativelabs/btcserver/internal/db"
 	"github.com/gin-gonic/gin"
 	"time"
@@ -27,8 +26,7 @@ func New(ctx context.Context, backend *db.Backend, chakraAccount *account.Accoun
 		ContractAddress: contractAddress,
 	}
 
-	go server.ScheduleTask()
-	go server.AddressesMint()
+	go server.TimeWheelSchedule()
 
 	r := gin.Default()
 	r.Use(CORSMiddleware())

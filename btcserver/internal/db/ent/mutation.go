@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/generativelabs/btcserver/internal/db/ent/globalstate"
 	"github.com/generativelabs/btcserver/internal/db/ent/predicate"
 	"github.com/generativelabs/btcserver/internal/db/ent/stake"
 )
@@ -23,8 +24,599 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeStake = "Stake"
+	TypeGlobalState = "GlobalState"
+	TypeStake       = "Stake"
 )
+
+// GlobalStateMutation represents an operation that mutates the GlobalState nodes in the graph.
+type GlobalStateMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int
+	_Key          *string
+	_Value        *uint64
+	add_Value     *int64
+	_CreateAt     *uint64
+	add_CreateAt  *int64
+	_UpdateAt     *uint64
+	add_UpdateAt  *int64
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*GlobalState, error)
+	predicates    []predicate.GlobalState
+}
+
+var _ ent.Mutation = (*GlobalStateMutation)(nil)
+
+// globalstateOption allows management of the mutation configuration using functional options.
+type globalstateOption func(*GlobalStateMutation)
+
+// newGlobalStateMutation creates new mutation for the GlobalState entity.
+func newGlobalStateMutation(c config, op Op, opts ...globalstateOption) *GlobalStateMutation {
+	m := &GlobalStateMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeGlobalState,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withGlobalStateID sets the ID field of the mutation.
+func withGlobalStateID(id int) globalstateOption {
+	return func(m *GlobalStateMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *GlobalState
+		)
+		m.oldValue = func(ctx context.Context) (*GlobalState, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().GlobalState.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withGlobalState sets the old GlobalState of the mutation.
+func withGlobalState(node *GlobalState) globalstateOption {
+	return func(m *GlobalStateMutation) {
+		m.oldValue = func(context.Context) (*GlobalState, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m GlobalStateMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m GlobalStateMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *GlobalStateMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *GlobalStateMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().GlobalState.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetKey sets the "Key" field.
+func (m *GlobalStateMutation) SetKey(s string) {
+	m._Key = &s
+}
+
+// Key returns the value of the "Key" field in the mutation.
+func (m *GlobalStateMutation) Key() (r string, exists bool) {
+	v := m._Key
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldKey returns the old "Key" field's value of the GlobalState entity.
+// If the GlobalState object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GlobalStateMutation) OldKey(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldKey is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldKey requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldKey: %w", err)
+	}
+	return oldValue.Key, nil
+}
+
+// ResetKey resets all changes to the "Key" field.
+func (m *GlobalStateMutation) ResetKey() {
+	m._Key = nil
+}
+
+// SetValue sets the "Value" field.
+func (m *GlobalStateMutation) SetValue(u uint64) {
+	m._Value = &u
+	m.add_Value = nil
+}
+
+// Value returns the value of the "Value" field in the mutation.
+func (m *GlobalStateMutation) Value() (r uint64, exists bool) {
+	v := m._Value
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldValue returns the old "Value" field's value of the GlobalState entity.
+// If the GlobalState object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GlobalStateMutation) OldValue(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldValue is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldValue requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldValue: %w", err)
+	}
+	return oldValue.Value, nil
+}
+
+// AddValue adds u to the "Value" field.
+func (m *GlobalStateMutation) AddValue(u int64) {
+	if m.add_Value != nil {
+		*m.add_Value += u
+	} else {
+		m.add_Value = &u
+	}
+}
+
+// AddedValue returns the value that was added to the "Value" field in this mutation.
+func (m *GlobalStateMutation) AddedValue() (r int64, exists bool) {
+	v := m.add_Value
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetValue resets all changes to the "Value" field.
+func (m *GlobalStateMutation) ResetValue() {
+	m._Value = nil
+	m.add_Value = nil
+}
+
+// SetCreateAt sets the "CreateAt" field.
+func (m *GlobalStateMutation) SetCreateAt(u uint64) {
+	m._CreateAt = &u
+	m.add_CreateAt = nil
+}
+
+// CreateAt returns the value of the "CreateAt" field in the mutation.
+func (m *GlobalStateMutation) CreateAt() (r uint64, exists bool) {
+	v := m._CreateAt
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreateAt returns the old "CreateAt" field's value of the GlobalState entity.
+// If the GlobalState object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GlobalStateMutation) OldCreateAt(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreateAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreateAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreateAt: %w", err)
+	}
+	return oldValue.CreateAt, nil
+}
+
+// AddCreateAt adds u to the "CreateAt" field.
+func (m *GlobalStateMutation) AddCreateAt(u int64) {
+	if m.add_CreateAt != nil {
+		*m.add_CreateAt += u
+	} else {
+		m.add_CreateAt = &u
+	}
+}
+
+// AddedCreateAt returns the value that was added to the "CreateAt" field in this mutation.
+func (m *GlobalStateMutation) AddedCreateAt() (r int64, exists bool) {
+	v := m.add_CreateAt
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCreateAt resets all changes to the "CreateAt" field.
+func (m *GlobalStateMutation) ResetCreateAt() {
+	m._CreateAt = nil
+	m.add_CreateAt = nil
+}
+
+// SetUpdateAt sets the "UpdateAt" field.
+func (m *GlobalStateMutation) SetUpdateAt(u uint64) {
+	m._UpdateAt = &u
+	m.add_UpdateAt = nil
+}
+
+// UpdateAt returns the value of the "UpdateAt" field in the mutation.
+func (m *GlobalStateMutation) UpdateAt() (r uint64, exists bool) {
+	v := m._UpdateAt
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdateAt returns the old "UpdateAt" field's value of the GlobalState entity.
+// If the GlobalState object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GlobalStateMutation) OldUpdateAt(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdateAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdateAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdateAt: %w", err)
+	}
+	return oldValue.UpdateAt, nil
+}
+
+// AddUpdateAt adds u to the "UpdateAt" field.
+func (m *GlobalStateMutation) AddUpdateAt(u int64) {
+	if m.add_UpdateAt != nil {
+		*m.add_UpdateAt += u
+	} else {
+		m.add_UpdateAt = &u
+	}
+}
+
+// AddedUpdateAt returns the value that was added to the "UpdateAt" field in this mutation.
+func (m *GlobalStateMutation) AddedUpdateAt() (r int64, exists bool) {
+	v := m.add_UpdateAt
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUpdateAt resets all changes to the "UpdateAt" field.
+func (m *GlobalStateMutation) ResetUpdateAt() {
+	m._UpdateAt = nil
+	m.add_UpdateAt = nil
+}
+
+// Where appends a list predicates to the GlobalStateMutation builder.
+func (m *GlobalStateMutation) Where(ps ...predicate.GlobalState) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the GlobalStateMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *GlobalStateMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.GlobalState, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *GlobalStateMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *GlobalStateMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (GlobalState).
+func (m *GlobalStateMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *GlobalStateMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m._Key != nil {
+		fields = append(fields, globalstate.FieldKey)
+	}
+	if m._Value != nil {
+		fields = append(fields, globalstate.FieldValue)
+	}
+	if m._CreateAt != nil {
+		fields = append(fields, globalstate.FieldCreateAt)
+	}
+	if m._UpdateAt != nil {
+		fields = append(fields, globalstate.FieldUpdateAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *GlobalStateMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case globalstate.FieldKey:
+		return m.Key()
+	case globalstate.FieldValue:
+		return m.Value()
+	case globalstate.FieldCreateAt:
+		return m.CreateAt()
+	case globalstate.FieldUpdateAt:
+		return m.UpdateAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *GlobalStateMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case globalstate.FieldKey:
+		return m.OldKey(ctx)
+	case globalstate.FieldValue:
+		return m.OldValue(ctx)
+	case globalstate.FieldCreateAt:
+		return m.OldCreateAt(ctx)
+	case globalstate.FieldUpdateAt:
+		return m.OldUpdateAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown GlobalState field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *GlobalStateMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case globalstate.FieldKey:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetKey(v)
+		return nil
+	case globalstate.FieldValue:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetValue(v)
+		return nil
+	case globalstate.FieldCreateAt:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreateAt(v)
+		return nil
+	case globalstate.FieldUpdateAt:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdateAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown GlobalState field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *GlobalStateMutation) AddedFields() []string {
+	var fields []string
+	if m.add_Value != nil {
+		fields = append(fields, globalstate.FieldValue)
+	}
+	if m.add_CreateAt != nil {
+		fields = append(fields, globalstate.FieldCreateAt)
+	}
+	if m.add_UpdateAt != nil {
+		fields = append(fields, globalstate.FieldUpdateAt)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *GlobalStateMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case globalstate.FieldValue:
+		return m.AddedValue()
+	case globalstate.FieldCreateAt:
+		return m.AddedCreateAt()
+	case globalstate.FieldUpdateAt:
+		return m.AddedUpdateAt()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *GlobalStateMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case globalstate.FieldValue:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddValue(v)
+		return nil
+	case globalstate.FieldCreateAt:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreateAt(v)
+		return nil
+	case globalstate.FieldUpdateAt:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdateAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown GlobalState numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *GlobalStateMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *GlobalStateMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *GlobalStateMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown GlobalState nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *GlobalStateMutation) ResetField(name string) error {
+	switch name {
+	case globalstate.FieldKey:
+		m.ResetKey()
+		return nil
+	case globalstate.FieldValue:
+		m.ResetValue()
+		return nil
+	case globalstate.FieldCreateAt:
+		m.ResetCreateAt()
+		return nil
+	case globalstate.FieldUpdateAt:
+		m.ResetUpdateAt()
+		return nil
+	}
+	return fmt.Errorf("unknown GlobalState field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *GlobalStateMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *GlobalStateMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *GlobalStateMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *GlobalStateMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *GlobalStateMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *GlobalStateMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *GlobalStateMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown GlobalState unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *GlobalStateMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown GlobalState edge %s", name)
+}
 
 // StakeMutation represents an operation that mutates the Stake nodes in the graph.
 type StakeMutation struct {
@@ -41,6 +633,8 @@ type StakeMutation struct {
 	add_Duration        *int64
 	_Deadline           *uint64
 	add_Deadline        *int64
+	_ReleasingTime      *uint64
+	add_ReleasingTime   *int64
 	_Amount             *uint64
 	add_Amount          *int64
 	_RewardReceiver     *string
@@ -434,6 +1028,62 @@ func (m *StakeMutation) AddedDeadline() (r int64, exists bool) {
 func (m *StakeMutation) ResetDeadline() {
 	m._Deadline = nil
 	m.add_Deadline = nil
+}
+
+// SetReleasingTime sets the "ReleasingTime" field.
+func (m *StakeMutation) SetReleasingTime(u uint64) {
+	m._ReleasingTime = &u
+	m.add_ReleasingTime = nil
+}
+
+// ReleasingTime returns the value of the "ReleasingTime" field in the mutation.
+func (m *StakeMutation) ReleasingTime() (r uint64, exists bool) {
+	v := m._ReleasingTime
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldReleasingTime returns the old "ReleasingTime" field's value of the Stake entity.
+// If the Stake object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StakeMutation) OldReleasingTime(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldReleasingTime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldReleasingTime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldReleasingTime: %w", err)
+	}
+	return oldValue.ReleasingTime, nil
+}
+
+// AddReleasingTime adds u to the "ReleasingTime" field.
+func (m *StakeMutation) AddReleasingTime(u int64) {
+	if m.add_ReleasingTime != nil {
+		*m.add_ReleasingTime += u
+	} else {
+		m.add_ReleasingTime = &u
+	}
+}
+
+// AddedReleasingTime returns the value that was added to the "ReleasingTime" field in this mutation.
+func (m *StakeMutation) AddedReleasingTime() (r int64, exists bool) {
+	v := m.add_ReleasingTime
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetReleasingTime resets all changes to the "ReleasingTime" field.
+func (m *StakeMutation) ResetReleasingTime() {
+	m._ReleasingTime = nil
+	m.add_ReleasingTime = nil
 }
 
 // SetAmount sets the "Amount" field.
@@ -914,7 +1564,7 @@ func (m *StakeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *StakeMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 16)
 	if m._Staker != nil {
 		fields = append(fields, stake.FieldStaker)
 	}
@@ -932,6 +1582,9 @@ func (m *StakeMutation) Fields() []string {
 	}
 	if m._Deadline != nil {
 		fields = append(fields, stake.FieldDeadline)
+	}
+	if m._ReleasingTime != nil {
+		fields = append(fields, stake.FieldReleasingTime)
 	}
 	if m._Amount != nil {
 		fields = append(fields, stake.FieldAmount)
@@ -980,6 +1633,8 @@ func (m *StakeMutation) Field(name string) (ent.Value, bool) {
 		return m.Duration()
 	case stake.FieldDeadline:
 		return m.Deadline()
+	case stake.FieldReleasingTime:
+		return m.ReleasingTime()
 	case stake.FieldAmount:
 		return m.Amount()
 	case stake.FieldRewardReceiver:
@@ -1019,6 +1674,8 @@ func (m *StakeMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldDuration(ctx)
 	case stake.FieldDeadline:
 		return m.OldDeadline(ctx)
+	case stake.FieldReleasingTime:
+		return m.OldReleasingTime(ctx)
 	case stake.FieldAmount:
 		return m.OldAmount(ctx)
 	case stake.FieldRewardReceiver:
@@ -1087,6 +1744,13 @@ func (m *StakeMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeadline(v)
+		return nil
+	case stake.FieldReleasingTime:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetReleasingTime(v)
 		return nil
 	case stake.FieldAmount:
 		v, ok := value.(uint64)
@@ -1168,6 +1832,9 @@ func (m *StakeMutation) AddedFields() []string {
 	if m.add_Deadline != nil {
 		fields = append(fields, stake.FieldDeadline)
 	}
+	if m.add_ReleasingTime != nil {
+		fields = append(fields, stake.FieldReleasingTime)
+	}
 	if m.add_Amount != nil {
 		fields = append(fields, stake.FieldAmount)
 	}
@@ -1200,6 +1867,8 @@ func (m *StakeMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedDuration()
 	case stake.FieldDeadline:
 		return m.AddedDeadline()
+	case stake.FieldReleasingTime:
+		return m.AddedReleasingTime()
 	case stake.FieldAmount:
 		return m.AddedAmount()
 	case stake.FieldFinalizedStatus:
@@ -1241,6 +1910,13 @@ func (m *StakeMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddDeadline(v)
+		return nil
+	case stake.FieldReleasingTime:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddReleasingTime(v)
 		return nil
 	case stake.FieldAmount:
 		v, ok := value.(int64)
@@ -1328,6 +2004,9 @@ func (m *StakeMutation) ResetField(name string) error {
 		return nil
 	case stake.FieldDeadline:
 		m.ResetDeadline()
+		return nil
+	case stake.FieldReleasingTime:
+		m.ResetReleasingTime()
 		return nil
 	case stake.FieldAmount:
 		m.ResetAmount()

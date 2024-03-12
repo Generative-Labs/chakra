@@ -23,6 +23,8 @@ const (
 	FieldDuration = "duration"
 	// FieldDeadline holds the string denoting the deadline field in the database.
 	FieldDeadline = "deadline"
+	// FieldReleasingTime holds the string denoting the releasingtime field in the database.
+	FieldReleasingTime = "releasing_time"
 	// FieldAmount holds the string denoting the amount field in the database.
 	FieldAmount = "amount"
 	// FieldRewardReceiver holds the string denoting the rewardreceiver field in the database.
@@ -54,6 +56,7 @@ var Columns = []string{
 	FieldStart,
 	FieldDuration,
 	FieldDeadline,
+	FieldReleasingTime,
 	FieldAmount,
 	FieldRewardReceiver,
 	FieldFinalizedStatus,
@@ -124,6 +127,11 @@ func ByDuration(opts ...sql.OrderTermOption) OrderOption {
 // ByDeadline orders the results by the Deadline field.
 func ByDeadline(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeadline, opts...).ToFunc()
+}
+
+// ByReleasingTime orders the results by the ReleasingTime field.
+func ByReleasingTime(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldReleasingTime, opts...).ToFunc()
 }
 
 // ByAmount orders the results by the Amount field.

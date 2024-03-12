@@ -8,6 +8,20 @@ import (
 )
 
 var (
+	// GlobalStatesColumns holds the columns for the "global_states" table.
+	GlobalStatesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "key", Type: field.TypeString},
+		{Name: "value", Type: field.TypeUint64},
+		{Name: "create_at", Type: field.TypeUint64},
+		{Name: "update_at", Type: field.TypeUint64},
+	}
+	// GlobalStatesTable holds the schema information for the "global_states" table.
+	GlobalStatesTable = &schema.Table{
+		Name:       "global_states",
+		Columns:    GlobalStatesColumns,
+		PrimaryKey: []*schema.Column{GlobalStatesColumns[0]},
+	}
 	// StakesColumns holds the columns for the "stakes" table.
 	StakesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -17,6 +31,7 @@ var (
 		{Name: "start", Type: field.TypeUint64},
 		{Name: "duration", Type: field.TypeUint64},
 		{Name: "deadline", Type: field.TypeUint64},
+		{Name: "releasing_time", Type: field.TypeUint64},
 		{Name: "amount", Type: field.TypeUint64},
 		{Name: "reward_receiver", Type: field.TypeString, Size: 66},
 		{Name: "finalized_status", Type: field.TypeInt, Default: 0},
@@ -41,12 +56,13 @@ var (
 			{
 				Name:    "stake_release_status_tx",
 				Unique:  false,
-				Columns: []*schema.Column{StakesColumns[10], StakesColumns[3]},
+				Columns: []*schema.Column{StakesColumns[11], StakesColumns[3]},
 			},
 		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		GlobalStatesTable,
 		StakesTable,
 	}
 )

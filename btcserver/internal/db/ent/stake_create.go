@@ -55,6 +55,12 @@ func (sc *StakeCreate) SetDeadline(u uint64) *StakeCreate {
 	return sc
 }
 
+// SetReleasingTime sets the "ReleasingTime" field.
+func (sc *StakeCreate) SetReleasingTime(u uint64) *StakeCreate {
+	sc.mutation.SetReleasingTime(u)
+	return sc
+}
+
 // SetAmount sets the "Amount" field.
 func (sc *StakeCreate) SetAmount(u uint64) *StakeCreate {
 	sc.mutation.SetAmount(u)
@@ -200,6 +206,9 @@ func (sc *StakeCreate) check() error {
 	if _, ok := sc.mutation.Deadline(); !ok {
 		return &ValidationError{Name: "Deadline", err: errors.New(`ent: missing required field "Stake.Deadline"`)}
 	}
+	if _, ok := sc.mutation.ReleasingTime(); !ok {
+		return &ValidationError{Name: "ReleasingTime", err: errors.New(`ent: missing required field "Stake.ReleasingTime"`)}
+	}
 	if _, ok := sc.mutation.Amount(); !ok {
 		return &ValidationError{Name: "Amount", err: errors.New(`ent: missing required field "Stake.Amount"`)}
 	}
@@ -281,6 +290,10 @@ func (sc *StakeCreate) createSpec() (*Stake, *sqlgraph.CreateSpec) {
 	if value, ok := sc.mutation.Deadline(); ok {
 		_spec.SetField(stake.FieldDeadline, field.TypeUint64, value)
 		_node.Deadline = value
+	}
+	if value, ok := sc.mutation.ReleasingTime(); ok {
+		_spec.SetField(stake.FieldReleasingTime, field.TypeUint64, value)
+		_node.ReleasingTime = value
 	}
 	if value, ok := sc.mutation.Amount(); ok {
 		_spec.SetField(stake.FieldAmount, field.TypeUint64, value)

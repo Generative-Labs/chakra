@@ -2,10 +2,10 @@ package db
 
 import (
 	"context"
-	"time"
-
+	"github.com/generativelabs/btcserver/internal"
 	"github.com/generativelabs/btcserver/internal/db/ent"
 	"github.com/generativelabs/btcserver/internal/db/ent/stake"
+	"time"
 )
 
 func (c *Backend) CreateStake(
@@ -98,16 +98,32 @@ func (c *Backend) QueryAllNotReleaseStatesTx() ([]string, error) {
 }
 
 // Query all txids that have not yet been locked up
-func (c *Backend) QueryAllNotYetLockedUpTx() ([]string, error) {
+func (c *Backend) QueryAllNotYetLockedUpTx(timeStamp uint64) ([]string, error) {
 	return c.dbClient.Stake.Query().
-		Where(stake.DeadlineLTE(uint64(time.Now().UnixMilli()))).
+		Where(stake.DeadlineLTE(timeStamp)).
 		Select(stake.FieldTx).
 		Strings(context.Background())
 }
 
-func (c *Backend) QueryAllAlreadyLockedUpTx() ([]string, error) {
+func (c *Backend) QueryAllAlreadyLockedUpTx(timeStamp uint64) ([]string, error) {
 	return c.dbClient.Stake.Query().
-		Where(stake.DeadlineGTE(uint64(time.Now().UnixMilli()))).
+		Where(stake.DeadlineGTE(timeStamp)).
 		Select(stake.FieldTx).
 		Strings(context.Background())
+}
+
+// QueryAllNotYetLockedUpTxNextFourHours Addresses that need to be released in the next 5 minute
+func (c *Backend) QueryAllNotYetLockedUpTxNextFourHours(timeStamp uint64) ([]*internal.ReleaseTxsInfo, error) {
+	releaseTxsInfos := make([]*internal.ReleaseTxsInfo, 0)
+
+	feture := timeStamp + uint64(5*time.Minute.Milliseconds())
+	err := c.dbClient.Stake.Query().
+		Where(stake.And(stake.DeadlineGT(timeStamp), stake.DeadlineLTE(feture))).
+		Where(stake.And(stake.ReleasingTimeGT(timeStamp), stake.ReleasingTimeLTE(feture))).
+		Select(stake.FieldTx, stake.FieldReleasingTime).
+		Scan(context.Background(), releaseTxsInfos)
+	if err != nil {
+		return nil, err
+	}
+	return releaseTxsInfos, nil
 }

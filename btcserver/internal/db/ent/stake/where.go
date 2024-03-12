@@ -82,6 +82,11 @@ func Deadline(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldDeadline, v))
 }
 
+// ReleasingTime applies equality check predicate on the "ReleasingTime" field. It's identical to ReleasingTimeEQ.
+func ReleasingTime(v uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldEQ(FieldReleasingTime, v))
+}
+
 // Amount applies equality check predicate on the "Amount" field. It's identical to AmountEQ.
 func Amount(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldAmount, v))
@@ -440,6 +445,46 @@ func DeadlineLT(v uint64) predicate.Stake {
 // DeadlineLTE applies the LTE predicate on the "Deadline" field.
 func DeadlineLTE(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldLTE(FieldDeadline, v))
+}
+
+// ReleasingTimeEQ applies the EQ predicate on the "ReleasingTime" field.
+func ReleasingTimeEQ(v uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldEQ(FieldReleasingTime, v))
+}
+
+// ReleasingTimeNEQ applies the NEQ predicate on the "ReleasingTime" field.
+func ReleasingTimeNEQ(v uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldNEQ(FieldReleasingTime, v))
+}
+
+// ReleasingTimeIn applies the In predicate on the "ReleasingTime" field.
+func ReleasingTimeIn(vs ...uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldIn(FieldReleasingTime, vs...))
+}
+
+// ReleasingTimeNotIn applies the NotIn predicate on the "ReleasingTime" field.
+func ReleasingTimeNotIn(vs ...uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldNotIn(FieldReleasingTime, vs...))
+}
+
+// ReleasingTimeGT applies the GT predicate on the "ReleasingTime" field.
+func ReleasingTimeGT(v uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldGT(FieldReleasingTime, v))
+}
+
+// ReleasingTimeGTE applies the GTE predicate on the "ReleasingTime" field.
+func ReleasingTimeGTE(v uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldGTE(FieldReleasingTime, v))
+}
+
+// ReleasingTimeLT applies the LT predicate on the "ReleasingTime" field.
+func ReleasingTimeLT(v uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldLT(FieldReleasingTime, v))
+}
+
+// ReleasingTimeLTE applies the LTE predicate on the "ReleasingTime" field.
+func ReleasingTimeLTE(v uint64) predicate.Stake {
+	return predicate.Stake(sql.FieldLTE(FieldReleasingTime, v))
 }
 
 // AmountEQ applies the EQ predicate on the "Amount" field.
