@@ -44,12 +44,12 @@ func (s *Server) GetStakeListByStaker(c *gin.Context) {
 	srakeList := make([]*internal.StakeInfoResp, 0)
 	for _, s := range stakes {
 		srakeList = append(srakeList, &internal.StakeInfoResp{
-			s.Staker,
-			s.Tx,
-			s.Start,
-			s.Duration,
-			s.Amount,
-			s.RewardReceiver,
+			Staker:         s.Staker,
+			Tx:             s.Tx,
+			Start:          s.Start,
+			Durnation:      s.Duration,
+			Amount:         s.Amount,
+			RewardReceiver: s.RewardReceiver,
 		})
 	}
 
