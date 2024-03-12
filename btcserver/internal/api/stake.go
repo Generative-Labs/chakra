@@ -3,52 +3,24 @@ package api
 import (
 	"net/http"
 
+	"github.com/generativelabs/btcserver/internal"
 	"github.com/gin-gonic/gin"
 )
 
-type HTTPRespose struct {
+type HTTPResponse struct {
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data,omitempty"`
 }
 
-func JSONResp(c *gin.Context, code int, res *HTTPRespose) {
+func JSONResp(c *gin.Context, code int, res *HTTPResponse) {
 	c.JSON(code, res)
-}
-
-type StakerReq struct {
-	Staker string `form:"staker" binding:"required"`
-	Page   int    `form:"page" binding:"required"`
-	Size   int    `form:"size" binding:"required"`
-}
-
-type StakeInfoReq struct {
-	Staker            string `form:"staker" json:"staker,omitempty"`
-	StakerPublicKey   string `form:"staker_public_key" json:"staker_public_key,omitempty"`
-	TxID              string `json:"tx_id,omitempty"`
-	Start             uint64 `json:"start,omitempty"`
-	Duration          uint64 `json:"duration,omitempty"`
-	Amount            uint64 `json:"amount,omitempty"`
-	Reward            uint64 `json:"reward,omitempty"`
-	RewardReceiver    string `json:"reward_receiver,omitempty"`
-	BtcSignature      string `json:"btc_signature,omitempty"`
-	ReceiverSignature string `json:"receiver_signature,omitempty"`
-	Timestamp         uint64 `json:"timestamp,omitempty"`
-}
-
-type StakeInfoResp struct {
-	Staker         string `json:"staker,omitempty"`
-	Tx             string `json:"tx,omitempty"`
-	Start          uint64 `json:"start,omitempty"`
-	Durnation      uint64 `json:"durnation,omitempty"`
-	Amount         uint64 `json:"amount,omitempty"`
-	RewardReceiver string `json:"reward_receiver,omitempty"`
 }
 
 // GetStakeListByStaker Get staking history
 func (s *Server) GetStakeListByStaker(c *gin.Context) {
-	respData := &HTTPRespose{Msg: "Ok"}
+	respData := &HTTPResponse{Msg: "Ok"}
 
-	var staker StakerReq
+	var staker internal.StakerReq
 	if err := c.BindQuery(&staker); err != nil {
 		respData.Msg = err.Error()
 		JSONResp(c, http.StatusBadRequest, respData)
@@ -69,9 +41,9 @@ func (s *Server) GetStakeListByStaker(c *gin.Context) {
 		return
 	}
 
-	srakeList := make([]*StakeInfoResp, 0)
+	srakeList := make([]*internal.StakeInfoResp, 0)
 	for _, s := range stakes {
-		srakeList = append(srakeList, &StakeInfoResp{
+		srakeList = append(srakeList, &internal.StakeInfoResp{
 			s.Staker,
 			s.Tx,
 			s.Start,
@@ -90,9 +62,9 @@ func (s *Server) GetStakeListByStaker(c *gin.Context) {
 
 // SubmitProofOfStake Submit proof of Stake
 func (s *Server) SubmitProofOfStake(c *gin.Context) {
-	respData := &HTTPRespose{Msg: "Ok"}
+	respData := &HTTPResponse{Msg: "Ok"}
 
-	var stakeinfo StakeInfoReq
+	var stakeinfo internal.StakeInfoReq
 	if err := c.Bind(&stakeinfo); err != nil {
 		respData.Msg = err.Error()
 		JSONResp(c, http.StatusBadRequest, respData)

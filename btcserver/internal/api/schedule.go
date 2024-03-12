@@ -34,6 +34,7 @@ func (s *Server) TimeWheelSchedule() {
 		txs, err := s.backend.QueryAllNotYetLockedUpTxNextFourHours(uint64(s.ScheduleTimeWheel.UnixMilli()))
 		if err != nil {
 			log.Error().Msgf("❌ error query all not release tx: %s ", err)
+			time.Sleep(time.Second)
 			continue
 		}
 
