@@ -33,3 +33,24 @@ type ReleaseTxsInfo struct {
 	TxID          string
 	ReleasingTime uint64
 }
+
+type StakeRecordStatus int
+
+const (
+	// TxPending defines the StakeRecord status where the Tx has not been included in a block yet.
+	TxPending StakeRecordStatus = iota
+	// TxIncluded defines the StakeRecord status where the Tx has been included in a block.
+	TxIncluded
+	// TxFinalized defines the StakeRecord status where the Tx has been confirmed.
+	TxFinalized
+	// Mismatch defines the StakeRecord status where the Tx in the record does not match the content.
+	Mismatch
+)
+
+type StakeVerificationParam struct {
+	TxID            string
+	StakerPubKey    string
+	Amount          uint64
+	Duration        uint64
+	FinalizedStatus StakeRecordStatus
+}

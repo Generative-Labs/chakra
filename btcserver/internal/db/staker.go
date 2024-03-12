@@ -44,9 +44,10 @@ func (c *Backend) UpdateStakeReleaseStatus(staker string, status int) error {
 	return err
 }
 
-func (c *Backend) UpdateStakeFinalizedStatus(staker string, status int) error {
+func (c *Backend) UpdateStakeFinalizedStatus(staker string, tx string, status int) error {
 	_, err := c.dbClient.Stake.Update().
 		Where(stake.StakerEQ(staker)).
+		Where(stake.TxEQ(tx)).
 		SetFinalizedStatus(status).
 		Save(context.Background())
 	return err
@@ -127,4 +128,17 @@ func (c *Backend) QueryAllNotYetLockedUpTxNextFourHours(timeStamp uint64) ([]*in
 		return nil, err
 	}
 	return releaseTxsInfos, nil
+}
+
+func (c *Backend) QueryNoFinalizedStakeTx() ([]*internal.StakeVerificationParam, error) {
+	verifyParams := make([]*internal.StakeVerificationParam, 0)
+
+	err := c.dbClient.Stake.Query().Where(stake.FinalizedStatusLTE(int(internal.TxIncluded))).
+		Select(stake.FieldTx, stake.FieldStakerPublicKey, stake.FieldAmount, stake.FieldDuration).
+		Scan(context.Background(), verifyParams)
+	if err != nil {
+		return nil, err
+	}
+
+	return verifyParams, nil
 }

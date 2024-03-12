@@ -8,6 +8,7 @@ import (
 	"github.com/NethermindEth/starknet.go/curve"
 	"github.com/NethermindEth/starknet.go/utils"
 	"github.com/generativelabs/btcserver/internal/api"
+	"github.com/generativelabs/btcserver/internal/btc"
 	"github.com/generativelabs/btcserver/internal/chakra"
 	"github.com/generativelabs/btcserver/internal/db"
 	"github.com/rs/zerolog"
@@ -41,6 +42,11 @@ func Run() {
 		log.Fatal().Msgf("❌ Fatal error create db backend: %s ", err)
 	}
 
+	btcClient, err := btc.NewClient(config.Btc)
+	if err != nil {
+		log.Fatal().Msgf("❌ Fatal error create btc client: %s ", err)
+	}
+
 	ctx := context.Background()
 	provider, err := chakra.NewChakraProvider(ctx, config.Chakra.URL)
 	if err != nil {
@@ -55,7 +61,7 @@ func Run() {
 
 	log.Info().Msgf("🔵🔵 Start to run btc server, conf: %+v 🔵🔵", config)
 
-	err = api.New(ctx, backend, cAccount, config.Chakra.ContractAddress).Run(config.ServicePort)
+	err = api.NewServer(ctx, backend, cAccount, config.Chakra.ContractAddress, btcClient).Run(config.ServicePort)
 	if err != nil {
 		log.Fatal().Msgf("❌ Fatal error in api server: %s ", err)
 	}
