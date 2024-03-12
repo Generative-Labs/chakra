@@ -1,9 +1,9 @@
 package api
 
 import (
+	"github.com/generativelabs/btcserver/internal/types"
 	"net/http"
 
-	"github.com/generativelabs/btcserver/internal"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,7 +20,7 @@ func JSONResp(c *gin.Context, code int, res *HTTPResponse) {
 func (s *Server) GetStakeListByStaker(c *gin.Context) {
 	respData := &HTTPResponse{Msg: "Ok"}
 
-	var staker internal.StakerReq
+	var staker types.StakerReq
 	if err := c.BindQuery(&staker); err != nil {
 		respData.Msg = err.Error()
 		JSONResp(c, http.StatusBadRequest, respData)
@@ -41,9 +41,9 @@ func (s *Server) GetStakeListByStaker(c *gin.Context) {
 		return
 	}
 
-	srakeList := make([]*internal.StakeInfoResp, 0)
+	srakeList := make([]*types.StakeInfoResp, 0)
 	for _, s := range stakes {
-		srakeList = append(srakeList, &internal.StakeInfoResp{
+		srakeList = append(srakeList, &types.StakeInfoResp{
 			s.Staker,
 			s.Tx,
 			s.Start,
@@ -64,7 +64,7 @@ func (s *Server) GetStakeListByStaker(c *gin.Context) {
 func (s *Server) SubmitProofOfStake(c *gin.Context) {
 	respData := &HTTPResponse{Msg: "Ok"}
 
-	var stakeinfo internal.StakeInfoReq
+	var stakeinfo types.StakeInfoReq
 	if err := c.Bind(&stakeinfo); err != nil {
 		respData.Msg = err.Error()
 		JSONResp(c, http.StatusBadRequest, respData)

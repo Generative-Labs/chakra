@@ -19,7 +19,7 @@ type Config struct {
 	Driver   string `mapstructure:"driver"`
 	User     string `mapstructure:"user"`
 	Host     string `mapstructure:"host"`
-	Database string `mapstructure:"database	"`
+	Database string `mapstructure:"database"`
 	Password string `mapstructure:"password"`
 }
 

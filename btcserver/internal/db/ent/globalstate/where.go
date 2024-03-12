@@ -58,17 +58,17 @@ func Key(v string) predicate.GlobalState {
 }
 
 // Value applies equality check predicate on the "Value" field. It's identical to ValueEQ.
-func Value(v uint64) predicate.GlobalState {
+func Value(v string) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldEQ(FieldValue, v))
 }
 
 // CreateAt applies equality check predicate on the "CreateAt" field. It's identical to CreateAtEQ.
-func CreateAt(v uint64) predicate.GlobalState {
+func CreateAt(v int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldEQ(FieldCreateAt, v))
 }
 
 // UpdateAt applies equality check predicate on the "UpdateAt" field. It's identical to UpdateAtEQ.
-func UpdateAt(v uint64) predicate.GlobalState {
+func UpdateAt(v int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldEQ(FieldUpdateAt, v))
 }
 
@@ -138,122 +138,147 @@ func KeyContainsFold(v string) predicate.GlobalState {
 }
 
 // ValueEQ applies the EQ predicate on the "Value" field.
-func ValueEQ(v uint64) predicate.GlobalState {
+func ValueEQ(v string) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldEQ(FieldValue, v))
 }
 
 // ValueNEQ applies the NEQ predicate on the "Value" field.
-func ValueNEQ(v uint64) predicate.GlobalState {
+func ValueNEQ(v string) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldNEQ(FieldValue, v))
 }
 
 // ValueIn applies the In predicate on the "Value" field.
-func ValueIn(vs ...uint64) predicate.GlobalState {
+func ValueIn(vs ...string) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldIn(FieldValue, vs...))
 }
 
 // ValueNotIn applies the NotIn predicate on the "Value" field.
-func ValueNotIn(vs ...uint64) predicate.GlobalState {
+func ValueNotIn(vs ...string) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldNotIn(FieldValue, vs...))
 }
 
 // ValueGT applies the GT predicate on the "Value" field.
-func ValueGT(v uint64) predicate.GlobalState {
+func ValueGT(v string) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldGT(FieldValue, v))
 }
 
 // ValueGTE applies the GTE predicate on the "Value" field.
-func ValueGTE(v uint64) predicate.GlobalState {
+func ValueGTE(v string) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldGTE(FieldValue, v))
 }
 
 // ValueLT applies the LT predicate on the "Value" field.
-func ValueLT(v uint64) predicate.GlobalState {
+func ValueLT(v string) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldLT(FieldValue, v))
 }
 
 // ValueLTE applies the LTE predicate on the "Value" field.
-func ValueLTE(v uint64) predicate.GlobalState {
+func ValueLTE(v string) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldLTE(FieldValue, v))
 }
 
+// ValueContains applies the Contains predicate on the "Value" field.
+func ValueContains(v string) predicate.GlobalState {
+	return predicate.GlobalState(sql.FieldContains(FieldValue, v))
+}
+
+// ValueHasPrefix applies the HasPrefix predicate on the "Value" field.
+func ValueHasPrefix(v string) predicate.GlobalState {
+	return predicate.GlobalState(sql.FieldHasPrefix(FieldValue, v))
+}
+
+// ValueHasSuffix applies the HasSuffix predicate on the "Value" field.
+func ValueHasSuffix(v string) predicate.GlobalState {
+	return predicate.GlobalState(sql.FieldHasSuffix(FieldValue, v))
+}
+
+// ValueEqualFold applies the EqualFold predicate on the "Value" field.
+func ValueEqualFold(v string) predicate.GlobalState {
+	return predicate.GlobalState(sql.FieldEqualFold(FieldValue, v))
+}
+
+// ValueContainsFold applies the ContainsFold predicate on the "Value" field.
+func ValueContainsFold(v string) predicate.GlobalState {
+	return predicate.GlobalState(sql.FieldContainsFold(FieldValue, v))
+}
+
 // CreateAtEQ applies the EQ predicate on the "CreateAt" field.
-func CreateAtEQ(v uint64) predicate.GlobalState {
+func CreateAtEQ(v int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldEQ(FieldCreateAt, v))
 }
 
 // CreateAtNEQ applies the NEQ predicate on the "CreateAt" field.
-func CreateAtNEQ(v uint64) predicate.GlobalState {
+func CreateAtNEQ(v int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldNEQ(FieldCreateAt, v))
 }
 
 // CreateAtIn applies the In predicate on the "CreateAt" field.
-func CreateAtIn(vs ...uint64) predicate.GlobalState {
+func CreateAtIn(vs ...int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldIn(FieldCreateAt, vs...))
 }
 
 // CreateAtNotIn applies the NotIn predicate on the "CreateAt" field.
-func CreateAtNotIn(vs ...uint64) predicate.GlobalState {
+func CreateAtNotIn(vs ...int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldNotIn(FieldCreateAt, vs...))
 }
 
 // CreateAtGT applies the GT predicate on the "CreateAt" field.
-func CreateAtGT(v uint64) predicate.GlobalState {
+func CreateAtGT(v int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldGT(FieldCreateAt, v))
 }
 
 // CreateAtGTE applies the GTE predicate on the "CreateAt" field.
-func CreateAtGTE(v uint64) predicate.GlobalState {
+func CreateAtGTE(v int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldGTE(FieldCreateAt, v))
 }
 
 // CreateAtLT applies the LT predicate on the "CreateAt" field.
-func CreateAtLT(v uint64) predicate.GlobalState {
+func CreateAtLT(v int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldLT(FieldCreateAt, v))
 }
 
 // CreateAtLTE applies the LTE predicate on the "CreateAt" field.
-func CreateAtLTE(v uint64) predicate.GlobalState {
+func CreateAtLTE(v int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldLTE(FieldCreateAt, v))
 }
 
 // UpdateAtEQ applies the EQ predicate on the "UpdateAt" field.
-func UpdateAtEQ(v uint64) predicate.GlobalState {
+func UpdateAtEQ(v int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldEQ(FieldUpdateAt, v))
 }
 
 // UpdateAtNEQ applies the NEQ predicate on the "UpdateAt" field.
-func UpdateAtNEQ(v uint64) predicate.GlobalState {
+func UpdateAtNEQ(v int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldNEQ(FieldUpdateAt, v))
 }
 
 // UpdateAtIn applies the In predicate on the "UpdateAt" field.
-func UpdateAtIn(vs ...uint64) predicate.GlobalState {
+func UpdateAtIn(vs ...int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldIn(FieldUpdateAt, vs...))
 }
 
 // UpdateAtNotIn applies the NotIn predicate on the "UpdateAt" field.
-func UpdateAtNotIn(vs ...uint64) predicate.GlobalState {
+func UpdateAtNotIn(vs ...int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldNotIn(FieldUpdateAt, vs...))
 }
 
 // UpdateAtGT applies the GT predicate on the "UpdateAt" field.
-func UpdateAtGT(v uint64) predicate.GlobalState {
+func UpdateAtGT(v int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldGT(FieldUpdateAt, v))
 }
 
 // UpdateAtGTE applies the GTE predicate on the "UpdateAt" field.
-func UpdateAtGTE(v uint64) predicate.GlobalState {
+func UpdateAtGTE(v int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldGTE(FieldUpdateAt, v))
 }
 
 // UpdateAtLT applies the LT predicate on the "UpdateAt" field.
-func UpdateAtLT(v uint64) predicate.GlobalState {
+func UpdateAtLT(v int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldLT(FieldUpdateAt, v))
 }
 
 // UpdateAtLTE applies the LTE predicate on the "UpdateAt" field.
-func UpdateAtLTE(v uint64) predicate.GlobalState {
+func UpdateAtLTE(v int64) predicate.GlobalState {
 	return predicate.GlobalState(sql.FieldLTE(FieldUpdateAt, v))
 }
 

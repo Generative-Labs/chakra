@@ -42,23 +42,37 @@ func (gsu *GlobalStateUpdate) SetNillableKey(s *string) *GlobalStateUpdate {
 }
 
 // SetValue sets the "Value" field.
-func (gsu *GlobalStateUpdate) SetValue(u uint64) *GlobalStateUpdate {
-	gsu.mutation.ResetValue()
-	gsu.mutation.SetValue(u)
+func (gsu *GlobalStateUpdate) SetValue(s string) *GlobalStateUpdate {
+	gsu.mutation.SetValue(s)
 	return gsu
 }
 
 // SetNillableValue sets the "Value" field if the given value is not nil.
-func (gsu *GlobalStateUpdate) SetNillableValue(u *uint64) *GlobalStateUpdate {
-	if u != nil {
-		gsu.SetValue(*u)
+func (gsu *GlobalStateUpdate) SetNillableValue(s *string) *GlobalStateUpdate {
+	if s != nil {
+		gsu.SetValue(*s)
 	}
 	return gsu
 }
 
-// AddValue adds u to the "Value" field.
-func (gsu *GlobalStateUpdate) AddValue(u int64) *GlobalStateUpdate {
-	gsu.mutation.AddValue(u)
+// SetUpdateAt sets the "UpdateAt" field.
+func (gsu *GlobalStateUpdate) SetUpdateAt(i int64) *GlobalStateUpdate {
+	gsu.mutation.ResetUpdateAt()
+	gsu.mutation.SetUpdateAt(i)
+	return gsu
+}
+
+// SetNillableUpdateAt sets the "UpdateAt" field if the given value is not nil.
+func (gsu *GlobalStateUpdate) SetNillableUpdateAt(i *int64) *GlobalStateUpdate {
+	if i != nil {
+		gsu.SetUpdateAt(*i)
+	}
+	return gsu
+}
+
+// AddUpdateAt adds i to the "UpdateAt" field.
+func (gsu *GlobalStateUpdate) AddUpdateAt(i int64) *GlobalStateUpdate {
+	gsu.mutation.AddUpdateAt(i)
 	return gsu
 }
 
@@ -107,10 +121,13 @@ func (gsu *GlobalStateUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.SetField(globalstate.FieldKey, field.TypeString, value)
 	}
 	if value, ok := gsu.mutation.Value(); ok {
-		_spec.SetField(globalstate.FieldValue, field.TypeUint64, value)
+		_spec.SetField(globalstate.FieldValue, field.TypeString, value)
 	}
-	if value, ok := gsu.mutation.AddedValue(); ok {
-		_spec.AddField(globalstate.FieldValue, field.TypeUint64, value)
+	if value, ok := gsu.mutation.UpdateAt(); ok {
+		_spec.SetField(globalstate.FieldUpdateAt, field.TypeInt64, value)
+	}
+	if value, ok := gsu.mutation.AddedUpdateAt(); ok {
+		_spec.AddField(globalstate.FieldUpdateAt, field.TypeInt64, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, gsu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -147,23 +164,37 @@ func (gsuo *GlobalStateUpdateOne) SetNillableKey(s *string) *GlobalStateUpdateOn
 }
 
 // SetValue sets the "Value" field.
-func (gsuo *GlobalStateUpdateOne) SetValue(u uint64) *GlobalStateUpdateOne {
-	gsuo.mutation.ResetValue()
-	gsuo.mutation.SetValue(u)
+func (gsuo *GlobalStateUpdateOne) SetValue(s string) *GlobalStateUpdateOne {
+	gsuo.mutation.SetValue(s)
 	return gsuo
 }
 
 // SetNillableValue sets the "Value" field if the given value is not nil.
-func (gsuo *GlobalStateUpdateOne) SetNillableValue(u *uint64) *GlobalStateUpdateOne {
-	if u != nil {
-		gsuo.SetValue(*u)
+func (gsuo *GlobalStateUpdateOne) SetNillableValue(s *string) *GlobalStateUpdateOne {
+	if s != nil {
+		gsuo.SetValue(*s)
 	}
 	return gsuo
 }
 
-// AddValue adds u to the "Value" field.
-func (gsuo *GlobalStateUpdateOne) AddValue(u int64) *GlobalStateUpdateOne {
-	gsuo.mutation.AddValue(u)
+// SetUpdateAt sets the "UpdateAt" field.
+func (gsuo *GlobalStateUpdateOne) SetUpdateAt(i int64) *GlobalStateUpdateOne {
+	gsuo.mutation.ResetUpdateAt()
+	gsuo.mutation.SetUpdateAt(i)
+	return gsuo
+}
+
+// SetNillableUpdateAt sets the "UpdateAt" field if the given value is not nil.
+func (gsuo *GlobalStateUpdateOne) SetNillableUpdateAt(i *int64) *GlobalStateUpdateOne {
+	if i != nil {
+		gsuo.SetUpdateAt(*i)
+	}
+	return gsuo
+}
+
+// AddUpdateAt adds i to the "UpdateAt" field.
+func (gsuo *GlobalStateUpdateOne) AddUpdateAt(i int64) *GlobalStateUpdateOne {
+	gsuo.mutation.AddUpdateAt(i)
 	return gsuo
 }
 
@@ -242,10 +273,13 @@ func (gsuo *GlobalStateUpdateOne) sqlSave(ctx context.Context) (_node *GlobalSta
 		_spec.SetField(globalstate.FieldKey, field.TypeString, value)
 	}
 	if value, ok := gsuo.mutation.Value(); ok {
-		_spec.SetField(globalstate.FieldValue, field.TypeUint64, value)
+		_spec.SetField(globalstate.FieldValue, field.TypeString, value)
 	}
-	if value, ok := gsuo.mutation.AddedValue(); ok {
-		_spec.AddField(globalstate.FieldValue, field.TypeUint64, value)
+	if value, ok := gsuo.mutation.UpdateAt(); ok {
+		_spec.SetField(globalstate.FieldUpdateAt, field.TypeInt64, value)
+	}
+	if value, ok := gsuo.mutation.AddedUpdateAt(); ok {
+		_spec.AddField(globalstate.FieldUpdateAt, field.TypeInt64, value)
 	}
 	_node = &GlobalState{config: gsuo.config}
 	_spec.Assign = _node.assignValues

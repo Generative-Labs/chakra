@@ -26,20 +26,28 @@ func (gsc *GlobalStateCreate) SetKey(s string) *GlobalStateCreate {
 }
 
 // SetValue sets the "Value" field.
-func (gsc *GlobalStateCreate) SetValue(u uint64) *GlobalStateCreate {
-	gsc.mutation.SetValue(u)
+func (gsc *GlobalStateCreate) SetValue(s string) *GlobalStateCreate {
+	gsc.mutation.SetValue(s)
 	return gsc
 }
 
 // SetCreateAt sets the "CreateAt" field.
-func (gsc *GlobalStateCreate) SetCreateAt(u uint64) *GlobalStateCreate {
-	gsc.mutation.SetCreateAt(u)
+func (gsc *GlobalStateCreate) SetCreateAt(i int64) *GlobalStateCreate {
+	gsc.mutation.SetCreateAt(i)
 	return gsc
 }
 
 // SetUpdateAt sets the "UpdateAt" field.
-func (gsc *GlobalStateCreate) SetUpdateAt(u uint64) *GlobalStateCreate {
-	gsc.mutation.SetUpdateAt(u)
+func (gsc *GlobalStateCreate) SetUpdateAt(i int64) *GlobalStateCreate {
+	gsc.mutation.SetUpdateAt(i)
+	return gsc
+}
+
+// SetNillableUpdateAt sets the "UpdateAt" field if the given value is not nil.
+func (gsc *GlobalStateCreate) SetNillableUpdateAt(i *int64) *GlobalStateCreate {
+	if i != nil {
+		gsc.SetUpdateAt(*i)
+	}
 	return gsc
 }
 
@@ -50,6 +58,7 @@ func (gsc *GlobalStateCreate) Mutation() *GlobalStateMutation {
 
 // Save creates the GlobalState in the database.
 func (gsc *GlobalStateCreate) Save(ctx context.Context) (*GlobalState, error) {
+	gsc.defaults()
 	return withHooks(ctx, gsc.sqlSave, gsc.mutation, gsc.hooks)
 }
 
@@ -72,6 +81,14 @@ func (gsc *GlobalStateCreate) Exec(ctx context.Context) error {
 func (gsc *GlobalStateCreate) ExecX(ctx context.Context) {
 	if err := gsc.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (gsc *GlobalStateCreate) defaults() {
+	if _, ok := gsc.mutation.UpdateAt(); !ok {
+		v := globalstate.DefaultUpdateAt
+		gsc.mutation.SetUpdateAt(v)
 	}
 }
 
@@ -120,15 +137,15 @@ func (gsc *GlobalStateCreate) createSpec() (*GlobalState, *sqlgraph.CreateSpec) 
 		_node.Key = value
 	}
 	if value, ok := gsc.mutation.Value(); ok {
-		_spec.SetField(globalstate.FieldValue, field.TypeUint64, value)
+		_spec.SetField(globalstate.FieldValue, field.TypeString, value)
 		_node.Value = value
 	}
 	if value, ok := gsc.mutation.CreateAt(); ok {
-		_spec.SetField(globalstate.FieldCreateAt, field.TypeUint64, value)
+		_spec.SetField(globalstate.FieldCreateAt, field.TypeInt64, value)
 		_node.CreateAt = value
 	}
 	if value, ok := gsc.mutation.UpdateAt(); ok {
-		_spec.SetField(globalstate.FieldUpdateAt, field.TypeUint64, value)
+		_spec.SetField(globalstate.FieldUpdateAt, field.TypeInt64, value)
 		_node.UpdateAt = value
 	}
 	return _node, _spec
@@ -152,6 +169,7 @@ func (gscb *GlobalStateCreateBulk) Save(ctx context.Context) ([]*GlobalState, er
 	for i := range gscb.builders {
 		func(i int, root context.Context) {
 			builder := gscb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*GlobalStateMutation)
 				if !ok {

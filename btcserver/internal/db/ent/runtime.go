@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"github.com/generativelabs/btcserver/internal/db/ent/globalstate"
 	"github.com/generativelabs/btcserver/internal/db/ent/schema"
 	"github.com/generativelabs/btcserver/internal/db/ent/stake"
 )
@@ -11,6 +12,12 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	globalstateFields := schema.GlobalState{}.Fields()
+	_ = globalstateFields
+	// globalstateDescUpdateAt is the schema descriptor for UpdateAt field.
+	globalstateDescUpdateAt := globalstateFields[3].Descriptor()
+	// globalstate.DefaultUpdateAt holds the default value on creation for the UpdateAt field.
+	globalstate.DefaultUpdateAt = globalstateDescUpdateAt.Default.(int64)
 	stakeFields := schema.Stake{}.Fields()
 	_ = stakeFields
 	// stakeDescStaker is the schema descriptor for Staker field.
@@ -33,4 +40,8 @@ func init() {
 	stakeDescReleaseStatus := stakeFields[10].Descriptor()
 	// stake.DefaultReleaseStatus holds the default value on creation for the ReleaseStatus field.
 	stake.DefaultReleaseStatus = stakeDescReleaseStatus.Default.(int)
+	// stakeDescUpdateAt is the schema descriptor for UpdateAt field.
+	stakeDescUpdateAt := stakeFields[15].Descriptor()
+	// stake.DefaultUpdateAt holds the default value on creation for the UpdateAt field.
+	stake.DefaultUpdateAt = stakeDescUpdateAt.Default.(int64)
 }

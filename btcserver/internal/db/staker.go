@@ -2,22 +2,22 @@ package db
 
 import (
 	"context"
+	"github.com/generativelabs/btcserver/internal/types"
 	"time"
 
-	"github.com/generativelabs/btcserver/internal"
 	"github.com/generativelabs/btcserver/internal/db/ent"
 	"github.com/generativelabs/btcserver/internal/db/ent/stake"
 )
 
 func (c *Backend) CreateStake(
 	staker, stakerPublicKey, txID string,
-	start uint64,
-	duration uint64,
-	amount uint64,
+	start int64,
+	duration int64,
+	amount int64,
 	rewardReceiver string,
 	btcSignature string,
 	receiverSignature string,
-	timestamp uint64,
+	timestamp int64,
 ) error {
 	_, err := c.dbClient.Stake.Create().
 		SetStaker(staker).
@@ -99,14 +99,14 @@ func (c *Backend) QueryAllNotReleaseStatesTx() ([]string, error) {
 }
 
 // Query all txids that have not yet been locked up
-func (c *Backend) QueryAllNotYetLockedUpTx(timeStamp uint64) ([]string, error) {
+func (c *Backend) QueryAllNotYetLockedUpTx(timeStamp int64) ([]string, error) {
 	return c.dbClient.Stake.Query().
 		Where(stake.DeadlineLTE(timeStamp)).
 		Select(stake.FieldTx).
 		Strings(context.Background())
 }
 
-func (c *Backend) QueryAllAlreadyLockedUpTx(timeStamp uint64) ([]string, error) {
+func (c *Backend) QueryAllAlreadyLockedUpTx(timeStamp int64) ([]string, error) {
 	return c.dbClient.Stake.Query().
 		Where(stake.DeadlineGTE(timeStamp)).
 		Select(stake.FieldTx).
@@ -114,10 +114,10 @@ func (c *Backend) QueryAllAlreadyLockedUpTx(timeStamp uint64) ([]string, error) 
 }
 
 // QueryAllNotYetLockedUpTxNextFourHours Addresses that need to be released in the next 5 minute
-func (c *Backend) QueryAllNotYetLockedUpTxNextFourHours(timeStamp uint64) ([]*internal.ReleaseTxsInfo, error) {
-	releaseTxsInfos := make([]*internal.ReleaseTxsInfo, 0)
+func (c *Backend) QueryAllNotYetLockedUpTxNextFourHours(timeStamp int64) ([]*types.ReleaseTxsInfo, error) {
+	releaseTxsInfos := make([]*types.ReleaseTxsInfo, 0)
 
-	feture := timeStamp + uint64(5*time.Minute.Milliseconds())
+	feture := timeStamp + 5*time.Minute.Milliseconds()
 	err := c.dbClient.Stake.Query().
 		Where(stake.And(stake.DeadlineGT(timeStamp), stake.DeadlineLTE(feture))).
 		Where(stake.And(stake.ReleasingTimeGT(timeStamp), stake.ReleasingTimeLTE(feture))).

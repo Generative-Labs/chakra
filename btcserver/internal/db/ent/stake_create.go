@@ -38,32 +38,32 @@ func (sc *StakeCreate) SetTx(s string) *StakeCreate {
 }
 
 // SetStart sets the "Start" field.
-func (sc *StakeCreate) SetStart(u uint64) *StakeCreate {
-	sc.mutation.SetStart(u)
+func (sc *StakeCreate) SetStart(i int64) *StakeCreate {
+	sc.mutation.SetStart(i)
 	return sc
 }
 
 // SetDuration sets the "Duration" field.
-func (sc *StakeCreate) SetDuration(u uint64) *StakeCreate {
-	sc.mutation.SetDuration(u)
+func (sc *StakeCreate) SetDuration(i int64) *StakeCreate {
+	sc.mutation.SetDuration(i)
 	return sc
 }
 
 // SetDeadline sets the "Deadline" field.
-func (sc *StakeCreate) SetDeadline(u uint64) *StakeCreate {
-	sc.mutation.SetDeadline(u)
+func (sc *StakeCreate) SetDeadline(i int64) *StakeCreate {
+	sc.mutation.SetDeadline(i)
 	return sc
 }
 
 // SetReleasingTime sets the "ReleasingTime" field.
-func (sc *StakeCreate) SetReleasingTime(u uint64) *StakeCreate {
-	sc.mutation.SetReleasingTime(u)
+func (sc *StakeCreate) SetReleasingTime(i int64) *StakeCreate {
+	sc.mutation.SetReleasingTime(i)
 	return sc
 }
 
 // SetAmount sets the "Amount" field.
-func (sc *StakeCreate) SetAmount(u uint64) *StakeCreate {
-	sc.mutation.SetAmount(u)
+func (sc *StakeCreate) SetAmount(i int64) *StakeCreate {
+	sc.mutation.SetAmount(i)
 	return sc
 }
 
@@ -114,20 +114,28 @@ func (sc *StakeCreate) SetReceiverSig(s string) *StakeCreate {
 }
 
 // SetTimestamp sets the "Timestamp" field.
-func (sc *StakeCreate) SetTimestamp(u uint64) *StakeCreate {
-	sc.mutation.SetTimestamp(u)
+func (sc *StakeCreate) SetTimestamp(i int64) *StakeCreate {
+	sc.mutation.SetTimestamp(i)
 	return sc
 }
 
 // SetCreateAt sets the "CreateAt" field.
-func (sc *StakeCreate) SetCreateAt(u uint64) *StakeCreate {
-	sc.mutation.SetCreateAt(u)
+func (sc *StakeCreate) SetCreateAt(i int64) *StakeCreate {
+	sc.mutation.SetCreateAt(i)
 	return sc
 }
 
 // SetUpdateAt sets the "UpdateAt" field.
-func (sc *StakeCreate) SetUpdateAt(u uint64) *StakeCreate {
-	sc.mutation.SetUpdateAt(u)
+func (sc *StakeCreate) SetUpdateAt(i int64) *StakeCreate {
+	sc.mutation.SetUpdateAt(i)
+	return sc
+}
+
+// SetNillableUpdateAt sets the "UpdateAt" field if the given value is not nil.
+func (sc *StakeCreate) SetNillableUpdateAt(i *int64) *StakeCreate {
+	if i != nil {
+		sc.SetUpdateAt(*i)
+	}
 	return sc
 }
 
@@ -173,6 +181,10 @@ func (sc *StakeCreate) defaults() {
 	if _, ok := sc.mutation.ReleaseStatus(); !ok {
 		v := stake.DefaultReleaseStatus
 		sc.mutation.SetReleaseStatus(v)
+	}
+	if _, ok := sc.mutation.UpdateAt(); !ok {
+		v := stake.DefaultUpdateAt
+		sc.mutation.SetUpdateAt(v)
 	}
 }
 
@@ -280,23 +292,23 @@ func (sc *StakeCreate) createSpec() (*Stake, *sqlgraph.CreateSpec) {
 		_node.Tx = value
 	}
 	if value, ok := sc.mutation.Start(); ok {
-		_spec.SetField(stake.FieldStart, field.TypeUint64, value)
+		_spec.SetField(stake.FieldStart, field.TypeInt64, value)
 		_node.Start = value
 	}
 	if value, ok := sc.mutation.Duration(); ok {
-		_spec.SetField(stake.FieldDuration, field.TypeUint64, value)
+		_spec.SetField(stake.FieldDuration, field.TypeInt64, value)
 		_node.Duration = value
 	}
 	if value, ok := sc.mutation.Deadline(); ok {
-		_spec.SetField(stake.FieldDeadline, field.TypeUint64, value)
+		_spec.SetField(stake.FieldDeadline, field.TypeInt64, value)
 		_node.Deadline = value
 	}
 	if value, ok := sc.mutation.ReleasingTime(); ok {
-		_spec.SetField(stake.FieldReleasingTime, field.TypeUint64, value)
+		_spec.SetField(stake.FieldReleasingTime, field.TypeInt64, value)
 		_node.ReleasingTime = value
 	}
 	if value, ok := sc.mutation.Amount(); ok {
-		_spec.SetField(stake.FieldAmount, field.TypeUint64, value)
+		_spec.SetField(stake.FieldAmount, field.TypeInt64, value)
 		_node.Amount = value
 	}
 	if value, ok := sc.mutation.RewardReceiver(); ok {
@@ -320,15 +332,15 @@ func (sc *StakeCreate) createSpec() (*Stake, *sqlgraph.CreateSpec) {
 		_node.ReceiverSig = value
 	}
 	if value, ok := sc.mutation.Timestamp(); ok {
-		_spec.SetField(stake.FieldTimestamp, field.TypeUint64, value)
+		_spec.SetField(stake.FieldTimestamp, field.TypeInt64, value)
 		_node.Timestamp = value
 	}
 	if value, ok := sc.mutation.CreateAt(); ok {
-		_spec.SetField(stake.FieldCreateAt, field.TypeUint64, value)
+		_spec.SetField(stake.FieldCreateAt, field.TypeInt64, value)
 		_node.CreateAt = value
 	}
 	if value, ok := sc.mutation.UpdateAt(); ok {
-		_spec.SetField(stake.FieldUpdateAt, field.TypeUint64, value)
+		_spec.SetField(stake.FieldUpdateAt, field.TypeInt64, value)
 		_node.UpdateAt = value
 	}
 	return _node, _spec

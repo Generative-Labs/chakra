@@ -35,11 +35,10 @@ type GlobalStateMutation struct {
 	typ           string
 	id            *int
 	_Key          *string
-	_Value        *uint64
-	add_Value     *int64
-	_CreateAt     *uint64
+	_Value        *string
+	_CreateAt     *int64
 	add_CreateAt  *int64
-	_UpdateAt     *uint64
+	_UpdateAt     *int64
 	add_UpdateAt  *int64
 	clearedFields map[string]struct{}
 	done          bool
@@ -182,13 +181,12 @@ func (m *GlobalStateMutation) ResetKey() {
 }
 
 // SetValue sets the "Value" field.
-func (m *GlobalStateMutation) SetValue(u uint64) {
-	m._Value = &u
-	m.add_Value = nil
+func (m *GlobalStateMutation) SetValue(s string) {
+	m._Value = &s
 }
 
 // Value returns the value of the "Value" field in the mutation.
-func (m *GlobalStateMutation) Value() (r uint64, exists bool) {
+func (m *GlobalStateMutation) Value() (r string, exists bool) {
 	v := m._Value
 	if v == nil {
 		return
@@ -199,7 +197,7 @@ func (m *GlobalStateMutation) Value() (r uint64, exists bool) {
 // OldValue returns the old "Value" field's value of the GlobalState entity.
 // If the GlobalState object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GlobalStateMutation) OldValue(ctx context.Context) (v uint64, err error) {
+func (m *GlobalStateMutation) OldValue(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldValue is only allowed on UpdateOne operations")
 	}
@@ -213,38 +211,19 @@ func (m *GlobalStateMutation) OldValue(ctx context.Context) (v uint64, err error
 	return oldValue.Value, nil
 }
 
-// AddValue adds u to the "Value" field.
-func (m *GlobalStateMutation) AddValue(u int64) {
-	if m.add_Value != nil {
-		*m.add_Value += u
-	} else {
-		m.add_Value = &u
-	}
-}
-
-// AddedValue returns the value that was added to the "Value" field in this mutation.
-func (m *GlobalStateMutation) AddedValue() (r int64, exists bool) {
-	v := m.add_Value
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetValue resets all changes to the "Value" field.
 func (m *GlobalStateMutation) ResetValue() {
 	m._Value = nil
-	m.add_Value = nil
 }
 
 // SetCreateAt sets the "CreateAt" field.
-func (m *GlobalStateMutation) SetCreateAt(u uint64) {
-	m._CreateAt = &u
+func (m *GlobalStateMutation) SetCreateAt(i int64) {
+	m._CreateAt = &i
 	m.add_CreateAt = nil
 }
 
 // CreateAt returns the value of the "CreateAt" field in the mutation.
-func (m *GlobalStateMutation) CreateAt() (r uint64, exists bool) {
+func (m *GlobalStateMutation) CreateAt() (r int64, exists bool) {
 	v := m._CreateAt
 	if v == nil {
 		return
@@ -255,7 +234,7 @@ func (m *GlobalStateMutation) CreateAt() (r uint64, exists bool) {
 // OldCreateAt returns the old "CreateAt" field's value of the GlobalState entity.
 // If the GlobalState object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GlobalStateMutation) OldCreateAt(ctx context.Context) (v uint64, err error) {
+func (m *GlobalStateMutation) OldCreateAt(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreateAt is only allowed on UpdateOne operations")
 	}
@@ -269,12 +248,12 @@ func (m *GlobalStateMutation) OldCreateAt(ctx context.Context) (v uint64, err er
 	return oldValue.CreateAt, nil
 }
 
-// AddCreateAt adds u to the "CreateAt" field.
-func (m *GlobalStateMutation) AddCreateAt(u int64) {
+// AddCreateAt adds i to the "CreateAt" field.
+func (m *GlobalStateMutation) AddCreateAt(i int64) {
 	if m.add_CreateAt != nil {
-		*m.add_CreateAt += u
+		*m.add_CreateAt += i
 	} else {
-		m.add_CreateAt = &u
+		m.add_CreateAt = &i
 	}
 }
 
@@ -294,13 +273,13 @@ func (m *GlobalStateMutation) ResetCreateAt() {
 }
 
 // SetUpdateAt sets the "UpdateAt" field.
-func (m *GlobalStateMutation) SetUpdateAt(u uint64) {
-	m._UpdateAt = &u
+func (m *GlobalStateMutation) SetUpdateAt(i int64) {
+	m._UpdateAt = &i
 	m.add_UpdateAt = nil
 }
 
 // UpdateAt returns the value of the "UpdateAt" field in the mutation.
-func (m *GlobalStateMutation) UpdateAt() (r uint64, exists bool) {
+func (m *GlobalStateMutation) UpdateAt() (r int64, exists bool) {
 	v := m._UpdateAt
 	if v == nil {
 		return
@@ -311,7 +290,7 @@ func (m *GlobalStateMutation) UpdateAt() (r uint64, exists bool) {
 // OldUpdateAt returns the old "UpdateAt" field's value of the GlobalState entity.
 // If the GlobalState object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GlobalStateMutation) OldUpdateAt(ctx context.Context) (v uint64, err error) {
+func (m *GlobalStateMutation) OldUpdateAt(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdateAt is only allowed on UpdateOne operations")
 	}
@@ -325,12 +304,12 @@ func (m *GlobalStateMutation) OldUpdateAt(ctx context.Context) (v uint64, err er
 	return oldValue.UpdateAt, nil
 }
 
-// AddUpdateAt adds u to the "UpdateAt" field.
-func (m *GlobalStateMutation) AddUpdateAt(u int64) {
+// AddUpdateAt adds i to the "UpdateAt" field.
+func (m *GlobalStateMutation) AddUpdateAt(i int64) {
 	if m.add_UpdateAt != nil {
-		*m.add_UpdateAt += u
+		*m.add_UpdateAt += i
 	} else {
-		m.add_UpdateAt = &u
+		m.add_UpdateAt = &i
 	}
 }
 
@@ -446,21 +425,21 @@ func (m *GlobalStateMutation) SetField(name string, value ent.Value) error {
 		m.SetKey(v)
 		return nil
 	case globalstate.FieldValue:
-		v, ok := value.(uint64)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetValue(v)
 		return nil
 	case globalstate.FieldCreateAt:
-		v, ok := value.(uint64)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreateAt(v)
 		return nil
 	case globalstate.FieldUpdateAt:
-		v, ok := value.(uint64)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -474,9 +453,6 @@ func (m *GlobalStateMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *GlobalStateMutation) AddedFields() []string {
 	var fields []string
-	if m.add_Value != nil {
-		fields = append(fields, globalstate.FieldValue)
-	}
 	if m.add_CreateAt != nil {
 		fields = append(fields, globalstate.FieldCreateAt)
 	}
@@ -491,8 +467,6 @@ func (m *GlobalStateMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *GlobalStateMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case globalstate.FieldValue:
-		return m.AddedValue()
 	case globalstate.FieldCreateAt:
 		return m.AddedCreateAt()
 	case globalstate.FieldUpdateAt:
@@ -506,13 +480,6 @@ func (m *GlobalStateMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *GlobalStateMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case globalstate.FieldValue:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddValue(v)
-		return nil
 	case globalstate.FieldCreateAt:
 		v, ok := value.(int64)
 		if !ok {
@@ -627,15 +594,15 @@ type StakeMutation struct {
 	_Staker             *string
 	_StakerPublicKey    *string
 	_Tx                 *string
-	_Start              *uint64
+	_Start              *int64
 	add_Start           *int64
-	_Duration           *uint64
+	_Duration           *int64
 	add_Duration        *int64
-	_Deadline           *uint64
+	_Deadline           *int64
 	add_Deadline        *int64
-	_ReleasingTime      *uint64
+	_ReleasingTime      *int64
 	add_ReleasingTime   *int64
-	_Amount             *uint64
+	_Amount             *int64
 	add_Amount          *int64
 	_RewardReceiver     *string
 	_FinalizedStatus    *int
@@ -644,11 +611,11 @@ type StakeMutation struct {
 	add_ReleaseStatus   *int
 	_BtcSig             *string
 	_ReceiverSig        *string
-	_Timestamp          *uint64
+	_Timestamp          *int64
 	add_Timestamp       *int64
-	_CreateAt           *uint64
+	_CreateAt           *int64
 	add_CreateAt        *int64
-	_UpdateAt           *uint64
+	_UpdateAt           *int64
 	add_UpdateAt        *int64
 	clearedFields       map[string]struct{}
 	done                bool
@@ -863,13 +830,13 @@ func (m *StakeMutation) ResetTx() {
 }
 
 // SetStart sets the "Start" field.
-func (m *StakeMutation) SetStart(u uint64) {
-	m._Start = &u
+func (m *StakeMutation) SetStart(i int64) {
+	m._Start = &i
 	m.add_Start = nil
 }
 
 // Start returns the value of the "Start" field in the mutation.
-func (m *StakeMutation) Start() (r uint64, exists bool) {
+func (m *StakeMutation) Start() (r int64, exists bool) {
 	v := m._Start
 	if v == nil {
 		return
@@ -880,7 +847,7 @@ func (m *StakeMutation) Start() (r uint64, exists bool) {
 // OldStart returns the old "Start" field's value of the Stake entity.
 // If the Stake object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StakeMutation) OldStart(ctx context.Context) (v uint64, err error) {
+func (m *StakeMutation) OldStart(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStart is only allowed on UpdateOne operations")
 	}
@@ -894,12 +861,12 @@ func (m *StakeMutation) OldStart(ctx context.Context) (v uint64, err error) {
 	return oldValue.Start, nil
 }
 
-// AddStart adds u to the "Start" field.
-func (m *StakeMutation) AddStart(u int64) {
+// AddStart adds i to the "Start" field.
+func (m *StakeMutation) AddStart(i int64) {
 	if m.add_Start != nil {
-		*m.add_Start += u
+		*m.add_Start += i
 	} else {
-		m.add_Start = &u
+		m.add_Start = &i
 	}
 }
 
@@ -919,13 +886,13 @@ func (m *StakeMutation) ResetStart() {
 }
 
 // SetDuration sets the "Duration" field.
-func (m *StakeMutation) SetDuration(u uint64) {
-	m._Duration = &u
+func (m *StakeMutation) SetDuration(i int64) {
+	m._Duration = &i
 	m.add_Duration = nil
 }
 
 // Duration returns the value of the "Duration" field in the mutation.
-func (m *StakeMutation) Duration() (r uint64, exists bool) {
+func (m *StakeMutation) Duration() (r int64, exists bool) {
 	v := m._Duration
 	if v == nil {
 		return
@@ -936,7 +903,7 @@ func (m *StakeMutation) Duration() (r uint64, exists bool) {
 // OldDuration returns the old "Duration" field's value of the Stake entity.
 // If the Stake object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StakeMutation) OldDuration(ctx context.Context) (v uint64, err error) {
+func (m *StakeMutation) OldDuration(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDuration is only allowed on UpdateOne operations")
 	}
@@ -950,12 +917,12 @@ func (m *StakeMutation) OldDuration(ctx context.Context) (v uint64, err error) {
 	return oldValue.Duration, nil
 }
 
-// AddDuration adds u to the "Duration" field.
-func (m *StakeMutation) AddDuration(u int64) {
+// AddDuration adds i to the "Duration" field.
+func (m *StakeMutation) AddDuration(i int64) {
 	if m.add_Duration != nil {
-		*m.add_Duration += u
+		*m.add_Duration += i
 	} else {
-		m.add_Duration = &u
+		m.add_Duration = &i
 	}
 }
 
@@ -975,13 +942,13 @@ func (m *StakeMutation) ResetDuration() {
 }
 
 // SetDeadline sets the "Deadline" field.
-func (m *StakeMutation) SetDeadline(u uint64) {
-	m._Deadline = &u
+func (m *StakeMutation) SetDeadline(i int64) {
+	m._Deadline = &i
 	m.add_Deadline = nil
 }
 
 // Deadline returns the value of the "Deadline" field in the mutation.
-func (m *StakeMutation) Deadline() (r uint64, exists bool) {
+func (m *StakeMutation) Deadline() (r int64, exists bool) {
 	v := m._Deadline
 	if v == nil {
 		return
@@ -992,7 +959,7 @@ func (m *StakeMutation) Deadline() (r uint64, exists bool) {
 // OldDeadline returns the old "Deadline" field's value of the Stake entity.
 // If the Stake object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StakeMutation) OldDeadline(ctx context.Context) (v uint64, err error) {
+func (m *StakeMutation) OldDeadline(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDeadline is only allowed on UpdateOne operations")
 	}
@@ -1006,12 +973,12 @@ func (m *StakeMutation) OldDeadline(ctx context.Context) (v uint64, err error) {
 	return oldValue.Deadline, nil
 }
 
-// AddDeadline adds u to the "Deadline" field.
-func (m *StakeMutation) AddDeadline(u int64) {
+// AddDeadline adds i to the "Deadline" field.
+func (m *StakeMutation) AddDeadline(i int64) {
 	if m.add_Deadline != nil {
-		*m.add_Deadline += u
+		*m.add_Deadline += i
 	} else {
-		m.add_Deadline = &u
+		m.add_Deadline = &i
 	}
 }
 
@@ -1031,13 +998,13 @@ func (m *StakeMutation) ResetDeadline() {
 }
 
 // SetReleasingTime sets the "ReleasingTime" field.
-func (m *StakeMutation) SetReleasingTime(u uint64) {
-	m._ReleasingTime = &u
+func (m *StakeMutation) SetReleasingTime(i int64) {
+	m._ReleasingTime = &i
 	m.add_ReleasingTime = nil
 }
 
 // ReleasingTime returns the value of the "ReleasingTime" field in the mutation.
-func (m *StakeMutation) ReleasingTime() (r uint64, exists bool) {
+func (m *StakeMutation) ReleasingTime() (r int64, exists bool) {
 	v := m._ReleasingTime
 	if v == nil {
 		return
@@ -1048,7 +1015,7 @@ func (m *StakeMutation) ReleasingTime() (r uint64, exists bool) {
 // OldReleasingTime returns the old "ReleasingTime" field's value of the Stake entity.
 // If the Stake object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StakeMutation) OldReleasingTime(ctx context.Context) (v uint64, err error) {
+func (m *StakeMutation) OldReleasingTime(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldReleasingTime is only allowed on UpdateOne operations")
 	}
@@ -1062,12 +1029,12 @@ func (m *StakeMutation) OldReleasingTime(ctx context.Context) (v uint64, err err
 	return oldValue.ReleasingTime, nil
 }
 
-// AddReleasingTime adds u to the "ReleasingTime" field.
-func (m *StakeMutation) AddReleasingTime(u int64) {
+// AddReleasingTime adds i to the "ReleasingTime" field.
+func (m *StakeMutation) AddReleasingTime(i int64) {
 	if m.add_ReleasingTime != nil {
-		*m.add_ReleasingTime += u
+		*m.add_ReleasingTime += i
 	} else {
-		m.add_ReleasingTime = &u
+		m.add_ReleasingTime = &i
 	}
 }
 
@@ -1087,13 +1054,13 @@ func (m *StakeMutation) ResetReleasingTime() {
 }
 
 // SetAmount sets the "Amount" field.
-func (m *StakeMutation) SetAmount(u uint64) {
-	m._Amount = &u
+func (m *StakeMutation) SetAmount(i int64) {
+	m._Amount = &i
 	m.add_Amount = nil
 }
 
 // Amount returns the value of the "Amount" field in the mutation.
-func (m *StakeMutation) Amount() (r uint64, exists bool) {
+func (m *StakeMutation) Amount() (r int64, exists bool) {
 	v := m._Amount
 	if v == nil {
 		return
@@ -1104,7 +1071,7 @@ func (m *StakeMutation) Amount() (r uint64, exists bool) {
 // OldAmount returns the old "Amount" field's value of the Stake entity.
 // If the Stake object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StakeMutation) OldAmount(ctx context.Context) (v uint64, err error) {
+func (m *StakeMutation) OldAmount(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAmount is only allowed on UpdateOne operations")
 	}
@@ -1118,12 +1085,12 @@ func (m *StakeMutation) OldAmount(ctx context.Context) (v uint64, err error) {
 	return oldValue.Amount, nil
 }
 
-// AddAmount adds u to the "Amount" field.
-func (m *StakeMutation) AddAmount(u int64) {
+// AddAmount adds i to the "Amount" field.
+func (m *StakeMutation) AddAmount(i int64) {
 	if m.add_Amount != nil {
-		*m.add_Amount += u
+		*m.add_Amount += i
 	} else {
-		m.add_Amount = &u
+		m.add_Amount = &i
 	}
 }
 
@@ -1363,13 +1330,13 @@ func (m *StakeMutation) ResetReceiverSig() {
 }
 
 // SetTimestamp sets the "Timestamp" field.
-func (m *StakeMutation) SetTimestamp(u uint64) {
-	m._Timestamp = &u
+func (m *StakeMutation) SetTimestamp(i int64) {
+	m._Timestamp = &i
 	m.add_Timestamp = nil
 }
 
 // Timestamp returns the value of the "Timestamp" field in the mutation.
-func (m *StakeMutation) Timestamp() (r uint64, exists bool) {
+func (m *StakeMutation) Timestamp() (r int64, exists bool) {
 	v := m._Timestamp
 	if v == nil {
 		return
@@ -1380,7 +1347,7 @@ func (m *StakeMutation) Timestamp() (r uint64, exists bool) {
 // OldTimestamp returns the old "Timestamp" field's value of the Stake entity.
 // If the Stake object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StakeMutation) OldTimestamp(ctx context.Context) (v uint64, err error) {
+func (m *StakeMutation) OldTimestamp(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldTimestamp is only allowed on UpdateOne operations")
 	}
@@ -1394,12 +1361,12 @@ func (m *StakeMutation) OldTimestamp(ctx context.Context) (v uint64, err error) 
 	return oldValue.Timestamp, nil
 }
 
-// AddTimestamp adds u to the "Timestamp" field.
-func (m *StakeMutation) AddTimestamp(u int64) {
+// AddTimestamp adds i to the "Timestamp" field.
+func (m *StakeMutation) AddTimestamp(i int64) {
 	if m.add_Timestamp != nil {
-		*m.add_Timestamp += u
+		*m.add_Timestamp += i
 	} else {
-		m.add_Timestamp = &u
+		m.add_Timestamp = &i
 	}
 }
 
@@ -1419,13 +1386,13 @@ func (m *StakeMutation) ResetTimestamp() {
 }
 
 // SetCreateAt sets the "CreateAt" field.
-func (m *StakeMutation) SetCreateAt(u uint64) {
-	m._CreateAt = &u
+func (m *StakeMutation) SetCreateAt(i int64) {
+	m._CreateAt = &i
 	m.add_CreateAt = nil
 }
 
 // CreateAt returns the value of the "CreateAt" field in the mutation.
-func (m *StakeMutation) CreateAt() (r uint64, exists bool) {
+func (m *StakeMutation) CreateAt() (r int64, exists bool) {
 	v := m._CreateAt
 	if v == nil {
 		return
@@ -1436,7 +1403,7 @@ func (m *StakeMutation) CreateAt() (r uint64, exists bool) {
 // OldCreateAt returns the old "CreateAt" field's value of the Stake entity.
 // If the Stake object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StakeMutation) OldCreateAt(ctx context.Context) (v uint64, err error) {
+func (m *StakeMutation) OldCreateAt(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreateAt is only allowed on UpdateOne operations")
 	}
@@ -1450,12 +1417,12 @@ func (m *StakeMutation) OldCreateAt(ctx context.Context) (v uint64, err error) {
 	return oldValue.CreateAt, nil
 }
 
-// AddCreateAt adds u to the "CreateAt" field.
-func (m *StakeMutation) AddCreateAt(u int64) {
+// AddCreateAt adds i to the "CreateAt" field.
+func (m *StakeMutation) AddCreateAt(i int64) {
 	if m.add_CreateAt != nil {
-		*m.add_CreateAt += u
+		*m.add_CreateAt += i
 	} else {
-		m.add_CreateAt = &u
+		m.add_CreateAt = &i
 	}
 }
 
@@ -1475,13 +1442,13 @@ func (m *StakeMutation) ResetCreateAt() {
 }
 
 // SetUpdateAt sets the "UpdateAt" field.
-func (m *StakeMutation) SetUpdateAt(u uint64) {
-	m._UpdateAt = &u
+func (m *StakeMutation) SetUpdateAt(i int64) {
+	m._UpdateAt = &i
 	m.add_UpdateAt = nil
 }
 
 // UpdateAt returns the value of the "UpdateAt" field in the mutation.
-func (m *StakeMutation) UpdateAt() (r uint64, exists bool) {
+func (m *StakeMutation) UpdateAt() (r int64, exists bool) {
 	v := m._UpdateAt
 	if v == nil {
 		return
@@ -1492,7 +1459,7 @@ func (m *StakeMutation) UpdateAt() (r uint64, exists bool) {
 // OldUpdateAt returns the old "UpdateAt" field's value of the Stake entity.
 // If the Stake object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StakeMutation) OldUpdateAt(ctx context.Context) (v uint64, err error) {
+func (m *StakeMutation) OldUpdateAt(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdateAt is only allowed on UpdateOne operations")
 	}
@@ -1506,12 +1473,12 @@ func (m *StakeMutation) OldUpdateAt(ctx context.Context) (v uint64, err error) {
 	return oldValue.UpdateAt, nil
 }
 
-// AddUpdateAt adds u to the "UpdateAt" field.
-func (m *StakeMutation) AddUpdateAt(u int64) {
+// AddUpdateAt adds i to the "UpdateAt" field.
+func (m *StakeMutation) AddUpdateAt(i int64) {
 	if m.add_UpdateAt != nil {
-		*m.add_UpdateAt += u
+		*m.add_UpdateAt += i
 	} else {
-		m.add_UpdateAt = &u
+		m.add_UpdateAt = &i
 	}
 }
 
@@ -1725,35 +1692,35 @@ func (m *StakeMutation) SetField(name string, value ent.Value) error {
 		m.SetTx(v)
 		return nil
 	case stake.FieldStart:
-		v, ok := value.(uint64)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStart(v)
 		return nil
 	case stake.FieldDuration:
-		v, ok := value.(uint64)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDuration(v)
 		return nil
 	case stake.FieldDeadline:
-		v, ok := value.(uint64)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeadline(v)
 		return nil
 	case stake.FieldReleasingTime:
-		v, ok := value.(uint64)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetReleasingTime(v)
 		return nil
 	case stake.FieldAmount:
-		v, ok := value.(uint64)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -1795,21 +1762,21 @@ func (m *StakeMutation) SetField(name string, value ent.Value) error {
 		m.SetReceiverSig(v)
 		return nil
 	case stake.FieldTimestamp:
-		v, ok := value.(uint64)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTimestamp(v)
 		return nil
 	case stake.FieldCreateAt:
-		v, ok := value.(uint64)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreateAt(v)
 		return nil
 	case stake.FieldUpdateAt:
-		v, ok := value.(uint64)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

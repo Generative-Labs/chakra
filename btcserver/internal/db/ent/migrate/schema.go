@@ -12,9 +12,9 @@ var (
 	GlobalStatesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "key", Type: field.TypeString},
-		{Name: "value", Type: field.TypeUint64},
-		{Name: "create_at", Type: field.TypeUint64},
-		{Name: "update_at", Type: field.TypeUint64},
+		{Name: "value", Type: field.TypeString},
+		{Name: "create_at", Type: field.TypeInt64},
+		{Name: "update_at", Type: field.TypeInt64, Default: 0},
 	}
 	// GlobalStatesTable holds the schema information for the "global_states" table.
 	GlobalStatesTable = &schema.Table{
@@ -28,19 +28,19 @@ var (
 		{Name: "staker", Type: field.TypeString, Size: 90},
 		{Name: "staker_public_key", Type: field.TypeString},
 		{Name: "tx", Type: field.TypeString, Unique: true, Size: 66},
-		{Name: "start", Type: field.TypeUint64},
-		{Name: "duration", Type: field.TypeUint64},
-		{Name: "deadline", Type: field.TypeUint64},
-		{Name: "releasing_time", Type: field.TypeUint64},
-		{Name: "amount", Type: field.TypeUint64},
+		{Name: "start", Type: field.TypeInt64},
+		{Name: "duration", Type: field.TypeInt64},
+		{Name: "deadline", Type: field.TypeInt64},
+		{Name: "releasing_time", Type: field.TypeInt64},
+		{Name: "amount", Type: field.TypeInt64},
 		{Name: "reward_receiver", Type: field.TypeString, Size: 66},
 		{Name: "finalized_status", Type: field.TypeInt, Default: 0},
 		{Name: "release_status", Type: field.TypeInt, Default: 0},
 		{Name: "btc_sig", Type: field.TypeString},
 		{Name: "receiver_sig", Type: field.TypeString},
-		{Name: "timestamp", Type: field.TypeUint64},
-		{Name: "create_at", Type: field.TypeUint64},
-		{Name: "update_at", Type: field.TypeUint64},
+		{Name: "timestamp", Type: field.TypeInt64},
+		{Name: "create_at", Type: field.TypeInt64},
+		{Name: "update_at", Type: field.TypeInt64, Default: 0},
 	}
 	// StakesTable holds the schema information for the "stakes" table.
 	StakesTable = &schema.Table{

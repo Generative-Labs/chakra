@@ -89,6 +89,8 @@ var (
 	DefaultFinalizedStatus int
 	// DefaultReleaseStatus holds the default value on creation for the "ReleaseStatus" field.
 	DefaultReleaseStatus int
+	// DefaultUpdateAt holds the default value on creation for the "UpdateAt" field.
+	DefaultUpdateAt int64
 )
 
 // OrderOption defines the ordering options for the Stake queries.

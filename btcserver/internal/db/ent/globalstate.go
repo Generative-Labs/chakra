@@ -19,11 +19,11 @@ type GlobalState struct {
 	// Key holds the value of the "Key" field.
 	Key string `json:"Key,omitempty"`
 	// Value holds the value of the "Value" field.
-	Value uint64 `json:"Value,omitempty"`
+	Value string `json:"Value,omitempty"`
 	// CreateAt holds the value of the "CreateAt" field.
-	CreateAt uint64 `json:"CreateAt,omitempty"`
+	CreateAt int64 `json:"CreateAt,omitempty"`
 	// UpdateAt holds the value of the "UpdateAt" field.
-	UpdateAt     uint64 `json:"UpdateAt,omitempty"`
+	UpdateAt     int64 `json:"UpdateAt,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -32,9 +32,9 @@ func (*GlobalState) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case globalstate.FieldID, globalstate.FieldValue, globalstate.FieldCreateAt, globalstate.FieldUpdateAt:
+		case globalstate.FieldID, globalstate.FieldCreateAt, globalstate.FieldUpdateAt:
 			values[i] = new(sql.NullInt64)
-		case globalstate.FieldKey:
+		case globalstate.FieldKey, globalstate.FieldValue:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -64,22 +64,22 @@ func (gs *GlobalState) assignValues(columns []string, values []any) error {
 				gs.Key = value.String
 			}
 		case globalstate.FieldValue:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field Value", values[i])
 			} else if value.Valid {
-				gs.Value = uint64(value.Int64)
+				gs.Value = value.String
 			}
 		case globalstate.FieldCreateAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field CreateAt", values[i])
 			} else if value.Valid {
-				gs.CreateAt = uint64(value.Int64)
+				gs.CreateAt = value.Int64
 			}
 		case globalstate.FieldUpdateAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field UpdateAt", values[i])
 			} else if value.Valid {
-				gs.UpdateAt = uint64(value.Int64)
+				gs.UpdateAt = value.Int64
 			}
 		default:
 			gs.selectValues.Set(columns[i], values[i])
@@ -121,7 +121,7 @@ func (gs *GlobalState) String() string {
 	builder.WriteString(gs.Key)
 	builder.WriteString(", ")
 	builder.WriteString("Value=")
-	builder.WriteString(fmt.Sprintf("%v", gs.Value))
+	builder.WriteString(gs.Value)
 	builder.WriteString(", ")
 	builder.WriteString("CreateAt=")
 	builder.WriteString(fmt.Sprintf("%v", gs.CreateAt))

@@ -1,10 +1,11 @@
 package api
 
 import (
+	"github.com/generativelabs/btcserver/internal/types"
+	"strconv"
 	"sync"
 	"time"
 
-	"github.com/generativelabs/btcserver/internal"
 	"github.com/generativelabs/btcserver/internal/chakra"
 	"github.com/rs/zerolog/log"
 )
@@ -23,15 +24,24 @@ func (s *Server) TimeWheelSchedule() {
 			return
 		}
 
-		seconds := tw.Value / 1000
-		nanos := (tw.Value % 1000) * 1000000
+		v, _ := strconv.Atoi(tw.Value)
+
+		seconds := v / 1000
+		nanos := (v % 1000) * 1000000
 		t := time.Unix(int64(seconds), int64(nanos)).UTC()
 		s.ScheduleTimeWheel = t
+	} else {
+		s.ScheduleTimeWheel = time.Now().UTC()
+		err = s.backend.CreateTimeWheel(s.ScheduleTimeWheel.UnixMilli())
+		if err != nil {
+			log.Error().Msgf("❌ error create time wheel exist: %s ", err)
+			return
+		}
 	}
 
 	for {
 		// Start from the global timestamp, query every 5 minutes, and query all users to be released within 5 minutes
-		txs, err := s.backend.QueryAllNotYetLockedUpTxNextFourHours(uint64(s.ScheduleTimeWheel.UnixMilli()))
+		txs, err := s.backend.QueryAllNotYetLockedUpTxNextFourHours(s.ScheduleTimeWheel.UnixMilli())
 		if err != nil {
 			log.Error().Msgf("❌ error query all not release tx: %s ", err)
 			time.Sleep(time.Second)
@@ -42,11 +52,11 @@ func (s *Server) TimeWheelSchedule() {
 	}
 }
 
-func (s *Server) RewardTasksSchedule(txs []*internal.ReleaseTxsInfo) {
+func (s *Server) RewardTasksSchedule(txs []*types.ReleaseTxsInfo) {
 	wg := sync.WaitGroup{}
 	wg.Add(len(txs))
 	for _, tx := range txs {
-		go func(tx *internal.ReleaseTxsInfo) {
+		go func(tx *types.ReleaseTxsInfo) {
 			defer wg.Done()
 			err := s.RewardTasks(tx)
 			if err != nil {
@@ -58,7 +68,7 @@ func (s *Server) RewardTasksSchedule(txs []*internal.ReleaseTxsInfo) {
 
 	wg.Wait()
 
-	newScheduleTimeWheel := uint64(s.ScheduleTimeWheel.UnixMilli() + 5*time.Minute.Milliseconds())
+	newScheduleTimeWheel := s.ScheduleTimeWheel.UnixMilli() + 5*time.Minute.Milliseconds()
 	err := s.backend.UpdateTimeWheel(newScheduleTimeWheel)
 	if err != nil {
 		log.Error().Msgf("❌ error update time wheel for db: %s ", err)
@@ -67,7 +77,7 @@ func (s *Server) RewardTasksSchedule(txs []*internal.ReleaseTxsInfo) {
 	s.ScheduleTimeWheel = s.ScheduleTimeWheel.Add(5 * time.Minute)
 }
 
-func (s *Server) RewardTasks(tx *internal.ReleaseTxsInfo) error {
+func (s *Server) RewardTasks(tx *types.ReleaseTxsInfo) error {
 	seconds := tx.ReleasingTime / 1000
 	nanos := (tx.ReleasingTime % 1000) * 1000000
 	t := time.Unix(int64(seconds), int64(nanos)).UTC()

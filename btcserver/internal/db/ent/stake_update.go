@@ -70,107 +70,107 @@ func (su *StakeUpdate) SetNillableTx(s *string) *StakeUpdate {
 }
 
 // SetStart sets the "Start" field.
-func (su *StakeUpdate) SetStart(u uint64) *StakeUpdate {
+func (su *StakeUpdate) SetStart(i int64) *StakeUpdate {
 	su.mutation.ResetStart()
-	su.mutation.SetStart(u)
+	su.mutation.SetStart(i)
 	return su
 }
 
 // SetNillableStart sets the "Start" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableStart(u *uint64) *StakeUpdate {
-	if u != nil {
-		su.SetStart(*u)
+func (su *StakeUpdate) SetNillableStart(i *int64) *StakeUpdate {
+	if i != nil {
+		su.SetStart(*i)
 	}
 	return su
 }
 
-// AddStart adds u to the "Start" field.
-func (su *StakeUpdate) AddStart(u int64) *StakeUpdate {
-	su.mutation.AddStart(u)
+// AddStart adds i to the "Start" field.
+func (su *StakeUpdate) AddStart(i int64) *StakeUpdate {
+	su.mutation.AddStart(i)
 	return su
 }
 
 // SetDuration sets the "Duration" field.
-func (su *StakeUpdate) SetDuration(u uint64) *StakeUpdate {
+func (su *StakeUpdate) SetDuration(i int64) *StakeUpdate {
 	su.mutation.ResetDuration()
-	su.mutation.SetDuration(u)
+	su.mutation.SetDuration(i)
 	return su
 }
 
 // SetNillableDuration sets the "Duration" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableDuration(u *uint64) *StakeUpdate {
-	if u != nil {
-		su.SetDuration(*u)
+func (su *StakeUpdate) SetNillableDuration(i *int64) *StakeUpdate {
+	if i != nil {
+		su.SetDuration(*i)
 	}
 	return su
 }
 
-// AddDuration adds u to the "Duration" field.
-func (su *StakeUpdate) AddDuration(u int64) *StakeUpdate {
-	su.mutation.AddDuration(u)
+// AddDuration adds i to the "Duration" field.
+func (su *StakeUpdate) AddDuration(i int64) *StakeUpdate {
+	su.mutation.AddDuration(i)
 	return su
 }
 
 // SetDeadline sets the "Deadline" field.
-func (su *StakeUpdate) SetDeadline(u uint64) *StakeUpdate {
+func (su *StakeUpdate) SetDeadline(i int64) *StakeUpdate {
 	su.mutation.ResetDeadline()
-	su.mutation.SetDeadline(u)
+	su.mutation.SetDeadline(i)
 	return su
 }
 
 // SetNillableDeadline sets the "Deadline" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableDeadline(u *uint64) *StakeUpdate {
-	if u != nil {
-		su.SetDeadline(*u)
+func (su *StakeUpdate) SetNillableDeadline(i *int64) *StakeUpdate {
+	if i != nil {
+		su.SetDeadline(*i)
 	}
 	return su
 }
 
-// AddDeadline adds u to the "Deadline" field.
-func (su *StakeUpdate) AddDeadline(u int64) *StakeUpdate {
-	su.mutation.AddDeadline(u)
+// AddDeadline adds i to the "Deadline" field.
+func (su *StakeUpdate) AddDeadline(i int64) *StakeUpdate {
+	su.mutation.AddDeadline(i)
 	return su
 }
 
 // SetReleasingTime sets the "ReleasingTime" field.
-func (su *StakeUpdate) SetReleasingTime(u uint64) *StakeUpdate {
+func (su *StakeUpdate) SetReleasingTime(i int64) *StakeUpdate {
 	su.mutation.ResetReleasingTime()
-	su.mutation.SetReleasingTime(u)
+	su.mutation.SetReleasingTime(i)
 	return su
 }
 
 // SetNillableReleasingTime sets the "ReleasingTime" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableReleasingTime(u *uint64) *StakeUpdate {
-	if u != nil {
-		su.SetReleasingTime(*u)
+func (su *StakeUpdate) SetNillableReleasingTime(i *int64) *StakeUpdate {
+	if i != nil {
+		su.SetReleasingTime(*i)
 	}
 	return su
 }
 
-// AddReleasingTime adds u to the "ReleasingTime" field.
-func (su *StakeUpdate) AddReleasingTime(u int64) *StakeUpdate {
-	su.mutation.AddReleasingTime(u)
+// AddReleasingTime adds i to the "ReleasingTime" field.
+func (su *StakeUpdate) AddReleasingTime(i int64) *StakeUpdate {
+	su.mutation.AddReleasingTime(i)
 	return su
 }
 
 // SetAmount sets the "Amount" field.
-func (su *StakeUpdate) SetAmount(u uint64) *StakeUpdate {
+func (su *StakeUpdate) SetAmount(i int64) *StakeUpdate {
 	su.mutation.ResetAmount()
-	su.mutation.SetAmount(u)
+	su.mutation.SetAmount(i)
 	return su
 }
 
 // SetNillableAmount sets the "Amount" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableAmount(u *uint64) *StakeUpdate {
-	if u != nil {
-		su.SetAmount(*u)
+func (su *StakeUpdate) SetNillableAmount(i *int64) *StakeUpdate {
+	if i != nil {
+		su.SetAmount(*i)
 	}
 	return su
 }
 
-// AddAmount adds u to the "Amount" field.
-func (su *StakeUpdate) AddAmount(u int64) *StakeUpdate {
-	su.mutation.AddAmount(u)
+// AddAmount adds i to the "Amount" field.
+func (su *StakeUpdate) AddAmount(i int64) *StakeUpdate {
+	su.mutation.AddAmount(i)
 	return su
 }
 
@@ -259,23 +259,44 @@ func (su *StakeUpdate) SetNillableReceiverSig(s *string) *StakeUpdate {
 }
 
 // SetTimestamp sets the "Timestamp" field.
-func (su *StakeUpdate) SetTimestamp(u uint64) *StakeUpdate {
+func (su *StakeUpdate) SetTimestamp(i int64) *StakeUpdate {
 	su.mutation.ResetTimestamp()
-	su.mutation.SetTimestamp(u)
+	su.mutation.SetTimestamp(i)
 	return su
 }
 
 // SetNillableTimestamp sets the "Timestamp" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableTimestamp(u *uint64) *StakeUpdate {
-	if u != nil {
-		su.SetTimestamp(*u)
+func (su *StakeUpdate) SetNillableTimestamp(i *int64) *StakeUpdate {
+	if i != nil {
+		su.SetTimestamp(*i)
 	}
 	return su
 }
 
-// AddTimestamp adds u to the "Timestamp" field.
-func (su *StakeUpdate) AddTimestamp(u int64) *StakeUpdate {
-	su.mutation.AddTimestamp(u)
+// AddTimestamp adds i to the "Timestamp" field.
+func (su *StakeUpdate) AddTimestamp(i int64) *StakeUpdate {
+	su.mutation.AddTimestamp(i)
+	return su
+}
+
+// SetUpdateAt sets the "UpdateAt" field.
+func (su *StakeUpdate) SetUpdateAt(i int64) *StakeUpdate {
+	su.mutation.ResetUpdateAt()
+	su.mutation.SetUpdateAt(i)
+	return su
+}
+
+// SetNillableUpdateAt sets the "UpdateAt" field if the given value is not nil.
+func (su *StakeUpdate) SetNillableUpdateAt(i *int64) *StakeUpdate {
+	if i != nil {
+		su.SetUpdateAt(*i)
+	}
+	return su
+}
+
+// AddUpdateAt adds i to the "UpdateAt" field.
+func (su *StakeUpdate) AddUpdateAt(i int64) *StakeUpdate {
+	su.mutation.AddUpdateAt(i)
 	return su
 }
 
@@ -353,34 +374,34 @@ func (su *StakeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.SetField(stake.FieldTx, field.TypeString, value)
 	}
 	if value, ok := su.mutation.Start(); ok {
-		_spec.SetField(stake.FieldStart, field.TypeUint64, value)
+		_spec.SetField(stake.FieldStart, field.TypeInt64, value)
 	}
 	if value, ok := su.mutation.AddedStart(); ok {
-		_spec.AddField(stake.FieldStart, field.TypeUint64, value)
+		_spec.AddField(stake.FieldStart, field.TypeInt64, value)
 	}
 	if value, ok := su.mutation.Duration(); ok {
-		_spec.SetField(stake.FieldDuration, field.TypeUint64, value)
+		_spec.SetField(stake.FieldDuration, field.TypeInt64, value)
 	}
 	if value, ok := su.mutation.AddedDuration(); ok {
-		_spec.AddField(stake.FieldDuration, field.TypeUint64, value)
+		_spec.AddField(stake.FieldDuration, field.TypeInt64, value)
 	}
 	if value, ok := su.mutation.Deadline(); ok {
-		_spec.SetField(stake.FieldDeadline, field.TypeUint64, value)
+		_spec.SetField(stake.FieldDeadline, field.TypeInt64, value)
 	}
 	if value, ok := su.mutation.AddedDeadline(); ok {
-		_spec.AddField(stake.FieldDeadline, field.TypeUint64, value)
+		_spec.AddField(stake.FieldDeadline, field.TypeInt64, value)
 	}
 	if value, ok := su.mutation.ReleasingTime(); ok {
-		_spec.SetField(stake.FieldReleasingTime, field.TypeUint64, value)
+		_spec.SetField(stake.FieldReleasingTime, field.TypeInt64, value)
 	}
 	if value, ok := su.mutation.AddedReleasingTime(); ok {
-		_spec.AddField(stake.FieldReleasingTime, field.TypeUint64, value)
+		_spec.AddField(stake.FieldReleasingTime, field.TypeInt64, value)
 	}
 	if value, ok := su.mutation.Amount(); ok {
-		_spec.SetField(stake.FieldAmount, field.TypeUint64, value)
+		_spec.SetField(stake.FieldAmount, field.TypeInt64, value)
 	}
 	if value, ok := su.mutation.AddedAmount(); ok {
-		_spec.AddField(stake.FieldAmount, field.TypeUint64, value)
+		_spec.AddField(stake.FieldAmount, field.TypeInt64, value)
 	}
 	if value, ok := su.mutation.RewardReceiver(); ok {
 		_spec.SetField(stake.FieldRewardReceiver, field.TypeString, value)
@@ -404,10 +425,16 @@ func (su *StakeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.SetField(stake.FieldReceiverSig, field.TypeString, value)
 	}
 	if value, ok := su.mutation.Timestamp(); ok {
-		_spec.SetField(stake.FieldTimestamp, field.TypeUint64, value)
+		_spec.SetField(stake.FieldTimestamp, field.TypeInt64, value)
 	}
 	if value, ok := su.mutation.AddedTimestamp(); ok {
-		_spec.AddField(stake.FieldTimestamp, field.TypeUint64, value)
+		_spec.AddField(stake.FieldTimestamp, field.TypeInt64, value)
+	}
+	if value, ok := su.mutation.UpdateAt(); ok {
+		_spec.SetField(stake.FieldUpdateAt, field.TypeInt64, value)
+	}
+	if value, ok := su.mutation.AddedUpdateAt(); ok {
+		_spec.AddField(stake.FieldUpdateAt, field.TypeInt64, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, su.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -472,107 +499,107 @@ func (suo *StakeUpdateOne) SetNillableTx(s *string) *StakeUpdateOne {
 }
 
 // SetStart sets the "Start" field.
-func (suo *StakeUpdateOne) SetStart(u uint64) *StakeUpdateOne {
+func (suo *StakeUpdateOne) SetStart(i int64) *StakeUpdateOne {
 	suo.mutation.ResetStart()
-	suo.mutation.SetStart(u)
+	suo.mutation.SetStart(i)
 	return suo
 }
 
 // SetNillableStart sets the "Start" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableStart(u *uint64) *StakeUpdateOne {
-	if u != nil {
-		suo.SetStart(*u)
+func (suo *StakeUpdateOne) SetNillableStart(i *int64) *StakeUpdateOne {
+	if i != nil {
+		suo.SetStart(*i)
 	}
 	return suo
 }
 
-// AddStart adds u to the "Start" field.
-func (suo *StakeUpdateOne) AddStart(u int64) *StakeUpdateOne {
-	suo.mutation.AddStart(u)
+// AddStart adds i to the "Start" field.
+func (suo *StakeUpdateOne) AddStart(i int64) *StakeUpdateOne {
+	suo.mutation.AddStart(i)
 	return suo
 }
 
 // SetDuration sets the "Duration" field.
-func (suo *StakeUpdateOne) SetDuration(u uint64) *StakeUpdateOne {
+func (suo *StakeUpdateOne) SetDuration(i int64) *StakeUpdateOne {
 	suo.mutation.ResetDuration()
-	suo.mutation.SetDuration(u)
+	suo.mutation.SetDuration(i)
 	return suo
 }
 
 // SetNillableDuration sets the "Duration" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableDuration(u *uint64) *StakeUpdateOne {
-	if u != nil {
-		suo.SetDuration(*u)
+func (suo *StakeUpdateOne) SetNillableDuration(i *int64) *StakeUpdateOne {
+	if i != nil {
+		suo.SetDuration(*i)
 	}
 	return suo
 }
 
-// AddDuration adds u to the "Duration" field.
-func (suo *StakeUpdateOne) AddDuration(u int64) *StakeUpdateOne {
-	suo.mutation.AddDuration(u)
+// AddDuration adds i to the "Duration" field.
+func (suo *StakeUpdateOne) AddDuration(i int64) *StakeUpdateOne {
+	suo.mutation.AddDuration(i)
 	return suo
 }
 
 // SetDeadline sets the "Deadline" field.
-func (suo *StakeUpdateOne) SetDeadline(u uint64) *StakeUpdateOne {
+func (suo *StakeUpdateOne) SetDeadline(i int64) *StakeUpdateOne {
 	suo.mutation.ResetDeadline()
-	suo.mutation.SetDeadline(u)
+	suo.mutation.SetDeadline(i)
 	return suo
 }
 
 // SetNillableDeadline sets the "Deadline" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableDeadline(u *uint64) *StakeUpdateOne {
-	if u != nil {
-		suo.SetDeadline(*u)
+func (suo *StakeUpdateOne) SetNillableDeadline(i *int64) *StakeUpdateOne {
+	if i != nil {
+		suo.SetDeadline(*i)
 	}
 	return suo
 }
 
-// AddDeadline adds u to the "Deadline" field.
-func (suo *StakeUpdateOne) AddDeadline(u int64) *StakeUpdateOne {
-	suo.mutation.AddDeadline(u)
+// AddDeadline adds i to the "Deadline" field.
+func (suo *StakeUpdateOne) AddDeadline(i int64) *StakeUpdateOne {
+	suo.mutation.AddDeadline(i)
 	return suo
 }
 
 // SetReleasingTime sets the "ReleasingTime" field.
-func (suo *StakeUpdateOne) SetReleasingTime(u uint64) *StakeUpdateOne {
+func (suo *StakeUpdateOne) SetReleasingTime(i int64) *StakeUpdateOne {
 	suo.mutation.ResetReleasingTime()
-	suo.mutation.SetReleasingTime(u)
+	suo.mutation.SetReleasingTime(i)
 	return suo
 }
 
 // SetNillableReleasingTime sets the "ReleasingTime" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableReleasingTime(u *uint64) *StakeUpdateOne {
-	if u != nil {
-		suo.SetReleasingTime(*u)
+func (suo *StakeUpdateOne) SetNillableReleasingTime(i *int64) *StakeUpdateOne {
+	if i != nil {
+		suo.SetReleasingTime(*i)
 	}
 	return suo
 }
 
-// AddReleasingTime adds u to the "ReleasingTime" field.
-func (suo *StakeUpdateOne) AddReleasingTime(u int64) *StakeUpdateOne {
-	suo.mutation.AddReleasingTime(u)
+// AddReleasingTime adds i to the "ReleasingTime" field.
+func (suo *StakeUpdateOne) AddReleasingTime(i int64) *StakeUpdateOne {
+	suo.mutation.AddReleasingTime(i)
 	return suo
 }
 
 // SetAmount sets the "Amount" field.
-func (suo *StakeUpdateOne) SetAmount(u uint64) *StakeUpdateOne {
+func (suo *StakeUpdateOne) SetAmount(i int64) *StakeUpdateOne {
 	suo.mutation.ResetAmount()
-	suo.mutation.SetAmount(u)
+	suo.mutation.SetAmount(i)
 	return suo
 }
 
 // SetNillableAmount sets the "Amount" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableAmount(u *uint64) *StakeUpdateOne {
-	if u != nil {
-		suo.SetAmount(*u)
+func (suo *StakeUpdateOne) SetNillableAmount(i *int64) *StakeUpdateOne {
+	if i != nil {
+		suo.SetAmount(*i)
 	}
 	return suo
 }
 
-// AddAmount adds u to the "Amount" field.
-func (suo *StakeUpdateOne) AddAmount(u int64) *StakeUpdateOne {
-	suo.mutation.AddAmount(u)
+// AddAmount adds i to the "Amount" field.
+func (suo *StakeUpdateOne) AddAmount(i int64) *StakeUpdateOne {
+	suo.mutation.AddAmount(i)
 	return suo
 }
 
@@ -661,23 +688,44 @@ func (suo *StakeUpdateOne) SetNillableReceiverSig(s *string) *StakeUpdateOne {
 }
 
 // SetTimestamp sets the "Timestamp" field.
-func (suo *StakeUpdateOne) SetTimestamp(u uint64) *StakeUpdateOne {
+func (suo *StakeUpdateOne) SetTimestamp(i int64) *StakeUpdateOne {
 	suo.mutation.ResetTimestamp()
-	suo.mutation.SetTimestamp(u)
+	suo.mutation.SetTimestamp(i)
 	return suo
 }
 
 // SetNillableTimestamp sets the "Timestamp" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableTimestamp(u *uint64) *StakeUpdateOne {
-	if u != nil {
-		suo.SetTimestamp(*u)
+func (suo *StakeUpdateOne) SetNillableTimestamp(i *int64) *StakeUpdateOne {
+	if i != nil {
+		suo.SetTimestamp(*i)
 	}
 	return suo
 }
 
-// AddTimestamp adds u to the "Timestamp" field.
-func (suo *StakeUpdateOne) AddTimestamp(u int64) *StakeUpdateOne {
-	suo.mutation.AddTimestamp(u)
+// AddTimestamp adds i to the "Timestamp" field.
+func (suo *StakeUpdateOne) AddTimestamp(i int64) *StakeUpdateOne {
+	suo.mutation.AddTimestamp(i)
+	return suo
+}
+
+// SetUpdateAt sets the "UpdateAt" field.
+func (suo *StakeUpdateOne) SetUpdateAt(i int64) *StakeUpdateOne {
+	suo.mutation.ResetUpdateAt()
+	suo.mutation.SetUpdateAt(i)
+	return suo
+}
+
+// SetNillableUpdateAt sets the "UpdateAt" field if the given value is not nil.
+func (suo *StakeUpdateOne) SetNillableUpdateAt(i *int64) *StakeUpdateOne {
+	if i != nil {
+		suo.SetUpdateAt(*i)
+	}
+	return suo
+}
+
+// AddUpdateAt adds i to the "UpdateAt" field.
+func (suo *StakeUpdateOne) AddUpdateAt(i int64) *StakeUpdateOne {
+	suo.mutation.AddUpdateAt(i)
 	return suo
 }
 
@@ -785,34 +833,34 @@ func (suo *StakeUpdateOne) sqlSave(ctx context.Context) (_node *Stake, err error
 		_spec.SetField(stake.FieldTx, field.TypeString, value)
 	}
 	if value, ok := suo.mutation.Start(); ok {
-		_spec.SetField(stake.FieldStart, field.TypeUint64, value)
+		_spec.SetField(stake.FieldStart, field.TypeInt64, value)
 	}
 	if value, ok := suo.mutation.AddedStart(); ok {
-		_spec.AddField(stake.FieldStart, field.TypeUint64, value)
+		_spec.AddField(stake.FieldStart, field.TypeInt64, value)
 	}
 	if value, ok := suo.mutation.Duration(); ok {
-		_spec.SetField(stake.FieldDuration, field.TypeUint64, value)
+		_spec.SetField(stake.FieldDuration, field.TypeInt64, value)
 	}
 	if value, ok := suo.mutation.AddedDuration(); ok {
-		_spec.AddField(stake.FieldDuration, field.TypeUint64, value)
+		_spec.AddField(stake.FieldDuration, field.TypeInt64, value)
 	}
 	if value, ok := suo.mutation.Deadline(); ok {
-		_spec.SetField(stake.FieldDeadline, field.TypeUint64, value)
+		_spec.SetField(stake.FieldDeadline, field.TypeInt64, value)
 	}
 	if value, ok := suo.mutation.AddedDeadline(); ok {
-		_spec.AddField(stake.FieldDeadline, field.TypeUint64, value)
+		_spec.AddField(stake.FieldDeadline, field.TypeInt64, value)
 	}
 	if value, ok := suo.mutation.ReleasingTime(); ok {
-		_spec.SetField(stake.FieldReleasingTime, field.TypeUint64, value)
+		_spec.SetField(stake.FieldReleasingTime, field.TypeInt64, value)
 	}
 	if value, ok := suo.mutation.AddedReleasingTime(); ok {
-		_spec.AddField(stake.FieldReleasingTime, field.TypeUint64, value)
+		_spec.AddField(stake.FieldReleasingTime, field.TypeInt64, value)
 	}
 	if value, ok := suo.mutation.Amount(); ok {
-		_spec.SetField(stake.FieldAmount, field.TypeUint64, value)
+		_spec.SetField(stake.FieldAmount, field.TypeInt64, value)
 	}
 	if value, ok := suo.mutation.AddedAmount(); ok {
-		_spec.AddField(stake.FieldAmount, field.TypeUint64, value)
+		_spec.AddField(stake.FieldAmount, field.TypeInt64, value)
 	}
 	if value, ok := suo.mutation.RewardReceiver(); ok {
 		_spec.SetField(stake.FieldRewardReceiver, field.TypeString, value)
@@ -836,10 +884,16 @@ func (suo *StakeUpdateOne) sqlSave(ctx context.Context) (_node *Stake, err error
 		_spec.SetField(stake.FieldReceiverSig, field.TypeString, value)
 	}
 	if value, ok := suo.mutation.Timestamp(); ok {
-		_spec.SetField(stake.FieldTimestamp, field.TypeUint64, value)
+		_spec.SetField(stake.FieldTimestamp, field.TypeInt64, value)
 	}
 	if value, ok := suo.mutation.AddedTimestamp(); ok {
-		_spec.AddField(stake.FieldTimestamp, field.TypeUint64, value)
+		_spec.AddField(stake.FieldTimestamp, field.TypeInt64, value)
+	}
+	if value, ok := suo.mutation.UpdateAt(); ok {
+		_spec.SetField(stake.FieldUpdateAt, field.TypeInt64, value)
+	}
+	if value, ok := suo.mutation.AddedUpdateAt(); ok {
+		_spec.AddField(stake.FieldUpdateAt, field.TypeInt64, value)
 	}
 	_node = &Stake{config: suo.config}
 	_spec.Assign = _node.assignValues

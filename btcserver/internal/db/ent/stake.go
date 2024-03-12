@@ -23,15 +23,15 @@ type Stake struct {
 	// Tx holds the value of the "Tx" field.
 	Tx string `json:"Tx,omitempty"`
 	// Start holds the value of the "Start" field.
-	Start uint64 `json:"Start,omitempty"`
+	Start int64 `json:"Start,omitempty"`
 	// Duration holds the value of the "Duration" field.
-	Duration uint64 `json:"Duration,omitempty"`
+	Duration int64 `json:"Duration,omitempty"`
 	// Deadline holds the value of the "Deadline" field.
-	Deadline uint64 `json:"Deadline,omitempty"`
+	Deadline int64 `json:"Deadline,omitempty"`
 	// ReleasingTime holds the value of the "ReleasingTime" field.
-	ReleasingTime uint64 `json:"ReleasingTime,omitempty"`
+	ReleasingTime int64 `json:"ReleasingTime,omitempty"`
 	// Amount holds the value of the "Amount" field.
-	Amount uint64 `json:"Amount,omitempty"`
+	Amount int64 `json:"Amount,omitempty"`
 	// RewardReceiver holds the value of the "RewardReceiver" field.
 	RewardReceiver string `json:"RewardReceiver,omitempty"`
 	// FinalizedStatus holds the value of the "FinalizedStatus" field.
@@ -43,11 +43,11 @@ type Stake struct {
 	// ReceiverSig holds the value of the "ReceiverSig" field.
 	ReceiverSig string `json:"ReceiverSig,omitempty"`
 	// Timestamp holds the value of the "Timestamp" field.
-	Timestamp uint64 `json:"Timestamp,omitempty"`
+	Timestamp int64 `json:"Timestamp,omitempty"`
 	// CreateAt holds the value of the "CreateAt" field.
-	CreateAt uint64 `json:"CreateAt,omitempty"`
+	CreateAt int64 `json:"CreateAt,omitempty"`
 	// UpdateAt holds the value of the "UpdateAt" field.
-	UpdateAt     uint64 `json:"UpdateAt,omitempty"`
+	UpdateAt     int64 `json:"UpdateAt,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -103,31 +103,31 @@ func (s *Stake) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field Start", values[i])
 			} else if value.Valid {
-				s.Start = uint64(value.Int64)
+				s.Start = value.Int64
 			}
 		case stake.FieldDuration:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field Duration", values[i])
 			} else if value.Valid {
-				s.Duration = uint64(value.Int64)
+				s.Duration = value.Int64
 			}
 		case stake.FieldDeadline:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field Deadline", values[i])
 			} else if value.Valid {
-				s.Deadline = uint64(value.Int64)
+				s.Deadline = value.Int64
 			}
 		case stake.FieldReleasingTime:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field ReleasingTime", values[i])
 			} else if value.Valid {
-				s.ReleasingTime = uint64(value.Int64)
+				s.ReleasingTime = value.Int64
 			}
 		case stake.FieldAmount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field Amount", values[i])
 			} else if value.Valid {
-				s.Amount = uint64(value.Int64)
+				s.Amount = value.Int64
 			}
 		case stake.FieldRewardReceiver:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -163,19 +163,19 @@ func (s *Stake) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field Timestamp", values[i])
 			} else if value.Valid {
-				s.Timestamp = uint64(value.Int64)
+				s.Timestamp = value.Int64
 			}
 		case stake.FieldCreateAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field CreateAt", values[i])
 			} else if value.Valid {
-				s.CreateAt = uint64(value.Int64)
+				s.CreateAt = value.Int64
 			}
 		case stake.FieldUpdateAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field UpdateAt", values[i])
 			} else if value.Valid {
-				s.UpdateAt = uint64(value.Int64)
+				s.UpdateAt = value.Int64
 			}
 		default:
 			s.selectValues.Set(columns[i], values[i])

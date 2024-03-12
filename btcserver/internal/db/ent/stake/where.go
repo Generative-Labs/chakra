@@ -68,27 +68,27 @@ func Tx(v string) predicate.Stake {
 }
 
 // Start applies equality check predicate on the "Start" field. It's identical to StartEQ.
-func Start(v uint64) predicate.Stake {
+func Start(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldStart, v))
 }
 
 // Duration applies equality check predicate on the "Duration" field. It's identical to DurationEQ.
-func Duration(v uint64) predicate.Stake {
+func Duration(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldDuration, v))
 }
 
 // Deadline applies equality check predicate on the "Deadline" field. It's identical to DeadlineEQ.
-func Deadline(v uint64) predicate.Stake {
+func Deadline(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldDeadline, v))
 }
 
 // ReleasingTime applies equality check predicate on the "ReleasingTime" field. It's identical to ReleasingTimeEQ.
-func ReleasingTime(v uint64) predicate.Stake {
+func ReleasingTime(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldReleasingTime, v))
 }
 
 // Amount applies equality check predicate on the "Amount" field. It's identical to AmountEQ.
-func Amount(v uint64) predicate.Stake {
+func Amount(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldAmount, v))
 }
 
@@ -118,17 +118,17 @@ func ReceiverSig(v string) predicate.Stake {
 }
 
 // Timestamp applies equality check predicate on the "Timestamp" field. It's identical to TimestampEQ.
-func Timestamp(v uint64) predicate.Stake {
+func Timestamp(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldTimestamp, v))
 }
 
 // CreateAt applies equality check predicate on the "CreateAt" field. It's identical to CreateAtEQ.
-func CreateAt(v uint64) predicate.Stake {
+func CreateAt(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldCreateAt, v))
 }
 
 // UpdateAt applies equality check predicate on the "UpdateAt" field. It's identical to UpdateAtEQ.
-func UpdateAt(v uint64) predicate.Stake {
+func UpdateAt(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldUpdateAt, v))
 }
 
@@ -328,202 +328,202 @@ func TxContainsFold(v string) predicate.Stake {
 }
 
 // StartEQ applies the EQ predicate on the "Start" field.
-func StartEQ(v uint64) predicate.Stake {
+func StartEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldStart, v))
 }
 
 // StartNEQ applies the NEQ predicate on the "Start" field.
-func StartNEQ(v uint64) predicate.Stake {
+func StartNEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNEQ(FieldStart, v))
 }
 
 // StartIn applies the In predicate on the "Start" field.
-func StartIn(vs ...uint64) predicate.Stake {
+func StartIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldIn(FieldStart, vs...))
 }
 
 // StartNotIn applies the NotIn predicate on the "Start" field.
-func StartNotIn(vs ...uint64) predicate.Stake {
+func StartNotIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNotIn(FieldStart, vs...))
 }
 
 // StartGT applies the GT predicate on the "Start" field.
-func StartGT(v uint64) predicate.Stake {
+func StartGT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGT(FieldStart, v))
 }
 
 // StartGTE applies the GTE predicate on the "Start" field.
-func StartGTE(v uint64) predicate.Stake {
+func StartGTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGTE(FieldStart, v))
 }
 
 // StartLT applies the LT predicate on the "Start" field.
-func StartLT(v uint64) predicate.Stake {
+func StartLT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLT(FieldStart, v))
 }
 
 // StartLTE applies the LTE predicate on the "Start" field.
-func StartLTE(v uint64) predicate.Stake {
+func StartLTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLTE(FieldStart, v))
 }
 
 // DurationEQ applies the EQ predicate on the "Duration" field.
-func DurationEQ(v uint64) predicate.Stake {
+func DurationEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldDuration, v))
 }
 
 // DurationNEQ applies the NEQ predicate on the "Duration" field.
-func DurationNEQ(v uint64) predicate.Stake {
+func DurationNEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNEQ(FieldDuration, v))
 }
 
 // DurationIn applies the In predicate on the "Duration" field.
-func DurationIn(vs ...uint64) predicate.Stake {
+func DurationIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldIn(FieldDuration, vs...))
 }
 
 // DurationNotIn applies the NotIn predicate on the "Duration" field.
-func DurationNotIn(vs ...uint64) predicate.Stake {
+func DurationNotIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNotIn(FieldDuration, vs...))
 }
 
 // DurationGT applies the GT predicate on the "Duration" field.
-func DurationGT(v uint64) predicate.Stake {
+func DurationGT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGT(FieldDuration, v))
 }
 
 // DurationGTE applies the GTE predicate on the "Duration" field.
-func DurationGTE(v uint64) predicate.Stake {
+func DurationGTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGTE(FieldDuration, v))
 }
 
 // DurationLT applies the LT predicate on the "Duration" field.
-func DurationLT(v uint64) predicate.Stake {
+func DurationLT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLT(FieldDuration, v))
 }
 
 // DurationLTE applies the LTE predicate on the "Duration" field.
-func DurationLTE(v uint64) predicate.Stake {
+func DurationLTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLTE(FieldDuration, v))
 }
 
 // DeadlineEQ applies the EQ predicate on the "Deadline" field.
-func DeadlineEQ(v uint64) predicate.Stake {
+func DeadlineEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldDeadline, v))
 }
 
 // DeadlineNEQ applies the NEQ predicate on the "Deadline" field.
-func DeadlineNEQ(v uint64) predicate.Stake {
+func DeadlineNEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNEQ(FieldDeadline, v))
 }
 
 // DeadlineIn applies the In predicate on the "Deadline" field.
-func DeadlineIn(vs ...uint64) predicate.Stake {
+func DeadlineIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldIn(FieldDeadline, vs...))
 }
 
 // DeadlineNotIn applies the NotIn predicate on the "Deadline" field.
-func DeadlineNotIn(vs ...uint64) predicate.Stake {
+func DeadlineNotIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNotIn(FieldDeadline, vs...))
 }
 
 // DeadlineGT applies the GT predicate on the "Deadline" field.
-func DeadlineGT(v uint64) predicate.Stake {
+func DeadlineGT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGT(FieldDeadline, v))
 }
 
 // DeadlineGTE applies the GTE predicate on the "Deadline" field.
-func DeadlineGTE(v uint64) predicate.Stake {
+func DeadlineGTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGTE(FieldDeadline, v))
 }
 
 // DeadlineLT applies the LT predicate on the "Deadline" field.
-func DeadlineLT(v uint64) predicate.Stake {
+func DeadlineLT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLT(FieldDeadline, v))
 }
 
 // DeadlineLTE applies the LTE predicate on the "Deadline" field.
-func DeadlineLTE(v uint64) predicate.Stake {
+func DeadlineLTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLTE(FieldDeadline, v))
 }
 
 // ReleasingTimeEQ applies the EQ predicate on the "ReleasingTime" field.
-func ReleasingTimeEQ(v uint64) predicate.Stake {
+func ReleasingTimeEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldReleasingTime, v))
 }
 
 // ReleasingTimeNEQ applies the NEQ predicate on the "ReleasingTime" field.
-func ReleasingTimeNEQ(v uint64) predicate.Stake {
+func ReleasingTimeNEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNEQ(FieldReleasingTime, v))
 }
 
 // ReleasingTimeIn applies the In predicate on the "ReleasingTime" field.
-func ReleasingTimeIn(vs ...uint64) predicate.Stake {
+func ReleasingTimeIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldIn(FieldReleasingTime, vs...))
 }
 
 // ReleasingTimeNotIn applies the NotIn predicate on the "ReleasingTime" field.
-func ReleasingTimeNotIn(vs ...uint64) predicate.Stake {
+func ReleasingTimeNotIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNotIn(FieldReleasingTime, vs...))
 }
 
 // ReleasingTimeGT applies the GT predicate on the "ReleasingTime" field.
-func ReleasingTimeGT(v uint64) predicate.Stake {
+func ReleasingTimeGT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGT(FieldReleasingTime, v))
 }
 
 // ReleasingTimeGTE applies the GTE predicate on the "ReleasingTime" field.
-func ReleasingTimeGTE(v uint64) predicate.Stake {
+func ReleasingTimeGTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGTE(FieldReleasingTime, v))
 }
 
 // ReleasingTimeLT applies the LT predicate on the "ReleasingTime" field.
-func ReleasingTimeLT(v uint64) predicate.Stake {
+func ReleasingTimeLT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLT(FieldReleasingTime, v))
 }
 
 // ReleasingTimeLTE applies the LTE predicate on the "ReleasingTime" field.
-func ReleasingTimeLTE(v uint64) predicate.Stake {
+func ReleasingTimeLTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLTE(FieldReleasingTime, v))
 }
 
 // AmountEQ applies the EQ predicate on the "Amount" field.
-func AmountEQ(v uint64) predicate.Stake {
+func AmountEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldAmount, v))
 }
 
 // AmountNEQ applies the NEQ predicate on the "Amount" field.
-func AmountNEQ(v uint64) predicate.Stake {
+func AmountNEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNEQ(FieldAmount, v))
 }
 
 // AmountIn applies the In predicate on the "Amount" field.
-func AmountIn(vs ...uint64) predicate.Stake {
+func AmountIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldIn(FieldAmount, vs...))
 }
 
 // AmountNotIn applies the NotIn predicate on the "Amount" field.
-func AmountNotIn(vs ...uint64) predicate.Stake {
+func AmountNotIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNotIn(FieldAmount, vs...))
 }
 
 // AmountGT applies the GT predicate on the "Amount" field.
-func AmountGT(v uint64) predicate.Stake {
+func AmountGT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGT(FieldAmount, v))
 }
 
 // AmountGTE applies the GTE predicate on the "Amount" field.
-func AmountGTE(v uint64) predicate.Stake {
+func AmountGTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGTE(FieldAmount, v))
 }
 
 // AmountLT applies the LT predicate on the "Amount" field.
-func AmountLT(v uint64) predicate.Stake {
+func AmountLT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLT(FieldAmount, v))
 }
 
 // AmountLTE applies the LTE predicate on the "Amount" field.
-func AmountLTE(v uint64) predicate.Stake {
+func AmountLTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLTE(FieldAmount, v))
 }
 
@@ -803,122 +803,122 @@ func ReceiverSigContainsFold(v string) predicate.Stake {
 }
 
 // TimestampEQ applies the EQ predicate on the "Timestamp" field.
-func TimestampEQ(v uint64) predicate.Stake {
+func TimestampEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldTimestamp, v))
 }
 
 // TimestampNEQ applies the NEQ predicate on the "Timestamp" field.
-func TimestampNEQ(v uint64) predicate.Stake {
+func TimestampNEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNEQ(FieldTimestamp, v))
 }
 
 // TimestampIn applies the In predicate on the "Timestamp" field.
-func TimestampIn(vs ...uint64) predicate.Stake {
+func TimestampIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldIn(FieldTimestamp, vs...))
 }
 
 // TimestampNotIn applies the NotIn predicate on the "Timestamp" field.
-func TimestampNotIn(vs ...uint64) predicate.Stake {
+func TimestampNotIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNotIn(FieldTimestamp, vs...))
 }
 
 // TimestampGT applies the GT predicate on the "Timestamp" field.
-func TimestampGT(v uint64) predicate.Stake {
+func TimestampGT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGT(FieldTimestamp, v))
 }
 
 // TimestampGTE applies the GTE predicate on the "Timestamp" field.
-func TimestampGTE(v uint64) predicate.Stake {
+func TimestampGTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGTE(FieldTimestamp, v))
 }
 
 // TimestampLT applies the LT predicate on the "Timestamp" field.
-func TimestampLT(v uint64) predicate.Stake {
+func TimestampLT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLT(FieldTimestamp, v))
 }
 
 // TimestampLTE applies the LTE predicate on the "Timestamp" field.
-func TimestampLTE(v uint64) predicate.Stake {
+func TimestampLTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLTE(FieldTimestamp, v))
 }
 
 // CreateAtEQ applies the EQ predicate on the "CreateAt" field.
-func CreateAtEQ(v uint64) predicate.Stake {
+func CreateAtEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldCreateAt, v))
 }
 
 // CreateAtNEQ applies the NEQ predicate on the "CreateAt" field.
-func CreateAtNEQ(v uint64) predicate.Stake {
+func CreateAtNEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNEQ(FieldCreateAt, v))
 }
 
 // CreateAtIn applies the In predicate on the "CreateAt" field.
-func CreateAtIn(vs ...uint64) predicate.Stake {
+func CreateAtIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldIn(FieldCreateAt, vs...))
 }
 
 // CreateAtNotIn applies the NotIn predicate on the "CreateAt" field.
-func CreateAtNotIn(vs ...uint64) predicate.Stake {
+func CreateAtNotIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNotIn(FieldCreateAt, vs...))
 }
 
 // CreateAtGT applies the GT predicate on the "CreateAt" field.
-func CreateAtGT(v uint64) predicate.Stake {
+func CreateAtGT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGT(FieldCreateAt, v))
 }
 
 // CreateAtGTE applies the GTE predicate on the "CreateAt" field.
-func CreateAtGTE(v uint64) predicate.Stake {
+func CreateAtGTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGTE(FieldCreateAt, v))
 }
 
 // CreateAtLT applies the LT predicate on the "CreateAt" field.
-func CreateAtLT(v uint64) predicate.Stake {
+func CreateAtLT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLT(FieldCreateAt, v))
 }
 
 // CreateAtLTE applies the LTE predicate on the "CreateAt" field.
-func CreateAtLTE(v uint64) predicate.Stake {
+func CreateAtLTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLTE(FieldCreateAt, v))
 }
 
 // UpdateAtEQ applies the EQ predicate on the "UpdateAt" field.
-func UpdateAtEQ(v uint64) predicate.Stake {
+func UpdateAtEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldUpdateAt, v))
 }
 
 // UpdateAtNEQ applies the NEQ predicate on the "UpdateAt" field.
-func UpdateAtNEQ(v uint64) predicate.Stake {
+func UpdateAtNEQ(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNEQ(FieldUpdateAt, v))
 }
 
 // UpdateAtIn applies the In predicate on the "UpdateAt" field.
-func UpdateAtIn(vs ...uint64) predicate.Stake {
+func UpdateAtIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldIn(FieldUpdateAt, vs...))
 }
 
 // UpdateAtNotIn applies the NotIn predicate on the "UpdateAt" field.
-func UpdateAtNotIn(vs ...uint64) predicate.Stake {
+func UpdateAtNotIn(vs ...int64) predicate.Stake {
 	return predicate.Stake(sql.FieldNotIn(FieldUpdateAt, vs...))
 }
 
 // UpdateAtGT applies the GT predicate on the "UpdateAt" field.
-func UpdateAtGT(v uint64) predicate.Stake {
+func UpdateAtGT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGT(FieldUpdateAt, v))
 }
 
 // UpdateAtGTE applies the GTE predicate on the "UpdateAt" field.
-func UpdateAtGTE(v uint64) predicate.Stake {
+func UpdateAtGTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldGTE(FieldUpdateAt, v))
 }
 
 // UpdateAtLT applies the LT predicate on the "UpdateAt" field.
-func UpdateAtLT(v uint64) predicate.Stake {
+func UpdateAtLT(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLT(FieldUpdateAt, v))
 }
 
 // UpdateAtLTE applies the LTE predicate on the "UpdateAt" field.
-func UpdateAtLTE(v uint64) predicate.Stake {
+func UpdateAtLTE(v int64) predicate.Stake {
 	return predicate.Stake(sql.FieldLTE(FieldUpdateAt, v))
 }
 

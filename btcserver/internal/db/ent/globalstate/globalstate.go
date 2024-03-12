@@ -42,6 +42,11 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+var (
+	// DefaultUpdateAt holds the default value on creation for the "UpdateAt" field.
+	DefaultUpdateAt int64
+)
+
 // OrderOption defines the ordering options for the GlobalState queries.
 type OrderOption func(*sql.Selector)
 
