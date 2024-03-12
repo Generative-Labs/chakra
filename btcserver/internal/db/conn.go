@@ -1,10 +1,13 @@
 package db
 
 import (
+	"context"
 	"fmt"
+	"log"
 
 	"github.com/generativelabs/btcserver/internal/db/ent"
 	_ "github.com/go-sql-driver/mysql" // mysql driver
+	_ "github.com/mattn/go-sqlite3"    // sqlite3 driver
 )
 
 const (
@@ -53,10 +56,28 @@ func CreateBackend(config Config) (*Backend, error) {
 }
 
 func CreateMysqlDB(config Config) (*ent.Client, error) {
-	return ent.Open(MysqlDriver, fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=True",
+	client, err := ent.Open(MysqlDriver, fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=True",
 		config.User, config.Password, config.Host, config.Database))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := client.Schema.Create(context.Background()); err != nil {
+		log.Fatalf("failed creating schema resources: %v", err)
+	}
+
+	return client, err
 }
 
 func CreateSqliteDB(config Config) (*ent.Client, error) {
-	return ent.Open(SqliteDriver, config.Database+".db?_fk=1")
+	client, err := ent.Open(SqliteDriver, config.Database+".db?_fk=1")
+	if err != nil {
+		return nil, err
+	}
+
+	if err := client.Schema.Create(context.Background()); err != nil {
+		log.Fatalf("failed creating schema resources: %v", err)
+	}
+
+	return client, err
 }

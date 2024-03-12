@@ -36,7 +36,7 @@ func Run() {
 		log.Fatal().Msgf("❌ Fatal error decode config into struct: %s ", err)
 	}
 
-	backend, err := db.CreateBackend(config.Mysql)
+	backend, err := db.CreateBackend(config.DB)
 	if err != nil {
 		log.Fatal().Msgf("❌ Fatal error create db backend: %s ", err)
 	}
@@ -53,7 +53,7 @@ func Run() {
 		log.Fatal().Msgf("❌ Fatal error new chakra account: %s ", err)
 	}
 
-	log.Info().Msgf("Start to run btc server, conf: %+v ", config)
+	log.Info().Msgf("🔵🔵 Start to run btc server, conf: %+v 🔵🔵", config)
 
 	err = api.New(ctx, backend, cAccount, config.Chakra.ContractAddress).Run(config.ServicePort)
 	if err != nil {
