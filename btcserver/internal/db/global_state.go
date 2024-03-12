@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+
 	"github.com/generativelabs/btcserver/internal/db/ent"
 	"github.com/generativelabs/btcserver/internal/db/ent/globalstate"
 )

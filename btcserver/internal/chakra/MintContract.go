@@ -12,17 +12,17 @@ import (
 	"github.com/ethereum/go-ethereum/rpc"
 )
 
-func NewChakraProvider(ctx context.Context, rpcUrl string) (*starknetrpc.Provider, error) {
-	c, err := rpc.DialContext(ctx, rpcUrl)
+func NewChakraProvider(ctx context.Context, rpcURL string) (*starknetrpc.Provider, error) {
+	c, err := rpc.DialContext(ctx, rpcURL)
 	if err != nil {
 		return nil, err
 	}
 	return starknetrpc.NewProvider(c), nil
 }
 
-func NewChakraAccount(privateKey, public_key, account_addr string, provider *starknetrpc.Provider) (*account.Account, error) {
+func NewChakraAccount(privateKey, publicKey, accountAddr string, provider *starknetrpc.Provider) (*account.Account, error) {
 	// Here we are converting the account address to felt
-	accountAddress, err := utils.HexToFelt(account_addr)
+	accountAddress, err := utils.HexToFelt(accountAddr)
 	if err != nil {
 		return nil, err
 	}
@@ -34,9 +34,9 @@ func NewChakraAccount(privateKey, public_key, account_addr string, provider *sta
 		return nil, errors.New("invalid Private Key")
 	}
 
-	ks.Put(public_key, fakePrivKeyBI)
+	ks.Put(publicKey, fakePrivKeyBI)
 
-	account, err := account.NewAccount(provider, accountAddress, public_key, ks, 0)
+	account, err := account.NewAccount(provider, accountAddress, publicKey, ks, 0)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func NewChakraAccount(privateKey, public_key, account_addr string, provider *sta
 	return account, nil
 }
 
-func ChakraRPCCall(provider *starknetrpc.Provider, contractAddressHex string, method string) ([]*felt.Felt, error) {
+func RPCCall(provider *starknetrpc.Provider, contractAddressHex string, method string) ([]*felt.Felt, error) {
 	contractAddress, err := utils.HexToFelt(contractAddressHex)
 	if err != nil {
 		panic(err)
@@ -63,7 +63,7 @@ func ChakraRPCCall(provider *starknetrpc.Provider, contractAddressHex string, me
 	return callResp, nil
 }
 
-func ChakraRewardTo(ctx context.Context, cAcctount *account.Account, contractAddressHex string, amount string) (*starknetrpc.AddInvokeTransactionResponse, error) {
+func RewardTo(ctx context.Context, cAcctount *account.Account, contractAddressHex string, amount string) (*starknetrpc.AddInvokeTransactionResponse, error) {
 	contractAddress, err := utils.HexToFelt(contractAddressHex)
 	if err != nil {
 		panic(err)
@@ -120,8 +120,8 @@ func ChakraRewardTo(ctx context.Context, cAcctount *account.Account, contractAdd
 	return resp, nil
 }
 
-// ChakraSubmitTXInfo tx_id, btc_amount, expire_at, recipient_address
-func ChakraSubmitTXInfo(ctx context.Context, cAcctount *account.Account, contractAddressHex string, txID string, amount string, expireAt uint64, rewardReceiver string) (*starknetrpc.AddInvokeTransactionResponse, error) {
+// SubmitTXInfo tx_id, btc_amount, expire_at, recipient_address
+func SubmitTXInfo(ctx context.Context, cAcctount *account.Account, contractAddressHex string, txID string, amount string, expireAt uint64, rewardReceiver string) (*starknetrpc.AddInvokeTransactionResponse, error) {
 	contractAddress, err := utils.HexToFelt(contractAddressHex)
 	if err != nil {
 		panic(err)

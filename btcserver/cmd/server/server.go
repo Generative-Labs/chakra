@@ -3,15 +3,15 @@ package server
 import (
 	"context"
 	"fmt"
+	"os"
+
 	"github.com/NethermindEth/starknet.go/curve"
 	"github.com/NethermindEth/starknet.go/utils"
 	"github.com/generativelabs/btcserver/internal/api"
 	"github.com/generativelabs/btcserver/internal/chakra"
 	"github.com/generativelabs/btcserver/internal/db"
-	"github.com/rs/zerolog/log"
-	"os"
-
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 )
 
