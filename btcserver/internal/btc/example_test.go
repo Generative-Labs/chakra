@@ -2,6 +2,8 @@ package btc_test
 
 import (
 	"bytes"
+	"encoding/hex"
+	"encoding/json"
 	"fmt"
 
 	"github.com/btcsuite/btcd/btcutil"
@@ -11,6 +13,7 @@ import (
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
+	"github.com/generativelabs/btcserver/internal/btc"
 )
 
 const (
@@ -50,6 +53,8 @@ func Example_btc_lock_and_redeem() {
 		return
 	}
 
+	fmt.Println(address)
+
 	amount, err := btcutil.NewAmount(0.001)
 	if err != nil {
 		fmt.Println(err)
@@ -67,6 +72,16 @@ func Example_btc_lock_and_redeem() {
 		return
 	}
 
+	fmt.Println(tx)
+
+	txRes, err := rpcClient.GetRawTransactionVerbose(hash)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	jtx1, _ := json.Marshal(txRes)
+	fmt.Println(string(jtx1))
+
 	csvMsgTx, csvScript, err := createCSVLockTx(tx.MsgTx(), *hash, 1, 20, 50000, bobPrivKey.PrivKey, bobPubKey)
 	if err != nil {
 		fmt.Println(err)
@@ -79,6 +94,15 @@ func Example_btc_lock_and_redeem() {
 		return
 	}
 
+	txRes2, err := rpcClient.GetRawTransactionVerbose(csvHash)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	jtx2, _ := json.Marshal(txRes2)
+	fmt.Println("////")
+	fmt.Println(string(jtx2))
+
 	spendCsvMsgTx, err := createCSVRedeemTx(*csvHash, address, csvScript, bobPrivKey.PrivKey, 10000)
 	if err != nil {
 		fmt.Println(err)
@@ -90,12 +114,13 @@ func Example_btc_lock_and_redeem() {
 		return
 	}
 
-	_, err = encodeTransaction(spendCsvMsgTx)
+	spendTx, err := encodeTransaction(spendCsvMsgTx)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	fmt.Println("end")
+	fmt.Println(hex.EncodeToString(spendTx))
 
 	// Output:
 	// end
@@ -201,4 +226,48 @@ func createCSVRedeemTx(lockTxHash chainhash.Hash, receiverAddress btcutil.Addres
 	spendCsvMsgTx.TxIn[0].SignatureScript = redeemSigScript
 
 	return spendCsvMsgTx, nil
+}
+
+// Example_checkStakeTxs tests check stake txs.
+func Example_checkStakeTxs() {
+	client, err := btc.NewClient(btc.Config{
+		NetworkName: chaincfg.RegressionNetParams.Name,
+		RPCHost:     "localhost:18332",
+		RPCUser:     "rpcuser",
+		RPCPass:     "rpcpass",
+		DisableTLS:  true,
+	})
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	stakeRecord := btc.StakeRecord{
+		TxID:            "155a64faa492d81e4ca58a4ca4182a842b1ff961bedd7db78d1698fa34a2c1f8",
+		StakerPubKeyStr: "024edfcf9dfe6c0b5c83d1ab3f78d1b39a46ebac6798e08e19761f5ed89ec83c10",
+		Amount:          50000,
+		Duration:        20,
+		Status:          btc.TxPending,
+	}
+
+	res, err := client.CheckStakeRecords([]btc.StakeRecord{stakeRecord})
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	if len(res) != 1 {
+		fmt.Println(err)
+		return
+	}
+
+	if res[0] != btc.TxIncluded {
+		fmt.Println("check include tx failed")
+		return
+	}
+
+	fmt.Println("end")
+
+	// Output:
+	// end
 }
