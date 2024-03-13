@@ -13,6 +13,7 @@ import (
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
+	"github.com/generativelabs/btcserver/internal"
 	"github.com/generativelabs/btcserver/internal/btc"
 )
 
@@ -242,15 +243,15 @@ func Example_checkStakeTxs() {
 		return
 	}
 
-	stakeRecord := btc.StakeRecord{
+	stakeRecord := internal.StakeVerificationParam{
 		TxID:            "155a64faa492d81e4ca58a4ca4182a842b1ff961bedd7db78d1698fa34a2c1f8",
-		StakerPubKeyStr: "024edfcf9dfe6c0b5c83d1ab3f78d1b39a46ebac6798e08e19761f5ed89ec83c10",
+		StakerPubKey:    "024edfcf9dfe6c0b5c83d1ab3f78d1b39a46ebac6798e08e19761f5ed89ec83c10",
 		Amount:          50000,
 		Duration:        20,
-		Status:          btc.TxPending,
+		FinalizedStatus: internal.TxPending,
 	}
 
-	res, err := client.CheckStakeRecords([]btc.StakeRecord{stakeRecord})
+	res, err := client.CheckStakeRecords([]*internal.StakeVerificationParam{&stakeRecord})
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -261,7 +262,7 @@ func Example_checkStakeTxs() {
 		return
 	}
 
-	if res[0] != btc.TxIncluded {
+	if res[0] != internal.Mismatch {
 		fmt.Println("check include tx failed")
 		return
 	}

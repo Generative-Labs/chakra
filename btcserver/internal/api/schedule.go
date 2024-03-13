@@ -118,3 +118,34 @@ func (s *Server) UpdateTimeWheel() error {
 	s.ScheduleTimeWheel = s.ScheduleTimeWheel.Add(5 * time.Minute)
 	return nil
 }
+
+// UpdateStakeStatus defines the periodic process of reading stake records from the database,
+// and updating the status of records in the database based on the status of transactions on the BTC chain.
+func (s *Server) UpdateStakeStatus() {
+	timer := time.NewTicker(5 * time.Minute)
+
+	for range timer.C {
+		stakeVerifyParams, err := s.backend.QueryNoFinalizedStakeTx()
+		if err != nil {
+			log.Error().Msgf("💥 error when query no finalized stake tx %s", err)
+			continue
+		}
+
+		newStatuses, err := s.btcClient.CheckStakeRecords(stakeVerifyParams)
+		if err != nil {
+			log.Error().Msgf("💥 error when check state records %s", err)
+			continue
+		}
+
+		for i, status := range newStatuses {
+			if status == stakeVerifyParams[i].FinalizedStatus {
+				continue
+			}
+
+			err := s.backend.UpdateStakeFinalizedStatus(stakeVerifyParams[i].StakerPubKey, stakeVerifyParams[i].TxID, int(status))
+			if err != nil {
+				log.Error().Msgf("💥 error when update state finalize status %s", err)
+			}
+		}
+	}
+}

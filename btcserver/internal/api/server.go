@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/NethermindEth/starknet.go/account"
+	"github.com/generativelabs/btcserver/internal/btc"
 	"github.com/generativelabs/btcserver/internal/db"
 	"github.com/gin-gonic/gin"
 )
@@ -17,17 +18,22 @@ type Server struct {
 	ChakraAccount     *account.Account
 	ContractAddress   string
 	ScheduleTimeWheel time.Time
+	btcClient         *btc.Client
 }
 
-func New(ctx context.Context, backend *db.Backend, chakraAccount *account.Account, contractAddress string) *Server {
+func NewServer(ctx context.Context, backend *db.Backend, chakraAccount *account.Account,
+	contractAddress string, btcClient *btc.Client,
+) *Server {
 	server := &Server{
 		Ctx:             ctx,
 		backend:         backend,
 		ChakraAccount:   chakraAccount,
 		ContractAddress: contractAddress,
+		btcClient:       btcClient,
 	}
 
 	go server.TimeWheelSchedule()
+	go server.UpdateStakeStatus()
 
 	r := gin.Default()
 	r.Use(CORSMiddleware())
