@@ -3,11 +3,11 @@ package db
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/generativelabs/btcserver/internal/db/ent"
 	_ "github.com/go-sql-driver/mysql" // mysql driver
 	_ "github.com/mattn/go-sqlite3"    // sqlite3 driver
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -63,7 +63,7 @@ func CreateMysqlDB(config Config) (*ent.Client, error) {
 	}
 
 	if err := client.Schema.Create(context.Background()); err != nil {
-		log.Fatalf("failed creating schema resources: %v", err)
+		log.Fatal().Msgf("failed creating schema resources: %v", err)
 	}
 
 	return client, err
@@ -76,7 +76,7 @@ func CreateSqliteDB(dbName string) (*ent.Client, error) {
 	}
 
 	if err := client.Schema.Create(context.Background()); err != nil {
-		log.Fatalf("failed creating schema resources: %v", err)
+		log.Fatal().Msgf("failed creating schema resources: %v", err)
 	}
 
 	return client, err

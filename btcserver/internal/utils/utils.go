@@ -31,6 +31,10 @@ func TimeTOTimestamp(t time.Time) int64 {
 	return t.UnixNano() / int64(time.Millisecond)
 }
 
+func TimestampToTime(timestamp int64) time.Time {
+	return time.Unix(timestamp/1000, (timestamp%1000)*1000000)
+}
+
 func TimeToDailyFixedTime(t time.Time) time.Time {
 	fixedTime := time.Date(0, 0, 0, t.Hour(), t.Minute(), t.Second(), 0, time.Local)
 	return fixedTime

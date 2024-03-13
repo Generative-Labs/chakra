@@ -47,13 +47,7 @@ func Run() {
 	}
 
 	ctx := context.Background()
-	provider, err := chakra.NewChakraProvider(ctx, config.Chakra.URL)
-	if err != nil {
-		log.Fatal().Msgf("❌ Fatal error new chakra provider: %s ", err)
-	}
-
-	pubkey := GetPublickeyFromPrivateKey(config.Chakra.PrivateKey)
-	cAccount, err := chakra.NewChakraAccount(config.Chakra.PrivateKey, pubkey, config.Chakra.Address, provider)
+	cAccount, err := chakra.NewChakraAccount(ctx, config.Chakra.URL, config.Chakra.PrivateKey, config.Chakra.Address)
 	if err != nil {
 		log.Fatal().Msgf("❌ Fatal error new chakra account: %s ", err)
 	}

@@ -50,9 +50,12 @@ func (s *Server) TimeWheelSchedule() {
 		}
 
 		if len(txs) == 0 {
-			log.Info().Msgf("No tx to be released, sleep 5 minutes")
+			log.Info().Msgf("No tx to be released, sleep %v minutes", s.ScheduleTimeWheel.Add(5*time.Minute).Sub(time.Now()).Minutes())
+			err = s.UpdateTimeWheel()
+			if err != nil {
+				log.Error().Msgf("❌ error update time wheel: %s ", err)
+			}
 			time.Sleep(time.Until(s.ScheduleTimeWheel.Add(5 * time.Minute)))
-			_ = s.UpdateTimeWheel()
 			continue
 		}
 
@@ -62,26 +65,24 @@ func (s *Server) TimeWheelSchedule() {
 
 func (s *Server) RewardTasksSchedule(txs []*types.ReleaseTxsInfo) {
 	wg := sync.WaitGroup{}
-	wg.Add(len(txs))
-	for _, tx := range txs {
-		go func(tx *types.ReleaseTxsInfo) {
-			defer wg.Done()
-			err := s.RewardTasks(tx)
-			if err != nil {
-				log.Error().Msgf("❌ error reward tasks: %s ", err)
-				return
-			}
-		}(tx)
-	}
+	wg.Add(1)
+	go func(tx []*types.ReleaseTxsInfo) {
+		defer wg.Done()
+		err := s.RewardTasks(tx)
+		if err != nil {
+			log.Error().Msgf("❌ error reward tasks: %s ", err)
+			return
+		}
+	}(txs)
 
 	wg.Wait()
 
 	_ = s.UpdateTimeWheel()
 }
 
-func (s *Server) RewardTasks(tx *types.ReleaseTxsInfo) error {
-	seconds := tx.ReleasingTime / 1000
-	nanos := (tx.ReleasingTime % 1000) * 1000000
+func (s *Server) RewardTasks(txs []*types.ReleaseTxsInfo) error {
+	seconds := txs[0].ReleasingTime / 1000
+	nanos := (txs[0].ReleasingTime % 1000) * 1000000
 	t := time.Unix(seconds, nanos).UTC()
 
 	timer := time.NewTimer(time.Until(t))
@@ -89,17 +90,25 @@ func (s *Server) RewardTasks(tx *types.ReleaseTxsInfo) error {
 	for { //nolint
 		select {
 		case <-timer.C:
-			res, err := chakra.RewardTo(s.Ctx, s.ChakraAccount, s.ContractAddress, tx.Tx)
+			txIDs := make([]string, 0)
+			for _, tx := range txs {
+				txIDs = append(txIDs, tx.Tx)
+			}
+
+			res, err := chakra.RewardTo(s.Ctx, s.ChakraAccount, s.ContractAddress, txIDs)
 			if err != nil {
-				log.Error().Msgf("❌ error reward to txID %s: %s ", tx.Tx, err)
+				log.Error().Msgf("❌ error reward to txIDs %v: %s ", txIDs, err)
 				// todo deal err task
 				return err
 			}
-			log.Info().Msgf("Chakra reward to success, tx hash: %s ", res.TransactionHash)
-			err = s.backend.UpdateStakeReleasingTime(tx.Staker, tx.Tx)
-			if err != nil {
-				log.Error().Msgf("❌ error %s update stake releasing time to txID %s: %s ", tx.Staker, tx.Tx, err)
-				return err
+
+			log.Info().Msgf("Chakra reward to success, txs hash: %s ", res.TransactionHash)
+			for _, tx := range txs {
+				err = s.backend.UpdateStakeReleasingTime(tx.Staker, tx.Tx)
+				if err != nil {
+					log.Error().Msgf("❌ error %s update stake releasing time to txID %s: %s ", tx.Staker, tx.Tx, err)
+					return err
+				}
 			}
 
 			return nil
@@ -109,6 +118,7 @@ func (s *Server) RewardTasks(tx *types.ReleaseTxsInfo) error {
 
 func (s *Server) UpdateTimeWheel() error {
 	newScheduleTimeWheel := utils.TimeTOTimestamp(s.ScheduleTimeWheel) + 5*time.Minute.Milliseconds()
+	log.Info().Msgf("Update time wheel to %s ", utils.TimestampToTime(newScheduleTimeWheel))
 	err := s.backend.UpdateTimeWheel(newScheduleTimeWheel)
 	if err != nil {
 		log.Error().Msgf("❌ error update time wheel for db: %s ", err)

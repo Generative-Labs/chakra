@@ -7,9 +7,11 @@ import (
 
 	"github.com/NethermindEth/juno/core/felt"
 	"github.com/NethermindEth/starknet.go/account"
+	"github.com/NethermindEth/starknet.go/curve"
 	starknetrpc "github.com/NethermindEth/starknet.go/rpc"
 	"github.com/NethermindEth/starknet.go/utils"
 	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/rs/zerolog/log"
 )
 
 func NewChakraProvider(ctx context.Context, rpcURL string) (*starknetrpc.Provider, error) {
@@ -20,7 +22,14 @@ func NewChakraProvider(ctx context.Context, rpcURL string) (*starknetrpc.Provide
 	return starknetrpc.NewProvider(c), nil
 }
 
-func NewChakraAccount(privateKey, publicKey, accountAddr string, provider *starknetrpc.Provider) (*account.Account, error) {
+func NewChakraAccount(ctx context.Context, rpcURL string, privateKey, accountAddr string) (*account.Account, error) {
+	provider, err := NewChakraProvider(ctx, rpcURL)
+	if err != nil {
+		log.Fatal().Msgf("❌ Fatal error new chakra provider: %s ", err)
+	}
+
+	publicKey := GetPublicKeyFromPrivateKey(privateKey)
+
 	// Here we are converting the account address to felt
 	accountAddress, err := utils.HexToFelt(accountAddr)
 	if err != nil {
@@ -36,15 +45,15 @@ func NewChakraAccount(privateKey, publicKey, accountAddr string, provider *stark
 
 	ks.Put(publicKey, fakePrivKeyBI)
 
-	account, err := account.NewAccount(provider, accountAddress, publicKey, ks, 0)
+	acc, err := account.NewAccount(provider, accountAddress, publicKey, ks, 0)
 	if err != nil {
 		return nil, err
 	}
 
-	return account, nil
+	return acc, nil
 }
 
-func RPCCall(provider *starknetrpc.Provider, contractAddressHex string, method string) ([]*felt.Felt, error) {
+func RPCCall(cAccount *account.Account, contractAddressHex string, method string, callData []*felt.Felt) ([]*felt.Felt, error) {
 	contractAddress, err := utils.HexToFelt(contractAddressHex)
 	if err != nil {
 		panic(err)
@@ -54,16 +63,17 @@ func RPCCall(provider *starknetrpc.Provider, contractAddressHex string, method s
 	tx := starknetrpc.FunctionCall{
 		ContractAddress:    contractAddress,
 		EntryPointSelector: utils.GetSelectorFromNameFelt(method),
+		Calldata:           callData,
 	}
 
-	callResp, err := provider.Call(context.Background(), tx, starknetrpc.BlockID{Tag: "latest"})
+	callResp, err := cAccount.Call(context.Background(), tx, starknetrpc.BlockID{Tag: "latest"})
 	if err != nil {
 		return nil, err
 	}
 	return callResp, nil
 }
 
-func RewardTo(ctx context.Context, cAccount *account.Account, contractAddressHex string, txID string) (*starknetrpc.AddInvokeTransactionResponse, error) {
+func RewardTo(ctx context.Context, cAccount *account.Account, contractAddressHex string, txIDs []string) (*starknetrpc.AddInvokeTransactionResponse, error) {
 	contractAddress, err := utils.HexToFelt(contractAddressHex)
 	if err != nil {
 		panic(err)
@@ -89,8 +99,13 @@ func RewardTo(ctx context.Context, cAccount *account.Account, contractAddressHex
 		Type:          starknetrpc.TransactionType_Invoke,
 		SenderAddress: cAccount.AccountAddress,
 	}
+
+	params := ArrBtcTxIDToFelt(txIDs)
+	if err != nil {
+		return nil, err
+	}
 	callData := make([]*felt.Felt, 0)
-	callData = append(callData, AddressToFelt(txID))
+	callData = append(callData, params...)
 
 	// Make read contract call
 	fnCall := starknetrpc.FunctionCall{
@@ -149,11 +164,15 @@ func SubmitTXInfo(ctx context.Context, cAccount *account.Account, contractAddres
 	}
 
 	callData := make([]*felt.Felt, 0)
-	callData = append(callData, AddressToFelt(txID))
+	callData = append(callData, BtcTxIDToFelt(txID))
 	callData = append(callData, AmountToFelt(amount)...)
-	callData = append(callData, AddressToFelt(big.NewInt(int64(startAt)).String()))
-	callData = append(callData, AddressToFelt(big.NewInt(int64(expireAt)).String()))
-	callData = append(callData, AddressToFelt(rewardReceiver))
+	callData = append(callData, utils.BigIntToFelt(big.NewInt(int64(startAt))))
+	callData = append(callData, utils.BigIntToFelt(big.NewInt(int64(expireAt))))
+	receiver, err := utils.HexToFelt(rewardReceiver)
+	if err != nil {
+		return nil, err
+	}
+	callData = append(callData, receiver)
 
 	// Make read contract call
 	fnCall := starknetrpc.FunctionCall{
@@ -183,6 +202,20 @@ func SubmitTXInfo(ctx context.Context, cAccount *account.Account, contractAddres
 	return resp, nil
 }
 
+func GetPublicKeyFromPrivateKey(privateKey string) string {
+	privInt := utils.HexToBN(privateKey)
+
+	pubX, _, err := curve.Curve.PrivateToPoint(privInt)
+	if err != nil {
+		log.Fatal().Msgf("❌ Fatal error generate public key: %s ", err)
+		panic(err)
+	}
+
+	pubKey := utils.BigToHex(pubX)
+
+	return pubKey
+}
+
 func Uint256ToFelt252(x *big.Int) (*big.Int, *big.Int) {
 	const FeltSize = 252
 
@@ -198,6 +231,24 @@ func Uint256ToFelt252(x *big.Int) (*big.Int, *big.Int) {
 
 func AddressToFelt(addr string) *felt.Felt {
 	return utils.BigIntToFelt(utils.StrToBig(addr))
+}
+
+func BtcTxIDToFelt(txID string) *felt.Felt {
+	fb := utils.HexToBN(txID)
+	f := utils.BigIntToFelt(fb)
+	return f
+}
+
+func ArrBtcTxIDToFelt(txIDS []string) []*felt.Felt {
+	newTxIDs := make([]*felt.Felt, 0)
+
+	for _, tx := range txIDS {
+		fb := utils.HexToBN(tx)
+		f := utils.BigIntToFelt(fb)
+		newTxIDs = append(newTxIDs, f)
+	}
+
+	return newTxIDs
 }
 
 func AmountToFelt(amount string) []*felt.Felt {
