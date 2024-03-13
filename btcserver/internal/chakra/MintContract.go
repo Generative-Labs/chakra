@@ -63,14 +63,14 @@ func RPCCall(provider *starknetrpc.Provider, contractAddressHex string, method s
 	return callResp, nil
 }
 
-func RewardTo(ctx context.Context, cAcctount *account.Account, contractAddressHex string, amount string) (*starknetrpc.AddInvokeTransactionResponse, error) {
+func RewardTo(ctx context.Context, cAccount *account.Account, contractAddressHex string, txID string) (*starknetrpc.AddInvokeTransactionResponse, error) {
 	contractAddress, err := utils.HexToFelt(contractAddressHex)
 	if err != nil {
 		panic(err)
 	}
 
 	// Getting the nonce from the account
-	nonce, err := cAcctount.Nonce(ctx, starknetrpc.BlockID{Tag: "latest"}, cAcctount.AccountAddress)
+	nonce, err := cAccount.Nonce(ctx, starknetrpc.BlockID{Tag: "latest"}, cAccount.AccountAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -87,10 +87,10 @@ func RewardTo(ctx context.Context, cAcctount *account.Account, contractAddressHe
 		Version:       starknetrpc.TransactionV1,
 		Nonce:         nonce,
 		Type:          starknetrpc.TransactionType_Invoke,
-		SenderAddress: cAcctount.AccountAddress,
+		SenderAddress: cAccount.AccountAddress,
 	}
 	callData := make([]*felt.Felt, 0)
-	callData = append(callData, AmountToFelt(amount)...)
+	callData = append(callData, AddressToFelt(txID))
 
 	// Make read contract call
 	fnCall := starknetrpc.FunctionCall{
@@ -100,19 +100,19 @@ func RewardTo(ctx context.Context, cAcctount *account.Account, contractAddressHe
 	}
 
 	// Building the Calldata with the help of FmtCalldata where we pass in the FnCall struct along with the Cairo version
-	invokeTx.Calldata, err = cAcctount.FmtCalldata([]starknetrpc.FunctionCall{fnCall})
+	invokeTx.Calldata, err = cAccount.FmtCalldata([]starknetrpc.FunctionCall{fnCall})
 	if err != nil {
 		return nil, err
 	}
 
 	// Signing of the transaction that is done by the account
-	err = cAcctount.SignInvokeTransaction(ctx, &invokeTx)
+	err = cAccount.SignInvokeTransaction(ctx, &invokeTx)
 	if err != nil {
 		return nil, err
 	}
 
 	// After the signing we finally call the AddInvokeTransaction in order to invoke the contract function
-	resp, err := cAcctount.AddInvokeTransaction(ctx, invokeTx)
+	resp, err := cAccount.AddInvokeTransaction(ctx, invokeTx)
 	if err != nil {
 		return nil, err
 	}
@@ -120,15 +120,15 @@ func RewardTo(ctx context.Context, cAcctount *account.Account, contractAddressHe
 	return resp, nil
 }
 
-// SubmitTXInfo tx_id, btc_amount, expire_at, recipient_address
-func SubmitTXInfo(ctx context.Context, cAcctount *account.Account, contractAddressHex string, txID string, amount string, expireAt uint64, rewardReceiver string) (*starknetrpc.AddInvokeTransactionResponse, error) {
+// SubmitTXInfo tx_id, btc_amount, startAt, expire_at, recipient_address
+func SubmitTXInfo(ctx context.Context, cAccount *account.Account, contractAddressHex string, txID string, amount string, startAt, expireAt uint64, rewardReceiver string) (*starknetrpc.AddInvokeTransactionResponse, error) {
 	contractAddress, err := utils.HexToFelt(contractAddressHex)
 	if err != nil {
 		panic(err)
 	}
 
 	// Getting the nonce from the account
-	nonce, err := cAcctount.Nonce(ctx, starknetrpc.BlockID{Tag: "latest"}, cAcctount.AccountAddress)
+	nonce, err := cAccount.Nonce(ctx, starknetrpc.BlockID{Tag: "latest"}, cAccount.AccountAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -145,13 +145,14 @@ func SubmitTXInfo(ctx context.Context, cAcctount *account.Account, contractAddre
 		Version:       starknetrpc.TransactionV1,
 		Nonce:         nonce,
 		Type:          starknetrpc.TransactionType_Invoke,
-		SenderAddress: cAcctount.AccountAddress,
+		SenderAddress: cAccount.AccountAddress,
 	}
 
 	callData := make([]*felt.Felt, 0)
-	callData = append(callData, AmountToFelt(txID)...)
+	callData = append(callData, AddressToFelt(txID))
 	callData = append(callData, AmountToFelt(amount)...)
-	callData = append(callData, AmountToFelt(big.NewInt(int64(expireAt)).String())...)
+	callData = append(callData, AddressToFelt(big.NewInt(int64(startAt)).String()))
+	callData = append(callData, AddressToFelt(big.NewInt(int64(expireAt)).String()))
 	callData = append(callData, AddressToFelt(rewardReceiver))
 
 	// Make read contract call
@@ -162,19 +163,19 @@ func SubmitTXInfo(ctx context.Context, cAcctount *account.Account, contractAddre
 	}
 
 	// Building the Calldata with the help of FmtCalldata where we pass in the FnCall struct along with the Cairo version
-	invokeTx.Calldata, err = cAcctount.FmtCalldata([]starknetrpc.FunctionCall{fnCall})
+	invokeTx.Calldata, err = cAccount.FmtCalldata([]starknetrpc.FunctionCall{fnCall})
 	if err != nil {
 		return nil, err
 	}
 
 	// Signing of the transaction that is done by the account
-	err = cAcctount.SignInvokeTransaction(ctx, &invokeTx)
+	err = cAccount.SignInvokeTransaction(ctx, &invokeTx)
 	if err != nil {
 		return nil, err
 	}
 
 	// After the signing we finally call the AddInvokeTransaction in order to invoke the contract function
-	resp, err := cAcctount.AddInvokeTransaction(ctx, invokeTx)
+	resp, err := cAccount.AddInvokeTransaction(ctx, invokeTx)
 	if err != nil {
 		return nil, err
 	}
