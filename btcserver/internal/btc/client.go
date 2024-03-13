@@ -14,7 +14,7 @@ import (
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
-	"github.com/generativelabs/btcserver/internal"
+	"github.com/generativelabs/btcserver/internal/types"
 )
 
 // Transaction requires the number of Confirmations for finalization
@@ -91,8 +91,8 @@ func (c *Client) CheckRewardReceiverSignature(stakerPubKeyStr, rewardReceiver,
 	return nil
 }
 
-func (c *Client) CheckStakeRecords(stakeRecords []*internal.StakeVerificationParam) ([]internal.StakeRecordStatus, error) {
-	var recordStatuses []internal.StakeRecordStatus
+func (c *Client) CheckStakeRecords(stakeRecords []*types.StakeVerificationParam) ([]types.StakeRecordStatus, error) {
+	var recordStatuses []types.StakeRecordStatus
 	var rawTxFutures []rpcclient.FutureGetRawTransactionVerboseResult
 	for _, record := range stakeRecords {
 		txHash, err := chainhash.NewHashFromStr(record.TxID)
@@ -109,26 +109,26 @@ func (c *Client) CheckStakeRecords(stakeRecords []*internal.StakeVerificationPar
 			recordStatuses = append(recordStatuses, stakeRecords[i].FinalizedStatus)
 			continue
 		}
-		if stakeRecords[i].FinalizedStatus == internal.Mismatch || stakeRecords[i].FinalizedStatus == internal.TxFinalized {
+		if stakeRecords[i].FinalizedStatus == types.Mismatch || stakeRecords[i].FinalizedStatus == types.TxFinalized {
 			// TODO should not come here. Mismatch/Finalized tx record should't been checked again.
 			recordStatuses = append(recordStatuses, stakeRecords[i].FinalizedStatus)
 			continue
 		}
 
-		if stakeRecords[i].FinalizedStatus == internal.TxPending {
+		if stakeRecords[i].FinalizedStatus == types.TxPending {
 			err = c.CheckStake(txRes, stakeRecords[i].StakerPubKey, stakeRecords[i].Amount, stakeRecords[i].Duration)
 			if err != nil {
-				recordStatuses = append(recordStatuses, internal.Mismatch)
+				recordStatuses = append(recordStatuses, types.Mismatch)
 				continue
 			}
 		}
 
 		if txRes.Confirmations >= TxFinalizedConfirmations { //nolint
-			recordStatuses = append(recordStatuses, internal.TxFinalized)
+			recordStatuses = append(recordStatuses, types.TxFinalized)
 		} else if txRes.Confirmations == 0 {
-			recordStatuses = append(recordStatuses, internal.TxPending)
+			recordStatuses = append(recordStatuses, types.TxPending)
 		} else {
-			recordStatuses = append(recordStatuses, internal.TxIncluded)
+			recordStatuses = append(recordStatuses, types.TxIncluded)
 		}
 
 	}

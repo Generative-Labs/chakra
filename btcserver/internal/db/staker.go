@@ -162,10 +162,10 @@ func (c *Backend) QueryAllNotYetLockedUpTxNextPeriod(timeStamp int64) ([]*types.
 	return releaseTxsInfos, nil
 }
 
-func (c *Backend) QueryNoFinalizedStakeTx() ([]*internal.StakeVerificationParam, error) {
-	verifyParams := make([]*internal.StakeVerificationParam, 0)
+func (c *Backend) QueryNoFinalizedStakeTx() ([]*types.StakeVerificationParam, error) {
+	verifyParams := make([]*types.StakeVerificationParam, 0)
 
-	err := c.dbClient.Stake.Query().Where(stake.FinalizedStatusLTE(int(internal.TxIncluded))).
+	err := c.dbClient.Stake.Query().Where(stake.FinalizedStatusLTE(int(types.TxIncluded))).
 		Select(stake.FieldTx, stake.FieldStakerPublicKey, stake.FieldAmount, stake.FieldDuration).
 		Scan(context.Background(), verifyParams)
 	if err != nil {
