@@ -39,7 +39,7 @@ func CreateBackend(config Config) (*Backend, error) {
 		}
 
 	case SqliteDriver:
-		client, err = CreateSqliteDB(config)
+		client, err = CreateSqliteDB(config.Database)
 		if err != nil {
 			return nil, err
 		}
@@ -69,8 +69,8 @@ func CreateMysqlDB(config Config) (*ent.Client, error) {
 	return client, err
 }
 
-func CreateSqliteDB(config Config) (*ent.Client, error) {
-	client, err := ent.Open(SqliteDriver, config.Database+".db?_fk=1")
+func CreateSqliteDB(dbName string) (*ent.Client, error) {
+	client, err := ent.Open(SqliteDriver, dbName+".db?_fk=1")
 	if err != nil {
 		return nil, err
 	}

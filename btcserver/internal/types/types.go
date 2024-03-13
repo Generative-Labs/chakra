@@ -15,7 +15,6 @@ type StakeInfoReq struct {
 	Amount            int64  `json:"amount,omitempty"`
 	Reward            int64  `json:"reward,omitempty"`
 	RewardReceiver    string `json:"reward_receiver,omitempty"`
-	BtcSignature      string `json:"btc_signature,omitempty"`
 	ReceiverSignature string `json:"receiver_signature,omitempty"`
 	Timestamp         int64  `json:"timestamp,omitempty"`
 }
@@ -30,6 +29,7 @@ type StakeInfoResp struct {
 }
 
 type ReleaseTxsInfo struct {
-	TxID          string
-	ReleasingTime uint64
+	Staker        string `json:"Staker,omitempty"`
+	Tx            string `json:"Tx,omitempty"`
+	ReleasingTime int64  `json:"ReleasingTime,omitempty"`
 }

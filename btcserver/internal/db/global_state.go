@@ -2,10 +2,11 @@ package db
 
 import (
 	"context"
+	"strconv"
+
 	"github.com/generativelabs/btcserver/internal/db/ent"
 	"github.com/generativelabs/btcserver/internal/db/ent/globalstate"
 	"github.com/generativelabs/btcserver/internal/utils"
-	"strconv"
 )
 
 func (c *Backend) IsTimeWheelExist() (bool, error) {
@@ -52,6 +53,7 @@ func (c *Backend) UpsertTimeWheel(timeWheel int64) error {
 		_, err = c.dbClient.GlobalState.Create().
 			SetKey("TimeWheelProgress").
 			SetValue(strconv.Itoa(int(timeWheel))).
+			SetCreateAt(utils.MakeTimestamp()).
 			Save(context.Background())
 	}
 

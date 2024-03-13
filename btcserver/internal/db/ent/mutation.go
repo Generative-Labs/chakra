@@ -609,7 +609,6 @@ type StakeMutation struct {
 	add_FinalizedStatus *int
 	_ReleaseStatus      *int
 	add_ReleaseStatus   *int
-	_BtcSig             *string
 	_ReceiverSig        *string
 	_Timestamp          *int64
 	add_Timestamp       *int64
@@ -1257,42 +1256,6 @@ func (m *StakeMutation) ResetReleaseStatus() {
 	m.add_ReleaseStatus = nil
 }
 
-// SetBtcSig sets the "BtcSig" field.
-func (m *StakeMutation) SetBtcSig(s string) {
-	m._BtcSig = &s
-}
-
-// BtcSig returns the value of the "BtcSig" field in the mutation.
-func (m *StakeMutation) BtcSig() (r string, exists bool) {
-	v := m._BtcSig
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldBtcSig returns the old "BtcSig" field's value of the Stake entity.
-// If the Stake object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StakeMutation) OldBtcSig(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBtcSig is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBtcSig requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBtcSig: %w", err)
-	}
-	return oldValue.BtcSig, nil
-}
-
-// ResetBtcSig resets all changes to the "BtcSig" field.
-func (m *StakeMutation) ResetBtcSig() {
-	m._BtcSig = nil
-}
-
 // SetReceiverSig sets the "ReceiverSig" field.
 func (m *StakeMutation) SetReceiverSig(s string) {
 	m._ReceiverSig = &s
@@ -1531,7 +1494,7 @@ func (m *StakeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *StakeMutation) Fields() []string {
-	fields := make([]string, 0, 16)
+	fields := make([]string, 0, 15)
 	if m._Staker != nil {
 		fields = append(fields, stake.FieldStaker)
 	}
@@ -1564,9 +1527,6 @@ func (m *StakeMutation) Fields() []string {
 	}
 	if m._ReleaseStatus != nil {
 		fields = append(fields, stake.FieldReleaseStatus)
-	}
-	if m._BtcSig != nil {
-		fields = append(fields, stake.FieldBtcSig)
 	}
 	if m._ReceiverSig != nil {
 		fields = append(fields, stake.FieldReceiverSig)
@@ -1610,8 +1570,6 @@ func (m *StakeMutation) Field(name string) (ent.Value, bool) {
 		return m.FinalizedStatus()
 	case stake.FieldReleaseStatus:
 		return m.ReleaseStatus()
-	case stake.FieldBtcSig:
-		return m.BtcSig()
 	case stake.FieldReceiverSig:
 		return m.ReceiverSig()
 	case stake.FieldTimestamp:
@@ -1651,8 +1609,6 @@ func (m *StakeMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldFinalizedStatus(ctx)
 	case stake.FieldReleaseStatus:
 		return m.OldReleaseStatus(ctx)
-	case stake.FieldBtcSig:
-		return m.OldBtcSig(ctx)
 	case stake.FieldReceiverSig:
 		return m.OldReceiverSig(ctx)
 	case stake.FieldTimestamp:
@@ -1746,13 +1702,6 @@ func (m *StakeMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetReleaseStatus(v)
-		return nil
-	case stake.FieldBtcSig:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetBtcSig(v)
 		return nil
 	case stake.FieldReceiverSig:
 		v, ok := value.(string)
@@ -1986,9 +1935,6 @@ func (m *StakeMutation) ResetField(name string) error {
 		return nil
 	case stake.FieldReleaseStatus:
 		m.ResetReleaseStatus()
-		return nil
-	case stake.FieldBtcSig:
-		m.ResetBtcSig()
 		return nil
 	case stake.FieldReceiverSig:
 		m.ResetReceiverSig()

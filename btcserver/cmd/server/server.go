@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/NethermindEth/starknet.go/curve"
@@ -66,11 +65,11 @@ func GetPublickeyFromPrivateKey(privateKey string) string {
 
 	pubX, _, err := curve.Curve.PrivateToPoint(privInt)
 	if err != nil {
-		fmt.Println("can't generate public key:", err)
+		log.Fatal().Msgf("❌ Fatal error generate public key: %s ", err)
 		panic(err)
 	}
 
-	pubkey := utils.BigToHex(pubX)
+	pubKey := utils.BigToHex(pubX)
 
-	return pubkey
+	return pubKey
 }

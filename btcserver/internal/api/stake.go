@@ -1,10 +1,11 @@
 package api
 
 import (
-	"github.com/generativelabs/btcserver/internal/types"
 	"net/http"
 
+	"github.com/generativelabs/btcserver/internal/types"
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 )
 
 type HTTPResponse struct {
@@ -44,12 +45,12 @@ func (s *Server) GetStakeListByStaker(c *gin.Context) {
 	srakeList := make([]*types.StakeInfoResp, 0)
 	for _, s := range stakes {
 		srakeList = append(srakeList, &types.StakeInfoResp{
-			s.Staker,
-			s.Tx,
-			s.Start,
-			s.Duration,
-			s.Amount,
-			s.RewardReceiver,
+			Staker:         s.Staker,
+			Tx:             s.Tx,
+			Start:          s.Start,
+			Durnation:      s.Duration,
+			Amount:         s.Amount,
+			RewardReceiver: s.RewardReceiver,
 		})
 	}
 
@@ -64,8 +65,8 @@ func (s *Server) GetStakeListByStaker(c *gin.Context) {
 func (s *Server) SubmitProofOfStake(c *gin.Context) {
 	respData := &HTTPResponse{Msg: "Ok"}
 
-	var stakeinfo types.StakeInfoReq
-	if err := c.Bind(&stakeinfo); err != nil {
+	var stakeInfo types.StakeInfoReq
+	if err := c.Bind(&stakeInfo); err != nil {
 		respData.Msg = err.Error()
 		JSONResp(c, http.StatusBadRequest, respData)
 		return
@@ -75,17 +76,17 @@ func (s *Server) SubmitProofOfStake(c *gin.Context) {
 
 	// todo verify btc lock
 
+	log.Info().Msgf("[HTTP] SubmitProofOfStake: %+v ", stakeInfo)
 	// storage
-	err := s.backend.CreateStake(stakeinfo.Staker,
-		stakeinfo.StakerPublicKey,
-		stakeinfo.TxID,
-		stakeinfo.Start,
-		stakeinfo.Duration,
-		stakeinfo.Amount,
-		stakeinfo.RewardReceiver,
-		stakeinfo.BtcSignature,
-		stakeinfo.ReceiverSignature,
-		stakeinfo.Timestamp)
+	err := s.backend.CreateStake(stakeInfo.Staker,
+		stakeInfo.StakerPublicKey,
+		stakeInfo.TxID,
+		stakeInfo.Start,
+		stakeInfo.Duration,
+		stakeInfo.Amount,
+		stakeInfo.RewardReceiver,
+		stakeInfo.ReceiverSignature,
+		stakeInfo.Timestamp)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -26,3 +26,19 @@ func MakeNanoTimestamp() int64 {
 func MakeFloat64Timestamp() float64 {
 	return float64(time.Now().UnixNano()) / (float64(time.Millisecond) / float64(time.Nanosecond))
 }
+
+func TimeTOTimestamp(t time.Time) int64 {
+	return t.UnixNano() / int64(time.Millisecond)
+}
+
+func TimeToDailyFixedTime(t time.Time) time.Time {
+	fixedTime := time.Date(0, 0, 0, t.Hour(), t.Minute(), t.Second(), 0, time.Local)
+	return fixedTime
+}
+
+func DailyFixedTimeToTime(t time.Time) time.Time {
+	now := time.Now()
+	fixedTime := time.Date(now.Year(), now.Month(), now.Day(), t.Hour(), t.Minute(), t.Second(), 0, time.Local)
+
+	return fixedTime
+}

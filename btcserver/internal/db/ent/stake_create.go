@@ -101,12 +101,6 @@ func (sc *StakeCreate) SetNillableReleaseStatus(i *int) *StakeCreate {
 	return sc
 }
 
-// SetBtcSig sets the "BtcSig" field.
-func (sc *StakeCreate) SetBtcSig(s string) *StakeCreate {
-	sc.mutation.SetBtcSig(s)
-	return sc
-}
-
 // SetReceiverSig sets the "ReceiverSig" field.
 func (sc *StakeCreate) SetReceiverSig(s string) *StakeCreate {
 	sc.mutation.SetReceiverSig(s)
@@ -238,9 +232,6 @@ func (sc *StakeCreate) check() error {
 	if _, ok := sc.mutation.ReleaseStatus(); !ok {
 		return &ValidationError{Name: "ReleaseStatus", err: errors.New(`ent: missing required field "Stake.ReleaseStatus"`)}
 	}
-	if _, ok := sc.mutation.BtcSig(); !ok {
-		return &ValidationError{Name: "BtcSig", err: errors.New(`ent: missing required field "Stake.BtcSig"`)}
-	}
 	if _, ok := sc.mutation.ReceiverSig(); !ok {
 		return &ValidationError{Name: "ReceiverSig", err: errors.New(`ent: missing required field "Stake.ReceiverSig"`)}
 	}
@@ -322,10 +313,6 @@ func (sc *StakeCreate) createSpec() (*Stake, *sqlgraph.CreateSpec) {
 	if value, ok := sc.mutation.ReleaseStatus(); ok {
 		_spec.SetField(stake.FieldReleaseStatus, field.TypeInt, value)
 		_node.ReleaseStatus = value
-	}
-	if value, ok := sc.mutation.BtcSig(); ok {
-		_spec.SetField(stake.FieldBtcSig, field.TypeString, value)
-		_node.BtcSig = value
 	}
 	if value, ok := sc.mutation.ReceiverSig(); ok {
 		_spec.SetField(stake.FieldReceiverSig, field.TypeString, value)

@@ -230,20 +230,6 @@ func (su *StakeUpdate) AddReleaseStatus(i int) *StakeUpdate {
 	return su
 }
 
-// SetBtcSig sets the "BtcSig" field.
-func (su *StakeUpdate) SetBtcSig(s string) *StakeUpdate {
-	su.mutation.SetBtcSig(s)
-	return su
-}
-
-// SetNillableBtcSig sets the "BtcSig" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableBtcSig(s *string) *StakeUpdate {
-	if s != nil {
-		su.SetBtcSig(*s)
-	}
-	return su
-}
-
 // SetReceiverSig sets the "ReceiverSig" field.
 func (su *StakeUpdate) SetReceiverSig(s string) *StakeUpdate {
 	su.mutation.SetReceiverSig(s)
@@ -417,9 +403,6 @@ func (su *StakeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := su.mutation.AddedReleaseStatus(); ok {
 		_spec.AddField(stake.FieldReleaseStatus, field.TypeInt, value)
-	}
-	if value, ok := su.mutation.BtcSig(); ok {
-		_spec.SetField(stake.FieldBtcSig, field.TypeString, value)
 	}
 	if value, ok := su.mutation.ReceiverSig(); ok {
 		_spec.SetField(stake.FieldReceiverSig, field.TypeString, value)
@@ -659,20 +642,6 @@ func (suo *StakeUpdateOne) AddReleaseStatus(i int) *StakeUpdateOne {
 	return suo
 }
 
-// SetBtcSig sets the "BtcSig" field.
-func (suo *StakeUpdateOne) SetBtcSig(s string) *StakeUpdateOne {
-	suo.mutation.SetBtcSig(s)
-	return suo
-}
-
-// SetNillableBtcSig sets the "BtcSig" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableBtcSig(s *string) *StakeUpdateOne {
-	if s != nil {
-		suo.SetBtcSig(*s)
-	}
-	return suo
-}
-
 // SetReceiverSig sets the "ReceiverSig" field.
 func (suo *StakeUpdateOne) SetReceiverSig(s string) *StakeUpdateOne {
 	suo.mutation.SetReceiverSig(s)
@@ -876,9 +845,6 @@ func (suo *StakeUpdateOne) sqlSave(ctx context.Context) (_node *Stake, err error
 	}
 	if value, ok := suo.mutation.AddedReleaseStatus(); ok {
 		_spec.AddField(stake.FieldReleaseStatus, field.TypeInt, value)
-	}
-	if value, ok := suo.mutation.BtcSig(); ok {
-		_spec.SetField(stake.FieldBtcSig, field.TypeString, value)
 	}
 	if value, ok := suo.mutation.ReceiverSig(); ok {
 		_spec.SetField(stake.FieldReceiverSig, field.TypeString, value)

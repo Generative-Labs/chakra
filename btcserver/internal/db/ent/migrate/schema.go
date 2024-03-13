@@ -36,7 +36,6 @@ var (
 		{Name: "reward_receiver", Type: field.TypeString, Size: 66},
 		{Name: "finalized_status", Type: field.TypeInt, Default: 0},
 		{Name: "release_status", Type: field.TypeInt, Default: 0},
-		{Name: "btc_sig", Type: field.TypeString},
 		{Name: "receiver_sig", Type: field.TypeString},
 		{Name: "timestamp", Type: field.TypeInt64},
 		{Name: "create_at", Type: field.TypeInt64},

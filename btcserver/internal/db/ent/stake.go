@@ -38,8 +38,6 @@ type Stake struct {
 	FinalizedStatus int `json:"FinalizedStatus,omitempty"`
 	// ReleaseStatus holds the value of the "ReleaseStatus" field.
 	ReleaseStatus int `json:"ReleaseStatus,omitempty"`
-	// BtcSig holds the value of the "BtcSig" field.
-	BtcSig string `json:"BtcSig,omitempty"`
 	// ReceiverSig holds the value of the "ReceiverSig" field.
 	ReceiverSig string `json:"ReceiverSig,omitempty"`
 	// Timestamp holds the value of the "Timestamp" field.
@@ -58,7 +56,7 @@ func (*Stake) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case stake.FieldID, stake.FieldStart, stake.FieldDuration, stake.FieldDeadline, stake.FieldReleasingTime, stake.FieldAmount, stake.FieldFinalizedStatus, stake.FieldReleaseStatus, stake.FieldTimestamp, stake.FieldCreateAt, stake.FieldUpdateAt:
 			values[i] = new(sql.NullInt64)
-		case stake.FieldStaker, stake.FieldStakerPublicKey, stake.FieldTx, stake.FieldRewardReceiver, stake.FieldBtcSig, stake.FieldReceiverSig:
+		case stake.FieldStaker, stake.FieldStakerPublicKey, stake.FieldTx, stake.FieldRewardReceiver, stake.FieldReceiverSig:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -146,12 +144,6 @@ func (s *Stake) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field ReleaseStatus", values[i])
 			} else if value.Valid {
 				s.ReleaseStatus = int(value.Int64)
-			}
-		case stake.FieldBtcSig:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field BtcSig", values[i])
-			} else if value.Valid {
-				s.BtcSig = value.String
 			}
 		case stake.FieldReceiverSig:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -245,9 +237,6 @@ func (s *Stake) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("ReleaseStatus=")
 	builder.WriteString(fmt.Sprintf("%v", s.ReleaseStatus))
-	builder.WriteString(", ")
-	builder.WriteString("BtcSig=")
-	builder.WriteString(s.BtcSig)
 	builder.WriteString(", ")
 	builder.WriteString("ReceiverSig=")
 	builder.WriteString(s.ReceiverSig)

@@ -23,7 +23,6 @@ func (Stake) Fields() []ent.Field {
 		field.String("RewardReceiver").MaxLen(66), // starknet address to receive reward. length is 64byte, and length of prefix "0x" is 2byte.
 		field.Int("FinalizedStatus").Default(0),   // btc transaction weather finalized(0 means not on the chain; 1 means it has been uploaded but not finalized; 2 is finalized).
 		field.Int("ReleaseStatus").Default(0),     // stake epoch is over(0 means the rewards have not been released yet; 1 means rewards have been released).
-		field.String("BtcSig"),                    // signature for btc transaction.
 		field.String("ReceiverSig"),               // signature for receiver address.
 		field.Int64("Timestamp"),
 		field.Int64("CreateAt").Immutable(),

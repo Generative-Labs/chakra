@@ -2,11 +2,12 @@ package db
 
 import (
 	"context"
-	"github.com/generativelabs/btcserver/internal/types"
 	"time"
 
 	"github.com/generativelabs/btcserver/internal/db/ent"
 	"github.com/generativelabs/btcserver/internal/db/ent/stake"
+	"github.com/generativelabs/btcserver/internal/types"
+	"github.com/generativelabs/btcserver/internal/utils"
 )
 
 func (c *Backend) CreateStake(
@@ -15,10 +16,12 @@ func (c *Backend) CreateStake(
 	duration int64,
 	amount int64,
 	rewardReceiver string,
-	btcSignature string,
 	receiverSignature string,
 	timestamp int64,
 ) error {
+	fixedTime := start + 24*time.Hour.Milliseconds()
+
+	ts := utils.MakeTimestamp()
 	_, err := c.dbClient.Stake.Create().
 		SetStaker(staker).
 		SetStakerPublicKey(stakerPublicKey).
@@ -26,30 +29,53 @@ func (c *Backend) CreateStake(
 		SetStart(start).
 		SetDuration(duration).
 		SetDeadline(start + duration).
+		SetReleasingTime(fixedTime).
 		SetAmount(amount).
 		SetRewardReceiver(rewardReceiver).
-		SetBtcSig(btcSignature).
 		SetReceiverSig(receiverSignature).
 		SetTimestamp(timestamp).
+		SetCreateAt(ts).
 		Save(context.Background())
 
 	return err
 }
 
-func (c *Backend) UpdateStakeReleaseStatus(staker string, status int) error {
+func (c *Backend) UpdateStakeReleasingTime(staker, txID string) error {
+	stakeInfo, err := c.dbClient.Stake.Query().
+		Where(stake.And(stake.Staker(staker), stake.Tx(txID))).
+		Only(context.Background())
+	if err != nil {
+		return err
+	}
+
+	fixedTime := stakeInfo.ReleasingTime + 24*time.Hour.Milliseconds()
+	_, err = c.dbClient.Stake.Update().
+		Where(stake.And(stake.Staker(staker), stake.Tx(txID))).
+		SetReleasingTime(fixedTime).
+		Save(context.Background())
+	return err
+}
+
+func (c *Backend) UpdateStakeReleaseStatus(staker, txID string, status int) error {
 	_, err := c.dbClient.Stake.Update().
-		Where(stake.StakerEQ(staker)).
+		Where(stake.And(stake.Staker(staker), stake.Tx(txID))).
 		SetReleaseStatus(status).
 		Save(context.Background())
 	return err
 }
 
-func (c *Backend) UpdateStakeFinalizedStatus(staker string, status int) error {
+func (c *Backend) UpdateStakeFinalizedStatus(staker, txID string, status int) error {
 	_, err := c.dbClient.Stake.Update().
-		Where(stake.StakerEQ(staker)).
+		Where(stake.And(stake.Staker(staker), stake.Tx(txID))).
 		SetFinalizedStatus(status).
 		Save(context.Background())
 	return err
+}
+
+func (c *Backend) QueryStakeInfoByStakerAndTxID(staker, txID string) (*ent.Stake, error) {
+	return c.dbClient.Stake.Query().
+		Where(stake.And(stake.Staker(staker), stake.Tx(txID))).
+		Only(context.Background())
 }
 
 func (c *Backend) QueryStakesByStaker(staker string, page int, size int) ([]*ent.Stake, error) {
@@ -113,18 +139,25 @@ func (c *Backend) QueryAllAlreadyLockedUpTx(timeStamp int64) ([]string, error) {
 		Strings(context.Background())
 }
 
-// QueryAllNotYetLockedUpTxNextFourHours Addresses that need to be released in the next 5 minute
-func (c *Backend) QueryAllNotYetLockedUpTxNextFourHours(timeStamp int64) ([]*types.ReleaseTxsInfo, error) {
-	releaseTxsInfos := make([]*types.ReleaseTxsInfo, 0)
-
+// QueryAllNotYetLockedUpTxNextPeriod Addresses that need to be released in the next 5 minute
+func (c *Backend) QueryAllNotYetLockedUpTxNextPeriod(timeStamp int64) ([]*types.ReleaseTxsInfo, error) {
 	feture := timeStamp + 5*time.Minute.Milliseconds()
-	err := c.dbClient.Stake.Query().
-		Where(stake.And(stake.DeadlineGT(timeStamp), stake.DeadlineLTE(feture))).
-		Where(stake.And(stake.ReleasingTimeGT(timeStamp), stake.ReleasingTimeLTE(feture))).
-		Select(stake.FieldTx, stake.FieldReleasingTime).
-		Scan(context.Background(), releaseTxsInfos)
+	stakeInfoList, err := c.dbClient.Stake.Query().
+		Where(stake.DeadlineGT(feture)).
+		Where(stake.And(stake.ReleasingTimeGTE(timeStamp), stake.ReleasingTimeLT(feture))).
+		All(context.Background())
 	if err != nil {
 		return nil, err
 	}
+
+	releaseTxsInfos := make([]*types.ReleaseTxsInfo, 0)
+	for _, stakeInfo := range stakeInfoList {
+		releaseTxsInfos = append(releaseTxsInfos, &types.ReleaseTxsInfo{
+			Staker:        stakeInfo.Staker,
+			Tx:            stakeInfo.Tx,
+			ReleasingTime: stakeInfo.ReleasingTime,
+		})
+	}
+
 	return releaseTxsInfos, nil
 }

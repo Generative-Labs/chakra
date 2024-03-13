@@ -107,11 +107,6 @@ func ReleaseStatus(v int) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldReleaseStatus, v))
 }
 
-// BtcSig applies equality check predicate on the "BtcSig" field. It's identical to BtcSigEQ.
-func BtcSig(v string) predicate.Stake {
-	return predicate.Stake(sql.FieldEQ(FieldBtcSig, v))
-}
-
 // ReceiverSig applies equality check predicate on the "ReceiverSig" field. It's identical to ReceiverSigEQ.
 func ReceiverSig(v string) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldReceiverSig, v))
@@ -670,71 +665,6 @@ func ReleaseStatusLT(v int) predicate.Stake {
 // ReleaseStatusLTE applies the LTE predicate on the "ReleaseStatus" field.
 func ReleaseStatusLTE(v int) predicate.Stake {
 	return predicate.Stake(sql.FieldLTE(FieldReleaseStatus, v))
-}
-
-// BtcSigEQ applies the EQ predicate on the "BtcSig" field.
-func BtcSigEQ(v string) predicate.Stake {
-	return predicate.Stake(sql.FieldEQ(FieldBtcSig, v))
-}
-
-// BtcSigNEQ applies the NEQ predicate on the "BtcSig" field.
-func BtcSigNEQ(v string) predicate.Stake {
-	return predicate.Stake(sql.FieldNEQ(FieldBtcSig, v))
-}
-
-// BtcSigIn applies the In predicate on the "BtcSig" field.
-func BtcSigIn(vs ...string) predicate.Stake {
-	return predicate.Stake(sql.FieldIn(FieldBtcSig, vs...))
-}
-
-// BtcSigNotIn applies the NotIn predicate on the "BtcSig" field.
-func BtcSigNotIn(vs ...string) predicate.Stake {
-	return predicate.Stake(sql.FieldNotIn(FieldBtcSig, vs...))
-}
-
-// BtcSigGT applies the GT predicate on the "BtcSig" field.
-func BtcSigGT(v string) predicate.Stake {
-	return predicate.Stake(sql.FieldGT(FieldBtcSig, v))
-}
-
-// BtcSigGTE applies the GTE predicate on the "BtcSig" field.
-func BtcSigGTE(v string) predicate.Stake {
-	return predicate.Stake(sql.FieldGTE(FieldBtcSig, v))
-}
-
-// BtcSigLT applies the LT predicate on the "BtcSig" field.
-func BtcSigLT(v string) predicate.Stake {
-	return predicate.Stake(sql.FieldLT(FieldBtcSig, v))
-}
-
-// BtcSigLTE applies the LTE predicate on the "BtcSig" field.
-func BtcSigLTE(v string) predicate.Stake {
-	return predicate.Stake(sql.FieldLTE(FieldBtcSig, v))
-}
-
-// BtcSigContains applies the Contains predicate on the "BtcSig" field.
-func BtcSigContains(v string) predicate.Stake {
-	return predicate.Stake(sql.FieldContains(FieldBtcSig, v))
-}
-
-// BtcSigHasPrefix applies the HasPrefix predicate on the "BtcSig" field.
-func BtcSigHasPrefix(v string) predicate.Stake {
-	return predicate.Stake(sql.FieldHasPrefix(FieldBtcSig, v))
-}
-
-// BtcSigHasSuffix applies the HasSuffix predicate on the "BtcSig" field.
-func BtcSigHasSuffix(v string) predicate.Stake {
-	return predicate.Stake(sql.FieldHasSuffix(FieldBtcSig, v))
-}
-
-// BtcSigEqualFold applies the EqualFold predicate on the "BtcSig" field.
-func BtcSigEqualFold(v string) predicate.Stake {
-	return predicate.Stake(sql.FieldEqualFold(FieldBtcSig, v))
-}
-
-// BtcSigContainsFold applies the ContainsFold predicate on the "BtcSig" field.
-func BtcSigContainsFold(v string) predicate.Stake {
-	return predicate.Stake(sql.FieldContainsFold(FieldBtcSig, v))
 }
 
 // ReceiverSigEQ applies the EQ predicate on the "ReceiverSig" field.

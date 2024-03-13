@@ -33,8 +33,6 @@ const (
 	FieldFinalizedStatus = "finalized_status"
 	// FieldReleaseStatus holds the string denoting the releasestatus field in the database.
 	FieldReleaseStatus = "release_status"
-	// FieldBtcSig holds the string denoting the btcsig field in the database.
-	FieldBtcSig = "btc_sig"
 	// FieldReceiverSig holds the string denoting the receiversig field in the database.
 	FieldReceiverSig = "receiver_sig"
 	// FieldTimestamp holds the string denoting the timestamp field in the database.
@@ -61,7 +59,6 @@ var Columns = []string{
 	FieldRewardReceiver,
 	FieldFinalizedStatus,
 	FieldReleaseStatus,
-	FieldBtcSig,
 	FieldReceiverSig,
 	FieldTimestamp,
 	FieldCreateAt,
@@ -154,11 +151,6 @@ func ByFinalizedStatus(opts ...sql.OrderTermOption) OrderOption {
 // ByReleaseStatus orders the results by the ReleaseStatus field.
 func ByReleaseStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldReleaseStatus, opts...).ToFunc()
-}
-
-// ByBtcSig orders the results by the BtcSig field.
-func ByBtcSig(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldBtcSig, opts...).ToFunc()
 }
 
 // ByReceiverSig orders the results by the ReceiverSig field.
