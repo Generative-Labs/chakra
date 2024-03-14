@@ -52,7 +52,7 @@ func Run() {
 		log.Fatal().Msgf("❌ Fatal error new chakra account: %s ", err)
 	}
 
-	log.Info().Msgf("🔵🔵 Start to run btc server, conf: %+v 🔵🔵", config)
+	log.Info().Msgf("👷 Start to run btc server, conf: %+v", config)
 
 	err = api.NewServer(ctx, backend, cAccount, config.Chakra.ContractAddress, btcClient).Run(config.ServicePort)
 	if err != nil {

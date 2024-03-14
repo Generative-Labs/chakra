@@ -180,12 +180,20 @@ func (s *Server) UpdateTimeWheelForDB() error {
 func (s *Server) UpdateStakeFinalizedStatus() {
 	timer := time.NewTicker(5 * time.Minute)
 
+	log.Info().Msgf("🔨 Start update stake finalized status with a 5 minute ticker")
+
 	for range timer.C {
 		stakeVerifyParams, err := s.backend.QueryNoFinalizedStakeTx()
 		if err != nil {
 			log.Error().Msgf("💥 error when query no finalized stake tx %s", err)
 			continue
 		}
+
+		if len(stakeVerifyParams) == 0 {
+			log.Info().Msgf("💤 there is't no finalize states from db.")
+			continue
+		}
+		log.Info().Msgf("🔨get %d no finalize states from db. prepare check them", len(stakeVerifyParams))
 
 		newStatuses, err := s.btcClient.UpdateStakeRecordFinalizedStatus(stakeVerifyParams)
 		if err != nil {
@@ -198,7 +206,7 @@ func (s *Server) UpdateStakeFinalizedStatus() {
 				continue
 			}
 
-			err := s.backend.UpdateStakeFinalizedStatus(stakeVerifyParams[i].StakerPublicKey, stakeVerifyParams[i].TxID, int(status))
+			err := s.backend.UpdateStakeFinalizedStatus(stakeVerifyParams[i].Staker, stakeVerifyParams[i].TxID, int(status))
 			if err != nil {
 				log.Error().Msgf("💥 error when update state finalize status %s", err)
 			}

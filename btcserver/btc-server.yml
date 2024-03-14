@@ -1,19 +1,19 @@
 btc:
-  network-name: "mainnet"
-  rpc-host: "127.0.0.1:8332"
-  rpc-user: "bitcoinuser"
-  rpc-pass: "bitcoinpassword"
-  disable-tls: false
+  network-name: "regtest"
+  rpc-host: "localhost:18332"
+  rpc-user: "rpcuser"
+  rpc-pass: "rpcpass"
+  disable-tls: true
 
 chakra:
-  http-url: "https://example.com"
+  http-url: "https://madara.to3.io"
   chain-id: "chakra-chain"
-  private-key: "your-private-key"
-  address: "your-address"
-  contract-address: "contract-address"
+  private-key: "0x00c1cf1490de1352865301bb8705143f3ef938f97fdf892f1090dcb5ac7bcd1d"
+  address: "0x3"
+  contract-address: "0x2c38b9a62cabbcb1c8e0041ac96bff436c0805e1adfee2137a2bf41f8bf68"
 
 database:
-  driver: "mysql"
+  driver: "sqlite3"
   user: "dbuser"
   host: "localhost:3306"
   database: "example_db"
