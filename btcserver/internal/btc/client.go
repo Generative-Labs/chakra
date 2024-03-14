@@ -92,7 +92,7 @@ func (c *Client) CheckRewardAddressSignature(stakerPubKeyStr, rewardReceiver,
 	return nil
 }
 
-func (c *Client) CheckStakeRecords(stakeRecords []*types.StakeVerificationParam) ([]types.StakeRecordStatus, error) {
+func (c *Client) UpdateStakeRecordFinalizedStatus(stakeRecords []*types.StakeVerificationParam) ([]types.StakeRecordStatus, error) {
 	var recordStatuses []types.StakeRecordStatus
 	var rawTxFutures []rpcclient.FutureGetRawTransactionVerboseResult
 	for _, record := range stakeRecords {

@@ -251,7 +251,7 @@ func Example_checkStakeTxs() {
 		FinalizedStatus: types.TxPending,
 	}
 
-	res, err := client.CheckStakeRecords([]*types.StakeVerificationParam{&stakeRecord})
+	res, err := client.UpdateStakeRecordFinalizedStatus([]*types.StakeVerificationParam{&stakeRecord})
 	if err != nil {
 		fmt.Println(err)
 		return

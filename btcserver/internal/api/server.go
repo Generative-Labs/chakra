@@ -42,7 +42,7 @@ func NewServer(ctx context.Context, backend *db.Backend, chakraAccount *account.
 
 func (s *Server) Run(servicePort int) error {
 	go s.TimeWheelSchedule()
-	go s.UpdateStakeStatus()
+	go s.UpdateStakeFinalizedStatus()
 
 	return s.engine.Run(fmt.Sprintf(":%d", servicePort))
 }
