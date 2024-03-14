@@ -2,7 +2,6 @@ package chakra
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"math/big"
 
