@@ -87,7 +87,7 @@ func (s *Server) TimeWheelSchedule() {
 
 			oldScheduleTimeWheel := s.ScheduleTimeWheel
 			log.Info().Msgf("🔵🔵🔵 No tx to be released, now %s sleep Until next Wheel %s", time.Now().String(), oldScheduleTimeWheel.Add(types.TimeWheelSize).String())
-			time.Sleep(time.Until(oldScheduleTimeWheel.Add(types.TimeWheelSize)))
+			time.Sleep(time.Until(oldScheduleTimeWheel.Add(types.TimeWheelSize))) //nolint
 			err = s.UpdateTimeWheelForDB()
 			if err != nil {
 				log.Error().Msgf("❌ error update time wheel: %s ", err)
@@ -175,9 +175,9 @@ func (s *Server) UpdateTimeWheelForDB() error {
 	return nil
 }
 
-// UpdateStakeStatus defines the periodic process of reading stake records from the database,
+// UpdateStakeFinalizedStatus defines the periodic process of reading stake records from the database,
 // and updating the status of records in the database based on the status of transactions on the BTC chain.
-func (s *Server) UpdateStakeStatus() {
+func (s *Server) UpdateStakeFinalizedStatus() {
 	timer := time.NewTicker(5 * time.Minute)
 
 	for range timer.C {
@@ -187,7 +187,7 @@ func (s *Server) UpdateStakeStatus() {
 			continue
 		}
 
-		newStatuses, err := s.btcClient.CheckStakeRecords(stakeVerifyParams)
+		newStatuses, err := s.btcClient.UpdateStakeRecordFinalizedStatus(stakeVerifyParams)
 		if err != nil {
 			log.Error().Msgf("💥 error when check state records %s", err)
 			continue
@@ -198,7 +198,7 @@ func (s *Server) UpdateStakeStatus() {
 				continue
 			}
 
-			err := s.backend.UpdateStakeFinalizedStatus(stakeVerifyParams[i].StakerPubKey, stakeVerifyParams[i].TxID, int(status))
+			err := s.backend.UpdateStakeFinalizedStatus(stakeVerifyParams[i].StakerPublicKey, stakeVerifyParams[i].TxID, int(status))
 			if err != nil {
 				log.Error().Msgf("💥 error when update state finalize status %s", err)
 			}

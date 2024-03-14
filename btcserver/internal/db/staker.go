@@ -170,7 +170,7 @@ func (c *Backend) QueryNoFinalizedStakeTx() ([]*types.StakeVerificationParam, er
 
 	err := c.dbClient.Stake.Query().Where(stake.FinalizedStatusLTE(int(types.TxIncluded))).
 		Select(stake.FieldTx, stake.FieldStakerPublicKey, stake.FieldAmount, stake.FieldDuration).
-		Scan(context.Background(), verifyParams)
+		Scan(context.Background(), &verifyParams)
 	if err != nil {
 		return nil, err
 	}

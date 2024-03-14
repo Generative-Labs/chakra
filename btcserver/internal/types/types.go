@@ -15,14 +15,14 @@ type StakerReq struct {
 type StakeInfoReq struct {
 	Staker            string `form:"staker" json:"staker,omitempty"`
 	StakerPublicKey   string `form:"staker_public_key" json:"staker_public_key,omitempty"`
-	TxID              string `json:"tx_id,omitempty"`
-	Start             int64  `json:"start,omitempty"`
-	Duration          int64  `json:"duration,omitempty"`
-	Amount            int64  `json:"amount,omitempty"`
-	Reward            int64  `json:"reward,omitempty"`
-	RewardReceiver    string `json:"reward_receiver,omitempty"`
-	ReceiverSignature string `json:"receiver_signature,omitempty"`
-	Timestamp         int64  `json:"timestamp,omitempty"`
+	TxID              string `from:"tx_id" json:"tx_id,omitempty"`
+	Start             int64  `from:"start" json:"start,omitempty"`
+	Duration          int64  `from:"duration" json:"duration,omitempty"`
+	Amount            int64  `from:"amount" json:"amount,omitempty"`
+	Reward            int64  `from:"reward" json:"reward,omitempty"`
+	RewardReceiver    string `from:"reward_receiver" json:"reward_receiver,omitempty"`
+	ReceiverSignature string `from:"receiver_signature" json:"receiver_signature,omitempty"`
+	Timestamp         int64  `from:"timestamp" json:"timestamp,omitempty"`
 }
 
 type StakeInfoResp struct {
@@ -54,9 +54,9 @@ const (
 )
 
 type StakeVerificationParam struct {
-	TxID            string
-	StakerPubKey    string
-	Amount          uint64
-	Duration        uint64
-	FinalizedStatus StakeRecordStatus
+	TxID            string            `json:"tx,omitempty"`
+	StakerPublicKey string            `json:"staker_public_key,omitempty"`
+	Amount          uint64            `json:"amount,omitempty"`
+	Duration        uint64            `json:"duration,omitempty"`
+	FinalizedStatus StakeRecordStatus `json:"finalized_status,omitempty"`
 }

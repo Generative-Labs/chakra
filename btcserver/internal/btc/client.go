@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/btcsuite/btcd/btcec/v2/ecdsa"
@@ -61,37 +62,37 @@ func NewClient(config Config) (*Client, error) {
 func (c *Client) CheckRewardAddressSignature(stakerPubKeyStr, rewardReceiver,
 	sigHexStr string, timestamp int32,
 ) error {
-	stakerPubKeyBytes, err := hex.DecodeString(stakerPubKeyStr)
+	stakerPubKeyBytes, err := hex.DecodeString(strings.TrimPrefix(stakerPubKeyStr, "0x"))
 	if err != nil {
-		return err
+		return errors.New("public key should hex string")
 	}
 
 	stakerPubKey, err := btcec.ParsePubKey(stakerPubKeyBytes)
 	if err != nil {
-		return err
+		return errors.New("invalid staker public key")
 	}
 
-	sigBytes, err := hex.DecodeString(sigHexStr)
+	sigBytes, err := hex.DecodeString(strings.TrimPrefix(sigHexStr, "0x"))
 	if err != nil {
-		return err
+		return errors.New("signature should be a hex string")
 	}
 
 	signature, err := ecdsa.ParseSignature(sigBytes)
 	if err != nil {
-		return err
+		return errors.New("invalid reward receiver signature")
 	}
 
 	message := AssembleRewardSignatureMessage(rewardReceiver, timestamp)
 	messageHash := chainhash.DoubleHashB([]byte(message))
 
 	if !signature.Verify(messageHash, stakerPubKey) {
-		return errors.New("reward receiver signature verify failed")
+		return errors.New("reward address signature verify failed")
 	}
 
 	return nil
 }
 
-func (c *Client) CheckStakeRecords(stakeRecords []*types.StakeVerificationParam) ([]types.StakeRecordStatus, error) {
+func (c *Client) UpdateStakeRecordFinalizedStatus(stakeRecords []*types.StakeVerificationParam) ([]types.StakeRecordStatus, error) {
 	var recordStatuses []types.StakeRecordStatus
 	var rawTxFutures []rpcclient.FutureGetRawTransactionVerboseResult
 	for _, record := range stakeRecords {
@@ -116,7 +117,7 @@ func (c *Client) CheckStakeRecords(stakeRecords []*types.StakeVerificationParam)
 		}
 
 		if stakeRecords[i].FinalizedStatus == types.TxPending {
-			err = c.CheckStake(txRes, stakeRecords[i].StakerPubKey, stakeRecords[i].Amount, stakeRecords[i].Duration)
+			err = c.CheckStake(txRes, stakeRecords[i].StakerPublicKey, stakeRecords[i].Amount, stakeRecords[i].Duration)
 			if err != nil {
 				recordStatuses = append(recordStatuses, types.Mismatch)
 				continue
@@ -141,7 +142,7 @@ func (c *Client) CheckStake(tx *btcjson.TxRawResult, stakerPubKeyStr string, amo
 		return errors.New("stake tx should has 1 out")
 	}
 
-	stakerPubKeyBytes, err := hex.DecodeString(stakerPubKeyStr)
+	stakerPubKeyBytes, err := hex.DecodeString(strings.TrimPrefix(stakerPubKeyStr, "0x"))
 	if err != nil {
 		return err
 	}

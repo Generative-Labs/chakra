@@ -27,6 +27,13 @@ type Backend struct {
 	dbClient *ent.Client
 }
 
+func CreateBackendWithDB(dbClient *ent.Client) *Backend {
+	backend := Backend{
+		dbClient: dbClient,
+	}
+	return &backend
+}
+
 func CreateBackend(config Config) (*Backend, error) {
 	var client *ent.Client
 	var err error

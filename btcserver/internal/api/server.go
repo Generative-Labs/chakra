@@ -32,9 +32,6 @@ func NewServer(ctx context.Context, backend *db.Backend, chakraAccount *account.
 		btcClient:       btcClient,
 	}
 
-	go server.TimeWheelSchedule()
-	go server.UpdateStakeStatus()
-
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 	SetupRoutes(r, server)
@@ -44,6 +41,9 @@ func NewServer(ctx context.Context, backend *db.Backend, chakraAccount *account.
 }
 
 func (s *Server) Run(servicePort int) error {
+	go s.TimeWheelSchedule()
+	go s.UpdateStakeFinalizedStatus()
+
 	return s.engine.Run(fmt.Sprintf(":%d", servicePort))
 }
 
