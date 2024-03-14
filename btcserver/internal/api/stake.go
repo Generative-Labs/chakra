@@ -72,7 +72,14 @@ func (s *Server) SubmitProofOfStake(c *gin.Context) {
 		return
 	}
 
-	//  todo verify ReceiverSignature
+	// verify reward receiver signature
+	if err := s.btcClient.CheckRewardReceiverSignature(stakeInfo.StakerPublicKey, stakeInfo.RewardReceiver,
+		stakeInfo.ReceiverSignature, int32(stakeInfo.Timestamp),
+	); err != nil {
+		respData.Msg = err.Error()
+		JSONResp(c, http.StatusBadRequest, respData)
+		return
+	}
 
 	// todo verify btc lock
 

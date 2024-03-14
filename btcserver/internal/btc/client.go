@@ -85,7 +85,7 @@ func (c *Client) CheckRewardReceiverSignature(stakerPubKeyStr, rewardReceiver,
 	messageHash := chainhash.DoubleHashB([]byte(message))
 
 	if !signature.Verify(messageHash, stakerPubKey) {
-		return errors.New("signature verify failed")
+		return errors.New("reward receiver signature verify failed")
 	}
 
 	return nil
