@@ -1,0 +1,22 @@
+btc:
+  network-name: "mainnet"
+  rpc-host: "127.0.0.1:8332"
+  rpc-user: "bitcoinuser"
+  rpc-pass: "bitcoinpassword"
+  disable-tls: false
+
+chakra:
+  http-url: "https://example.com"
+  chain-id: "chakra-chain"
+  private-key: "your-private-key"
+  address: "your-address"
+  contract-address: "contract-address"
+
+database:
+  driver: "mysql"
+  user: "dbuser"
+  host: "localhost:3306"
+  database: "example_db"
+  password: "dbpassword"
+
+service-port: 8080
