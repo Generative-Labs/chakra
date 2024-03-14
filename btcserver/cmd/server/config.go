@@ -16,7 +16,7 @@ type Config struct {
 		ContractAddress string `mapstructure:"contract-address"`
 	} `mapstructure:"chakra"`
 
-	DB db.Config `mapstructure:"mysql"`
+	DB db.Config `mapstructure:"database"`
 
 	ServicePort int `mapstructure:"service-port"`
 }

@@ -1,12 +1,17 @@
 package btc_test
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"testing"
 
+	"github.com/btcsuite/btcd/btcec/v2/ecdsa"
 	"github.com/btcsuite/btcd/btcjson"
+	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/generativelabs/btcserver/internal/btc"
 	"github.com/stretchr/testify/assert"
 )
@@ -102,4 +107,40 @@ func TestCheckStakeTx(t *testing.T) {
 			assert.NoError(t, err, test.description)
 		}
 	}
+}
+
+func TestCheckRewardAddressSignature(t *testing.T) {
+	client, err := btc.NewClient(btc.Config{
+		NetworkName: chaincfg.RegressionNetParams.Name,
+		RPCHost:     "localhost:18332",
+		RPCUser:     "rpcuser",
+		RPCPass:     "rpcpass",
+		DisableTLS:  true,
+	})
+	assert.NoError(t, err)
+
+	bobPrivKey, err := btcutil.DecodeWIF(bobPrivateKey)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	cairoRewardAddr := "0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
+	timestamp := int32(1710387487)
+
+	message := btc.AssembleRewardSignatureMessage(cairoRewardAddr, timestamp)
+	msgH := chainhash.DoubleHashB([]byte(message))
+
+	signature := ecdsa.Sign(bobPrivKey.PrivKey, msgH)
+	sigB := signature.Serialize()
+	sigH := hex.EncodeToString(sigB)
+
+	pubkeyStr := "024edfcf9dfe6c0b5c83d1ab3f78d1b39a46ebac6798e08e19761f5ed89ec83c10"
+
+	err = client.CheckRewardAddressSignature(pubkeyStr, cairoRewardAddr, sigH, timestamp)
+	assert.NoError(t, err)
+
+	mismatchCairoRewardAddr := "0x3d19214f89175a68b1874341ac8afa0e4f30dc114820d0e4039ee8c2be0a30f"
+	err = client.CheckRewardAddressSignature(pubkeyStr, mismatchCairoRewardAddr, sigH, timestamp)
+	assert.EqualError(t, err, "reward receiver signature verify failed")
 }
