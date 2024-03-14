@@ -72,7 +72,7 @@ func (c *Client) CheckRewardAddressSignature(stakerPubKeyStr, rewardReceiver,
 		return errors.New("invalid staker public key")
 	}
 
-	sigBytes, err := hex.DecodeString(sigHexStr)
+	sigBytes, err := hex.DecodeString(strings.TrimPrefix(sigHexStr, "0x"))
 	if err != nil {
 		return errors.New("signature should be a hex string")
 	}
@@ -142,7 +142,7 @@ func (c *Client) CheckStake(tx *btcjson.TxRawResult, stakerPubKeyStr string, amo
 		return errors.New("stake tx should has 1 out")
 	}
 
-	stakerPubKeyBytes, err := hex.DecodeString(stakerPubKeyStr)
+	stakerPubKeyBytes, err := hex.DecodeString(strings.TrimPrefix(stakerPubKeyStr, "0x"))
 	if err != nil {
 		return err
 	}

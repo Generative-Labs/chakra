@@ -142,5 +142,5 @@ func TestCheckRewardAddressSignature(t *testing.T) {
 
 	mismatchCairoRewardAddr := "0x3d19214f89175a68b1874341ac8afa0e4f30dc114820d0e4039ee8c2be0a30f"
 	err = client.CheckRewardAddressSignature(pubkeyStr, mismatchCairoRewardAddr, sigH, timestamp)
-	assert.EqualError(t, err, "reward receiver signature verify failed")
+	assert.EqualError(t, err, "reward address signature verify failed")
 }
