@@ -147,6 +147,7 @@ func (c *Backend) QueryAllNotYetLockedUpTxNextPeriod(timeStamp int64, timeWheelS
 		Where(stake.ReleaseStatus(0)).
 		Where(stake.DeadlineGT(feture)).
 		Where(stake.And(stake.ReleasingTimeGTE(timeStamp), stake.ReleasingTimeLT(feture))).
+		Order(ent.Asc(stake.FieldReleasingTime)).
 		All(context.Background())
 	if err != nil {
 		return nil, err

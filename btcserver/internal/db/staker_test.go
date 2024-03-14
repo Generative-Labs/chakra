@@ -1,11 +1,13 @@
 package db
 
 import (
+	"fmt"
 	"strconv"
 	"testing"
 	"time"
 
 	"github.com/generativelabs/btcserver/internal/types"
+	"github.com/generativelabs/btcserver/internal/utils"
 )
 
 var (
@@ -27,14 +29,16 @@ func InitDB() (*Backend, error) {
 
 func InitBatchStakeInfo() []*types.StakeInfoReq {
 	stakeInfoReqList := make([]*types.StakeInfoReq, 0)
-	start := TestTime
+	start := TestTime - 24*time.Hour.Nanoseconds() //+ 5*time.Minute.Nanoseconds()
 
 	for i := 1; i <= 10; i++ {
+		st := start + int64(i)*time.Minute.Nanoseconds()
+		fmt.Printf("== start %s\n", utils.TimestampToTime(st))
 		si := &types.StakeInfoReq{
 			Staker:            "bc1xxxxxxxxxx",
 			StakerPublicKey:   "0x0000",
 			TxID:              "txidxxxxxxxxxxxxxxxxxxxxx" + strconv.Itoa(i),
-			Start:             start + int64(i)*time.Minute.Nanoseconds(),
+			Start:             st,
 			Duration:          7 * 24 * time.Hour.Nanoseconds(),
 			Amount:            int64(5),
 			RewardReceiver:    "0x1111111111",
@@ -130,8 +134,8 @@ func TestQueryAllNotYetLockedUpTxNextPeriod(t *testing.T) {
 		}
 	}
 
-	tt := TestTime + 24*time.Hour.Nanoseconds()
-
+	tt := TestTime //+ 24*time.Hour.Nanoseconds()
+	fmt.Printf("== query %s\n", utils.TimestampToTime(tt))
 	txs, err := cli.QueryAllNotYetLockedUpTxNextPeriod(tt, types.TimeWheelSize)
 	if err != nil {
 		t.Fatalf("QueryAllNotYetLockedUpTxNextPeriod err:%s", err)

@@ -45,7 +45,11 @@ func (s *Server) TimeWheelSchedule() {
 			return
 		}
 
-		v, _ := strconv.Atoi(tw.Value)
+		v, err := strconv.Atoi(tw.Value)
+		if err != nil {
+			log.Error().Msgf("❌ error strconv.Atoi time wheel: %s ", err)
+			return
+		}
 
 		stw := utils.TimestampToTime(int64(v))
 		s.ScheduleTimeWheel = stw
@@ -70,26 +74,31 @@ func (s *Server) TimeWheelSchedule() {
 		}
 
 		if len(txs) == 0 {
-			if time.Now().After(s.ScheduleTimeWheel) {
-				err = s.UpdateTimeWheel()
+			if time.Now().Sub(s.ScheduleTimeWheel) > types.TimeWheelSize {
+				err = s.UpdateTimeWheelForDB()
 				if err != nil {
 					log.Error().Msgf("❌ error update time wheel: %s ", err)
+				} else {
+					s.UpdateTimeWheel()
 				}
 
 				continue
 			}
 
-			log.Info().Msgf("🔵🔵🔵 No tx to be released, sleep %v minutes", s.ScheduleTimeWheel.Add(types.TimeWheelSize).Sub(time.Now()).Minutes())
-			err = s.UpdateTimeWheel()
+			oldScheduleTimeWheel := s.ScheduleTimeWheel
+			log.Info().Msgf("🔵🔵🔵 No tx to be released, now %s sleep Until next Wheel %s", time.Now().String(), oldScheduleTimeWheel.Add(types.TimeWheelSize).String())
+			time.Sleep(time.Until(oldScheduleTimeWheel.Add(types.TimeWheelSize)))
+			err = s.UpdateTimeWheelForDB()
 			if err != nil {
 				log.Error().Msgf("❌ error update time wheel: %s ", err)
+			} else {
+				s.UpdateTimeWheel()
 			}
-			time.Sleep(time.Until(s.ScheduleTimeWheel.Add(types.TimeWheelSize)))
 			continue
 		}
 
-		log.Info().Msgf("🔵🔵🔵 In the next time period %s, find %d txids that are about to be released: %v", s.ScheduleTimeWheel.Add(types.TimeWheelSize), len(txs), txs)
-		go s.RewardTasksSchedule(txs)
+		log.Info().Msgf("🔵🔵🔵 In the next time period %s - %s, find %d txids that are about to be released: %v", s.ScheduleTimeWheel, s.ScheduleTimeWheel.Add(types.TimeWheelSize), len(txs), txs)
+		s.RewardTasksSchedule(txs)
 	}
 }
 
@@ -107,13 +116,14 @@ func (s *Server) RewardTasksSchedule(txs []*types.ReleaseTxsInfo) {
 
 	wg.Wait()
 
-	_ = s.UpdateTimeWheel()
+	_ = s.UpdateTimeWheelForDB()
+	s.UpdateTimeWheel()
 }
 
 func (s *Server) RewardTasks(txs []*types.ReleaseTxsInfo) error {
 	rt := utils.TimestampToTime(txs[0].ReleasingTime)
 	timer := time.NewTimer(time.Until(rt))
-	log.Info().Msgf("🔵🔵🔵 Start the timer and prepare to wait %v min", time.Until(rt).Minutes())
+	log.Info().Msgf("🔵🔵🔵 Start the timer and prepare to wait %v min [%v]", time.Until(rt).Minutes(), txs[0])
 
 	for { //nolint
 		select {
@@ -130,8 +140,8 @@ func (s *Server) RewardTasks(txs []*types.ReleaseTxsInfo) error {
 				// todo deal err task
 				return err
 			}
+			log.Info().Msgf("🔵🔵🔵 Chakra reward success, txs hash: %s ", res.TransactionHash)
 
-			log.Info().Msgf("🔵🔵🔵 Chakra reward to success, txs hash: %s ", res.TransactionHash)
 			for _, tx := range txs {
 				log.Info().Msgf("🔵🔵🔵 Start update stake ReleasingTime %v ", tx)
 				err := s.backend.UpdateStakeReleasingTime(tx.Staker, tx.Tx)
@@ -146,16 +156,22 @@ func (s *Server) RewardTasks(txs []*types.ReleaseTxsInfo) error {
 	}
 }
 
-func (s *Server) UpdateTimeWheel() error {
+func (s *Server) UpdateTimeWheel() {
 	newScheduleTimeWheel := utils.TimeTOTimestamp(s.ScheduleTimeWheel) + types.TimeWheelSize.Nanoseconds()
 	log.Info().Msgf("Update time wheel to %s ", utils.TimestampToTime(newScheduleTimeWheel))
+
+	s.ScheduleTimeWheel = s.ScheduleTimeWheel.Add(types.TimeWheelSize)
+	return
+}
+
+func (s *Server) UpdateTimeWheelForDB() error {
+	newScheduleTimeWheel := utils.TimeTOTimestamp(s.ScheduleTimeWheel) + types.TimeWheelSize.Nanoseconds()
+	log.Info().Msgf("DB update time wheel to %s ", utils.TimestampToTime(newScheduleTimeWheel))
 	err := s.backend.UpdateTimeWheel(newScheduleTimeWheel)
 	if err != nil {
 		log.Error().Msgf("❌ error update time wheel for db: %s ", err)
 		return err
 	}
-
-	s.ScheduleTimeWheel = s.ScheduleTimeWheel.Add(types.TimeWheelSize)
 	return nil
 }
 
