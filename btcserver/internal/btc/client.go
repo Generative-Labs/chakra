@@ -58,7 +58,7 @@ func NewClient(config Config) (*Client, error) {
 	return &client, nil
 }
 
-func (c *Client) CheckRewardReceiverSignature(stakerPubKeyStr, rewardReceiver,
+func (c *Client) CheckRewardAddressSignature(stakerPubKeyStr, rewardReceiver,
 	sigHexStr string, timestamp int32,
 ) error {
 	stakerPubKeyBytes, err := hex.DecodeString(stakerPubKeyStr)
@@ -81,7 +81,7 @@ func (c *Client) CheckRewardReceiverSignature(stakerPubKeyStr, rewardReceiver,
 		return err
 	}
 
-	message := assembleRewardSignatureMessage(rewardReceiver, timestamp)
+	message := AssembleRewardSignatureMessage(rewardReceiver, timestamp)
 	messageHash := chainhash.DoubleHashB([]byte(message))
 
 	if !signature.Verify(messageHash, stakerPubKey) {
@@ -202,6 +202,6 @@ func (c *Client) calculateAddressRedeemScriptHash(stakerPubKey *secp256k1.Public
 	return addressHash, nil
 }
 
-func assembleRewardSignatureMessage(rewardReceiveAddress string, timestamp int32) string {
+func AssembleRewardSignatureMessage(rewardReceiveAddress string, timestamp int32) string {
 	return fmt.Sprintf("%s/%d", rewardReceiveAddress, timestamp)
 }
