@@ -54,9 +54,9 @@ const (
 )
 
 type StakeVerificationParam struct {
-	TxID            string
-	StakerPubKey    string
-	Amount          uint64
-	Duration        uint64
-	FinalizedStatus StakeRecordStatus
+	TxID            string            `json:"tx,omitempty"`
+	StakerPublicKey string            `json:"staker_public_key,omitempty"`
+	Amount          uint64            `json:"amount,omitempty"`
+	Duration        uint64            `json:"duration,omitempty"`
+	FinalizedStatus StakeRecordStatus `json:"finalized_status,omitempty"`
 }

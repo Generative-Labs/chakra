@@ -116,7 +116,7 @@ func (c *Client) CheckStakeRecords(stakeRecords []*types.StakeVerificationParam)
 		}
 
 		if stakeRecords[i].FinalizedStatus == types.TxPending {
-			err = c.CheckStake(txRes, stakeRecords[i].StakerPubKey, stakeRecords[i].Amount, stakeRecords[i].Duration)
+			err = c.CheckStake(txRes, stakeRecords[i].StakerPublicKey, stakeRecords[i].Amount, stakeRecords[i].Duration)
 			if err != nil {
 				recordStatuses = append(recordStatuses, types.Mismatch)
 				continue

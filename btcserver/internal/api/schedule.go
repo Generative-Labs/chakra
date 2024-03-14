@@ -79,7 +79,7 @@ func (s *Server) TimeWheelSchedule() {
 				continue
 			}
 
-			log.Info().Msgf("🔵🔵🔵 No tx to be released, sleep %v minutes", s.ScheduleTimeWheel.Add(types.TimeWheelSize).Sub(time.Now()).Minutes())
+			log.Info().Msgf("🔵🔵🔵 No tx to be released, sleep %v minutes", s.ScheduleTimeWheel.Add(types.TimeWheelSize).Sub(time.Now()).Minutes()) //nolint
 			err = s.UpdateTimeWheel()
 			if err != nil {
 				log.Error().Msgf("❌ error update time wheel: %s ", err)
@@ -182,7 +182,7 @@ func (s *Server) UpdateStakeStatus() {
 				continue
 			}
 
-			err := s.backend.UpdateStakeFinalizedStatus(stakeVerifyParams[i].StakerPubKey, stakeVerifyParams[i].TxID, int(status))
+			err := s.backend.UpdateStakeFinalizedStatus(stakeVerifyParams[i].StakerPublicKey, stakeVerifyParams[i].TxID, int(status))
 			if err != nil {
 				log.Error().Msgf("💥 error when update state finalize status %s", err)
 			}
