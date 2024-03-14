@@ -244,10 +244,10 @@ func BtcTxIDToFelt(amount string) []*felt.Felt {
 	return []*felt.Felt{utils.BigIntToFelt(firstPart), utils.BigIntToFelt(secondPart)}
 }
 
-func ArrBtcTxIDToFelt(txID []string) []*felt.Felt {
+func ArrBtcTxIDToFelt(txIDs []string) []*felt.Felt {
 	newTxIDs := make([]*felt.Felt, 0)
 
-	for _, tx := range txID {
+	for _, tx := range txIDs {
 		fb := utils.HexToBN(tx)
 		f := utils.BigIntToFelt(fb)
 		newTxIDs = append(newTxIDs, f)
