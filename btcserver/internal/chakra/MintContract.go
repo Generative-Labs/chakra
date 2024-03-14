@@ -101,9 +101,6 @@ func RewardTo(ctx context.Context, cAccount *account.Account, contractAddressHex
 	}
 
 	params := ArrBtcTxIDToFelt(txIDs)
-	if err != nil {
-		return nil, err
-	}
 
 	lenP := utils.BigIntToFelt(big.NewInt(int64(len(txIDs))))
 	callData := make([]*felt.Felt, 0)
@@ -247,10 +244,10 @@ func BtcTxIDToFelt(amount string) []*felt.Felt {
 	return []*felt.Felt{utils.BigIntToFelt(firstPart), utils.BigIntToFelt(secondPart)}
 }
 
-func ArrBtcTxIDToFelt(txIDS []string) []*felt.Felt {
+func ArrBtcTxIDToFelt(txID []string) []*felt.Felt {
 	newTxIDs := make([]*felt.Felt, 0)
 
-	for _, tx := range txIDS {
+	for _, tx := range txID {
 		fb := utils.HexToBN(tx)
 		f := utils.BigIntToFelt(fb)
 		newTxIDs = append(newTxIDs, f)

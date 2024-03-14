@@ -36,7 +36,6 @@ func TimestampToTime(timestamp int64) time.Time {
 	nanoseconds := timestamp % 1e9
 
 	return time.Unix(seconds, nanoseconds)
-	//return time.Unix(timestamp/1000, (timestamp%1000)*1000000)
 }
 
 func TimeToDailyFixedTime(t time.Time) time.Time {
