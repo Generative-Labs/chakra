@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/btcsuite/btcd/btcec/v2/ecdsa"
@@ -61,31 +62,31 @@ func NewClient(config Config) (*Client, error) {
 func (c *Client) CheckRewardAddressSignature(stakerPubKeyStr, rewardReceiver,
 	sigHexStr string, timestamp int32,
 ) error {
-	stakerPubKeyBytes, err := hex.DecodeString(stakerPubKeyStr)
+	stakerPubKeyBytes, err := hex.DecodeString(strings.TrimPrefix(stakerPubKeyStr, "0x"))
 	if err != nil {
-		return err
+		return errors.New("public key should hex string")
 	}
 
 	stakerPubKey, err := btcec.ParsePubKey(stakerPubKeyBytes)
 	if err != nil {
-		return err
+		return errors.New("invalid staker public key")
 	}
 
 	sigBytes, err := hex.DecodeString(sigHexStr)
 	if err != nil {
-		return err
+		return errors.New("signature should be a hex string")
 	}
 
 	signature, err := ecdsa.ParseSignature(sigBytes)
 	if err != nil {
-		return err
+		return errors.New("invalid reward receiver signature")
 	}
 
 	message := AssembleRewardSignatureMessage(rewardReceiver, timestamp)
 	messageHash := chainhash.DoubleHashB([]byte(message))
 
 	if !signature.Verify(messageHash, stakerPubKey) {
-		return errors.New("reward receiver signature verify failed")
+		return errors.New("reward address signature verify failed")
 	}
 
 	return nil
