@@ -16,6 +16,7 @@ func (c *Backend) CreateStake(
 	duration int64,
 	amount int64,
 	rewardReceiver string,
+	reward int64,
 	receiverSignature string,
 	timestamp int64,
 ) error {
@@ -32,6 +33,7 @@ func (c *Backend) CreateStake(
 		SetReleasingTime(fixedTime).
 		SetAmount(amount).
 		SetRewardReceiver(rewardReceiver).
+		SetReward(reward).
 		SetReceiverSig(receiverSignature).
 		SetTimestamp(timestamp).
 		SetCreateAt(ts).

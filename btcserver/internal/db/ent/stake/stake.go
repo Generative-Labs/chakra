@@ -29,6 +29,8 @@ const (
 	FieldAmount = "amount"
 	// FieldRewardReceiver holds the string denoting the rewardreceiver field in the database.
 	FieldRewardReceiver = "reward_receiver"
+	// FieldReward holds the string denoting the reward field in the database.
+	FieldReward = "reward"
 	// FieldFinalizedStatus holds the string denoting the finalizedstatus field in the database.
 	FieldFinalizedStatus = "finalized_status"
 	// FieldReleaseStatus holds the string denoting the releasestatus field in the database.
@@ -57,6 +59,7 @@ var Columns = []string{
 	FieldReleasingTime,
 	FieldAmount,
 	FieldRewardReceiver,
+	FieldReward,
 	FieldFinalizedStatus,
 	FieldReleaseStatus,
 	FieldReceiverSig,
@@ -141,6 +144,11 @@ func ByAmount(opts ...sql.OrderTermOption) OrderOption {
 // ByRewardReceiver orders the results by the RewardReceiver field.
 func ByRewardReceiver(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRewardReceiver, opts...).ToFunc()
+}
+
+// ByReward orders the results by the Reward field.
+func ByReward(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldReward, opts...).ToFunc()
 }
 
 // ByFinalizedStatus orders the results by the FinalizedStatus field.

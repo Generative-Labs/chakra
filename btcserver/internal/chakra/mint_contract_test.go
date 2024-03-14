@@ -3,7 +3,6 @@ package chakra
 import (
 	"context"
 	"encoding/json"
-	"math/big"
 	"testing"
 
 	"github.com/NethermindEth/juno/core/felt"
@@ -62,26 +61,26 @@ func TestTxRewardsof(t *testing.T) {
 	url := "https://madara.to3.io"
 	priKeyt := "0x00c1cf1490de1352865301bb8705143f3ef938f97fdf892f1090dcb5ac7bcd1d"
 	addr := "0x3"
-	contractAddr := "0x2c38b9a62cabbcb1c8e0041ac96bff436c0805e1adfee2137a2bf41f8bf68"
+	contractAddr := "0x4ca7cade3c35486817d8a0880cc8919cb82d92dd79208ffdecc31328f6174"
 
 	acc, err := NewChakraAccount(context.Background(), url, priKeyt, addr)
 	if err != nil {
 		t.Fatalf("New chakra account err:%s", err)
 	}
 
-	txIDs := []string{"0x1"}
-	params := ArrBtcTxIDToFelt(txIDs)
+	txIDs := "0x1"
+	params, err := utils.HexToFelt(txIDs)
 	if err != nil {
-		t.Fatalf("ArrBtcTxIDToFelt err:%s", err)
+		t.Fatalf("HexToFelt err:%s", err)
 	}
 
-	lenP := utils.BigIntToFelt(big.NewInt(int64(len(txIDs))))
+	//lenP := utils.BigIntToFelt(big.NewInt(int64(len(txIDs))))
 	callData := make([]*felt.Felt, 0)
-	callData = append(callData, lenP)
-	callData = append(callData, params...)
+	//callData = append(callData, lenP)
+	callData = append(callData, params)
 
 	// RPCCall
-	res, err := RPCCall(acc, contractAddr, "RPCCall", callData)
+	res, err := RPCCall(acc, contractAddr, "rewardsOf", callData)
 	if err != nil {
 		t.Fatalf("RPCCall err:%s", err)
 	}

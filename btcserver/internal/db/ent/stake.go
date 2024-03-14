@@ -34,6 +34,8 @@ type Stake struct {
 	Amount int64 `json:"Amount,omitempty"`
 	// RewardReceiver holds the value of the "RewardReceiver" field.
 	RewardReceiver string `json:"RewardReceiver,omitempty"`
+	// Reward holds the value of the "Reward" field.
+	Reward int64 `json:"Reward,omitempty"`
 	// FinalizedStatus holds the value of the "FinalizedStatus" field.
 	FinalizedStatus int `json:"FinalizedStatus,omitempty"`
 	// ReleaseStatus holds the value of the "ReleaseStatus" field.
@@ -54,7 +56,7 @@ func (*Stake) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case stake.FieldID, stake.FieldStart, stake.FieldDuration, stake.FieldDeadline, stake.FieldReleasingTime, stake.FieldAmount, stake.FieldFinalizedStatus, stake.FieldReleaseStatus, stake.FieldTimestamp, stake.FieldCreateAt, stake.FieldUpdateAt:
+		case stake.FieldID, stake.FieldStart, stake.FieldDuration, stake.FieldDeadline, stake.FieldReleasingTime, stake.FieldAmount, stake.FieldReward, stake.FieldFinalizedStatus, stake.FieldReleaseStatus, stake.FieldTimestamp, stake.FieldCreateAt, stake.FieldUpdateAt:
 			values[i] = new(sql.NullInt64)
 		case stake.FieldStaker, stake.FieldStakerPublicKey, stake.FieldTx, stake.FieldRewardReceiver, stake.FieldReceiverSig:
 			values[i] = new(sql.NullString)
@@ -132,6 +134,12 @@ func (s *Stake) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field RewardReceiver", values[i])
 			} else if value.Valid {
 				s.RewardReceiver = value.String
+			}
+		case stake.FieldReward:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field Reward", values[i])
+			} else if value.Valid {
+				s.Reward = value.Int64
 			}
 		case stake.FieldFinalizedStatus:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -231,6 +239,9 @@ func (s *Stake) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("RewardReceiver=")
 	builder.WriteString(s.RewardReceiver)
+	builder.WriteString(", ")
+	builder.WriteString("Reward=")
+	builder.WriteString(fmt.Sprintf("%v", s.Reward))
 	builder.WriteString(", ")
 	builder.WriteString("FinalizedStatus=")
 	builder.WriteString(fmt.Sprintf("%v", s.FinalizedStatus))

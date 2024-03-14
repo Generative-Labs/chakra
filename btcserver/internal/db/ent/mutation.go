@@ -605,6 +605,8 @@ type StakeMutation struct {
 	_Amount             *int64
 	add_Amount          *int64
 	_RewardReceiver     *string
+	_Reward             *int64
+	add_Reward          *int64
 	_FinalizedStatus    *int
 	add_FinalizedStatus *int
 	_ReleaseStatus      *int
@@ -1144,6 +1146,62 @@ func (m *StakeMutation) ResetRewardReceiver() {
 	m._RewardReceiver = nil
 }
 
+// SetReward sets the "Reward" field.
+func (m *StakeMutation) SetReward(i int64) {
+	m._Reward = &i
+	m.add_Reward = nil
+}
+
+// Reward returns the value of the "Reward" field in the mutation.
+func (m *StakeMutation) Reward() (r int64, exists bool) {
+	v := m._Reward
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldReward returns the old "Reward" field's value of the Stake entity.
+// If the Stake object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StakeMutation) OldReward(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldReward is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldReward requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldReward: %w", err)
+	}
+	return oldValue.Reward, nil
+}
+
+// AddReward adds i to the "Reward" field.
+func (m *StakeMutation) AddReward(i int64) {
+	if m.add_Reward != nil {
+		*m.add_Reward += i
+	} else {
+		m.add_Reward = &i
+	}
+}
+
+// AddedReward returns the value that was added to the "Reward" field in this mutation.
+func (m *StakeMutation) AddedReward() (r int64, exists bool) {
+	v := m.add_Reward
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetReward resets all changes to the "Reward" field.
+func (m *StakeMutation) ResetReward() {
+	m._Reward = nil
+	m.add_Reward = nil
+}
+
 // SetFinalizedStatus sets the "FinalizedStatus" field.
 func (m *StakeMutation) SetFinalizedStatus(i int) {
 	m._FinalizedStatus = &i
@@ -1494,7 +1552,7 @@ func (m *StakeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *StakeMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 16)
 	if m._Staker != nil {
 		fields = append(fields, stake.FieldStaker)
 	}
@@ -1521,6 +1579,9 @@ func (m *StakeMutation) Fields() []string {
 	}
 	if m._RewardReceiver != nil {
 		fields = append(fields, stake.FieldRewardReceiver)
+	}
+	if m._Reward != nil {
+		fields = append(fields, stake.FieldReward)
 	}
 	if m._FinalizedStatus != nil {
 		fields = append(fields, stake.FieldFinalizedStatus)
@@ -1566,6 +1627,8 @@ func (m *StakeMutation) Field(name string) (ent.Value, bool) {
 		return m.Amount()
 	case stake.FieldRewardReceiver:
 		return m.RewardReceiver()
+	case stake.FieldReward:
+		return m.Reward()
 	case stake.FieldFinalizedStatus:
 		return m.FinalizedStatus()
 	case stake.FieldReleaseStatus:
@@ -1605,6 +1668,8 @@ func (m *StakeMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldAmount(ctx)
 	case stake.FieldRewardReceiver:
 		return m.OldRewardReceiver(ctx)
+	case stake.FieldReward:
+		return m.OldReward(ctx)
 	case stake.FieldFinalizedStatus:
 		return m.OldFinalizedStatus(ctx)
 	case stake.FieldReleaseStatus:
@@ -1689,6 +1754,13 @@ func (m *StakeMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetRewardReceiver(v)
 		return nil
+	case stake.FieldReward:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetReward(v)
+		return nil
 	case stake.FieldFinalizedStatus:
 		v, ok := value.(int)
 		if !ok {
@@ -1754,6 +1826,9 @@ func (m *StakeMutation) AddedFields() []string {
 	if m.add_Amount != nil {
 		fields = append(fields, stake.FieldAmount)
 	}
+	if m.add_Reward != nil {
+		fields = append(fields, stake.FieldReward)
+	}
 	if m.add_FinalizedStatus != nil {
 		fields = append(fields, stake.FieldFinalizedStatus)
 	}
@@ -1787,6 +1862,8 @@ func (m *StakeMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedReleasingTime()
 	case stake.FieldAmount:
 		return m.AddedAmount()
+	case stake.FieldReward:
+		return m.AddedReward()
 	case stake.FieldFinalizedStatus:
 		return m.AddedFinalizedStatus()
 	case stake.FieldReleaseStatus:
@@ -1840,6 +1917,13 @@ func (m *StakeMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddAmount(v)
+		return nil
+	case stake.FieldReward:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddReward(v)
 		return nil
 	case stake.FieldFinalizedStatus:
 		v, ok := value.(int)
@@ -1929,6 +2013,9 @@ func (m *StakeMutation) ResetField(name string) error {
 		return nil
 	case stake.FieldRewardReceiver:
 		m.ResetRewardReceiver()
+		return nil
+	case stake.FieldReward:
+		m.ResetReward()
 		return nil
 	case stake.FieldFinalizedStatus:
 		m.ResetFinalizedStatus()

@@ -34,6 +34,7 @@ var (
 		{Name: "releasing_time", Type: field.TypeInt64},
 		{Name: "amount", Type: field.TypeInt64},
 		{Name: "reward_receiver", Type: field.TypeString, Size: 66},
+		{Name: "reward", Type: field.TypeInt64},
 		{Name: "finalized_status", Type: field.TypeInt, Default: 0},
 		{Name: "release_status", Type: field.TypeInt, Default: 0},
 		{Name: "receiver_sig", Type: field.TypeString},
@@ -54,6 +55,11 @@ var (
 			},
 			{
 				Name:    "stake_release_status_tx",
+				Unique:  false,
+				Columns: []*schema.Column{StakesColumns[12], StakesColumns[3]},
+			},
+			{
+				Name:    "stake_finalized_status_tx",
 				Unique:  false,
 				Columns: []*schema.Column{StakesColumns[11], StakesColumns[3]},
 			},

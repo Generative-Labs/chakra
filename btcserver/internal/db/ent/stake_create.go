@@ -73,6 +73,12 @@ func (sc *StakeCreate) SetRewardReceiver(s string) *StakeCreate {
 	return sc
 }
 
+// SetReward sets the "Reward" field.
+func (sc *StakeCreate) SetReward(i int64) *StakeCreate {
+	sc.mutation.SetReward(i)
+	return sc
+}
+
 // SetFinalizedStatus sets the "FinalizedStatus" field.
 func (sc *StakeCreate) SetFinalizedStatus(i int) *StakeCreate {
 	sc.mutation.SetFinalizedStatus(i)
@@ -226,6 +232,9 @@ func (sc *StakeCreate) check() error {
 			return &ValidationError{Name: "RewardReceiver", err: fmt.Errorf(`ent: validator failed for field "Stake.RewardReceiver": %w`, err)}
 		}
 	}
+	if _, ok := sc.mutation.Reward(); !ok {
+		return &ValidationError{Name: "Reward", err: errors.New(`ent: missing required field "Stake.Reward"`)}
+	}
 	if _, ok := sc.mutation.FinalizedStatus(); !ok {
 		return &ValidationError{Name: "FinalizedStatus", err: errors.New(`ent: missing required field "Stake.FinalizedStatus"`)}
 	}
@@ -305,6 +314,10 @@ func (sc *StakeCreate) createSpec() (*Stake, *sqlgraph.CreateSpec) {
 	if value, ok := sc.mutation.RewardReceiver(); ok {
 		_spec.SetField(stake.FieldRewardReceiver, field.TypeString, value)
 		_node.RewardReceiver = value
+	}
+	if value, ok := sc.mutation.Reward(); ok {
+		_spec.SetField(stake.FieldReward, field.TypeInt64, value)
+		_node.Reward = value
 	}
 	if value, ok := sc.mutation.FinalizedStatus(); ok {
 		_spec.SetField(stake.FieldFinalizedStatus, field.TypeInt, value)

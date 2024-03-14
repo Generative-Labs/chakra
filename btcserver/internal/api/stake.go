@@ -1,9 +1,11 @@
 package api
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/generativelabs/btcserver/internal/types"
+	"github.com/generativelabs/btcserver/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
@@ -51,6 +53,7 @@ func (s *Server) GetStakeListByStaker(c *gin.Context) {
 			Durnation:      s.Duration,
 			Amount:         s.Amount,
 			RewardReceiver: s.RewardReceiver,
+			Reward:         s.Reward,
 		})
 	}
 
@@ -68,6 +71,14 @@ func (s *Server) SubmitProofOfStake(c *gin.Context) {
 	var stakeInfo types.StakeInfoReq
 	if err := c.Bind(&stakeInfo); err != nil {
 		respData.Msg = err.Error()
+		JSONResp(c, http.StatusBadRequest, respData)
+		return
+	}
+
+	//verify reward
+	reward := utils.CalculateReward(float64(stakeInfo.Amount), float64(stakeInfo.Duration))
+	if reward != float64(stakeInfo.Reward) {
+		respData.Msg = errors.New("reward calculation error").Error()
 		JSONResp(c, http.StatusBadRequest, respData)
 		return
 	}
@@ -90,6 +101,7 @@ func (s *Server) SubmitProofOfStake(c *gin.Context) {
 		stakeInfo.Duration,
 		stakeInfo.Amount,
 		stakeInfo.RewardReceiver,
+		stakeInfo.Reward,
 		stakeInfo.ReceiverSignature,
 		stakeInfo.Timestamp)
 	if err != nil {

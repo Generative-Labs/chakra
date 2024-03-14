@@ -63,10 +63,11 @@ func TestCreateStake(t *testing.T) {
 	duration := 7 * 24 * time.Hour.Nanoseconds()
 	amount := int64(5)
 	rewardReceiver := "0x1111111111"
+	reward := int64(500)
 	receiverSignature := "receiverSignature"
 	timestamp := start + 10*time.Minute.Nanoseconds()
 
-	err = cli.CreateStake(staker, stakerPublicKey, txID, start, duration, amount, rewardReceiver, receiverSignature, timestamp)
+	err = cli.CreateStake(staker, stakerPublicKey, txID, start, duration, amount, rewardReceiver, reward, receiverSignature, timestamp)
 	if err != nil {
 		t.Fatalf("CreateStake err:%s", err)
 	}
@@ -85,10 +86,11 @@ func TestUpdateStakeReleasingTime(t *testing.T) {
 	duration := 7 * 24 * time.Hour.Nanoseconds()
 	amount := int64(5)
 	rewardReceiver := "0x1111111111"
+	reward := int64(500)
 	receiverSignature := "receiverSignature"
 	timestamp := start + 10*time.Minute.Nanoseconds()
 
-	err = cli.CreateStake(staker, stakerPublicKey, txID, start, duration, amount, rewardReceiver, receiverSignature, timestamp)
+	err = cli.CreateStake(staker, stakerPublicKey, txID, start, duration, amount, rewardReceiver, reward, receiverSignature, timestamp)
 	if err != nil {
 		t.Fatalf("CreateStake err:%s", err)
 	}
@@ -122,7 +124,7 @@ func TestQueryAllNotYetLockedUpTxNextPeriod(t *testing.T) {
 
 	siList := MockBatchStakeInfo(10)
 	for _, si := range siList {
-		err = cli.CreateStake(si.Staker, si.StakerPublicKey, si.TxID, si.Start, si.Duration, si.Amount, si.RewardReceiver, si.ReceiverSignature, si.Timestamp)
+		err = cli.CreateStake(si.Staker, si.StakerPublicKey, si.TxID, si.Start, si.Duration, si.Amount, si.RewardReceiver, si.Reward, si.ReceiverSignature, si.Timestamp)
 		if err != nil {
 			t.Fatalf("CreateStake err:%s", err)
 		}
@@ -147,7 +149,7 @@ func TestQueryNoFinalizedStakeTx(t *testing.T) {
 	stakeRecordSize := 10
 	siList := MockBatchStakeInfo(stakeRecordSize)
 	for i, si := range siList {
-		err = cli.CreateStake(si.Staker, si.StakerPublicKey, si.TxID, si.Start, si.Duration, si.Amount, si.RewardReceiver, si.ReceiverSignature, si.Timestamp)
+		err = cli.CreateStake(si.Staker, si.StakerPublicKey, si.TxID, si.Start, si.Duration, si.Amount, si.RewardReceiver, si.Reward, si.ReceiverSignature, si.Timestamp)
 		if err != nil {
 			assert.NoError(t, err)
 		}

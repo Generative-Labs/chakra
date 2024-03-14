@@ -188,6 +188,27 @@ func (su *StakeUpdate) SetNillableRewardReceiver(s *string) *StakeUpdate {
 	return su
 }
 
+// SetReward sets the "Reward" field.
+func (su *StakeUpdate) SetReward(i int64) *StakeUpdate {
+	su.mutation.ResetReward()
+	su.mutation.SetReward(i)
+	return su
+}
+
+// SetNillableReward sets the "Reward" field if the given value is not nil.
+func (su *StakeUpdate) SetNillableReward(i *int64) *StakeUpdate {
+	if i != nil {
+		su.SetReward(*i)
+	}
+	return su
+}
+
+// AddReward adds i to the "Reward" field.
+func (su *StakeUpdate) AddReward(i int64) *StakeUpdate {
+	su.mutation.AddReward(i)
+	return su
+}
+
 // SetFinalizedStatus sets the "FinalizedStatus" field.
 func (su *StakeUpdate) SetFinalizedStatus(i int) *StakeUpdate {
 	su.mutation.ResetFinalizedStatus()
@@ -391,6 +412,12 @@ func (su *StakeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := su.mutation.RewardReceiver(); ok {
 		_spec.SetField(stake.FieldRewardReceiver, field.TypeString, value)
+	}
+	if value, ok := su.mutation.Reward(); ok {
+		_spec.SetField(stake.FieldReward, field.TypeInt64, value)
+	}
+	if value, ok := su.mutation.AddedReward(); ok {
+		_spec.AddField(stake.FieldReward, field.TypeInt64, value)
 	}
 	if value, ok := su.mutation.FinalizedStatus(); ok {
 		_spec.SetField(stake.FieldFinalizedStatus, field.TypeInt, value)
@@ -597,6 +624,27 @@ func (suo *StakeUpdateOne) SetNillableRewardReceiver(s *string) *StakeUpdateOne 
 	if s != nil {
 		suo.SetRewardReceiver(*s)
 	}
+	return suo
+}
+
+// SetReward sets the "Reward" field.
+func (suo *StakeUpdateOne) SetReward(i int64) *StakeUpdateOne {
+	suo.mutation.ResetReward()
+	suo.mutation.SetReward(i)
+	return suo
+}
+
+// SetNillableReward sets the "Reward" field if the given value is not nil.
+func (suo *StakeUpdateOne) SetNillableReward(i *int64) *StakeUpdateOne {
+	if i != nil {
+		suo.SetReward(*i)
+	}
+	return suo
+}
+
+// AddReward adds i to the "Reward" field.
+func (suo *StakeUpdateOne) AddReward(i int64) *StakeUpdateOne {
+	suo.mutation.AddReward(i)
 	return suo
 }
 
@@ -833,6 +881,12 @@ func (suo *StakeUpdateOne) sqlSave(ctx context.Context) (_node *Stake, err error
 	}
 	if value, ok := suo.mutation.RewardReceiver(); ok {
 		_spec.SetField(stake.FieldRewardReceiver, field.TypeString, value)
+	}
+	if value, ok := suo.mutation.Reward(); ok {
+		_spec.SetField(stake.FieldReward, field.TypeInt64, value)
+	}
+	if value, ok := suo.mutation.AddedReward(); ok {
+		_spec.AddField(stake.FieldReward, field.TypeInt64, value)
 	}
 	if value, ok := suo.mutation.FinalizedStatus(); ok {
 		_spec.SetField(stake.FieldFinalizedStatus, field.TypeInt, value)

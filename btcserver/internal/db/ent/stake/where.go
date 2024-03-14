@@ -97,6 +97,11 @@ func RewardReceiver(v string) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldRewardReceiver, v))
 }
 
+// Reward applies equality check predicate on the "Reward" field. It's identical to RewardEQ.
+func Reward(v int64) predicate.Stake {
+	return predicate.Stake(sql.FieldEQ(FieldReward, v))
+}
+
 // FinalizedStatus applies equality check predicate on the "FinalizedStatus" field. It's identical to FinalizedStatusEQ.
 func FinalizedStatus(v int) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldFinalizedStatus, v))
@@ -585,6 +590,46 @@ func RewardReceiverEqualFold(v string) predicate.Stake {
 // RewardReceiverContainsFold applies the ContainsFold predicate on the "RewardReceiver" field.
 func RewardReceiverContainsFold(v string) predicate.Stake {
 	return predicate.Stake(sql.FieldContainsFold(FieldRewardReceiver, v))
+}
+
+// RewardEQ applies the EQ predicate on the "Reward" field.
+func RewardEQ(v int64) predicate.Stake {
+	return predicate.Stake(sql.FieldEQ(FieldReward, v))
+}
+
+// RewardNEQ applies the NEQ predicate on the "Reward" field.
+func RewardNEQ(v int64) predicate.Stake {
+	return predicate.Stake(sql.FieldNEQ(FieldReward, v))
+}
+
+// RewardIn applies the In predicate on the "Reward" field.
+func RewardIn(vs ...int64) predicate.Stake {
+	return predicate.Stake(sql.FieldIn(FieldReward, vs...))
+}
+
+// RewardNotIn applies the NotIn predicate on the "Reward" field.
+func RewardNotIn(vs ...int64) predicate.Stake {
+	return predicate.Stake(sql.FieldNotIn(FieldReward, vs...))
+}
+
+// RewardGT applies the GT predicate on the "Reward" field.
+func RewardGT(v int64) predicate.Stake {
+	return predicate.Stake(sql.FieldGT(FieldReward, v))
+}
+
+// RewardGTE applies the GTE predicate on the "Reward" field.
+func RewardGTE(v int64) predicate.Stake {
+	return predicate.Stake(sql.FieldGTE(FieldReward, v))
+}
+
+// RewardLT applies the LT predicate on the "Reward" field.
+func RewardLT(v int64) predicate.Stake {
+	return predicate.Stake(sql.FieldLT(FieldReward, v))
+}
+
+// RewardLTE applies the LTE predicate on the "Reward" field.
+func RewardLTE(v int64) predicate.Stake {
+	return predicate.Stake(sql.FieldLTE(FieldReward, v))
 }
 
 // FinalizedStatusEQ applies the EQ predicate on the "FinalizedStatus" field.

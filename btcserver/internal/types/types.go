@@ -32,6 +32,7 @@ type StakeInfoResp struct {
 	Durnation      int64  `json:"durnation,omitempty"`
 	Amount         int64  `json:"amount,omitempty"`
 	RewardReceiver string `json:"reward_receiver,omitempty"`
+	Reward         int64  `json:"reward,omitempty"`
 }
 
 type ReleaseTxsInfo struct {
