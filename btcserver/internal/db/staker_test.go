@@ -8,8 +8,8 @@ import (
 	"github.com/generativelabs/btcserver/internal/types"
 )
 
-const (
-	TestTime int64 = 1710238210000 // 2024-03-12 10:10:10  time.Date(2024, 3, 12, 10, 10, 10, 0, time.UTC).UnixMilli()
+var (
+	TestTime = time.Now().UnixNano()
 )
 
 func InitDB() (*Backend, error) {
@@ -29,37 +29,37 @@ func InitBatchStakeInfo() []*types.StakeInfoReq {
 	stakeInfoReqList := make([]*types.StakeInfoReq, 0)
 	start := TestTime
 
-	for i := 0; i < 10; i++ {
+	for i := 1; i <= 10; i++ {
 		si := &types.StakeInfoReq{
 			Staker:            "bc1xxxxxxxxxx",
 			StakerPublicKey:   "0x0000",
 			TxID:              "txidxxxxxxxxxxxxxxxxxxxxx" + strconv.Itoa(i),
-			Start:             start + int64(i),
-			Duration:          7 * 24 * time.Hour.Milliseconds(),
+			Start:             start + int64(i)*time.Minute.Nanoseconds(),
+			Duration:          7 * 24 * time.Hour.Nanoseconds(),
 			Amount:            int64(5),
 			RewardReceiver:    "0x1111111111",
 			ReceiverSignature: "receiverSignature",
-			Timestamp:         start + 10*time.Minute.Milliseconds(),
+			Timestamp:         start + 10*time.Minute.Nanoseconds(),
 		}
 
 		stakeInfoReqList = append(stakeInfoReqList, si)
 	}
 
-	for i := 0; i < 10; i++ {
-		si := &types.StakeInfoReq{
-			Staker:            "bc1yyyyyyyyyy",
-			StakerPublicKey:   "0x0000",
-			TxID:              "txidyyyyyyyyyyyyyyyyy" + strconv.Itoa(i),
-			Start:             start + int64(i),
-			Duration:          7 * 24 * time.Hour.Milliseconds(),
-			Amount:            int64(5),
-			RewardReceiver:    "0x1111111111",
-			ReceiverSignature: "receiverSignature",
-			Timestamp:         start + 10*time.Minute.Milliseconds(),
-		}
-
-		stakeInfoReqList = append(stakeInfoReqList, si)
-	}
+	//for i := 0; i < 10; i++ {
+	//	si := &types.StakeInfoReq{
+	//		Staker:            "bc1yyyyyyyyyy",
+	//		StakerPublicKey:   "0x0000",
+	//		TxID:              "txidyyyyyyyyyyyyyyyyy" + strconv.Itoa(i),
+	//		Start:             start + int64(i),
+	//		Duration:          7 * 24 * time.Hour.Nanoseconds(),
+	//		Amount:            int64(5),
+	//		RewardReceiver:    "0x1111111111",
+	//		ReceiverSignature: "receiverSignature",
+	//		Timestamp:         start + 10*time.Minute.Nanoseconds(),
+	//	}
+	//
+	//	stakeInfoReqList = append(stakeInfoReqList, si)
+	//}
 
 	return stakeInfoReqList
 }
@@ -73,12 +73,12 @@ func TestCreateStake(t *testing.T) {
 	staker := "bc1xxxxxxxxxx"
 	stakerPublicKey := "0x0000"
 	txID := "txid00000000000000000000"
-	start := time.Now().UnixMilli() + 4*time.Minute.Milliseconds()
-	duration := 7 * 24 * time.Hour.Milliseconds()
+	start := time.Now().UnixNano() + 4*time.Minute.Nanoseconds()
+	duration := 7 * 24 * time.Hour.Nanoseconds()
 	amount := int64(5)
 	rewardReceiver := "0x1111111111"
 	receiverSignature := "receiverSignature"
-	timestamp := start + 10*time.Minute.Milliseconds()
+	timestamp := start + 10*time.Minute.Nanoseconds()
 
 	err = cli.CreateStake(staker, stakerPublicKey, txID, start, duration, amount, rewardReceiver, receiverSignature, timestamp)
 	if err != nil {
@@ -130,9 +130,9 @@ func TestQueryAllNotYetLockedUpTxNextPeriod(t *testing.T) {
 		}
 	}
 
-	tt := TestTime + 24*time.Hour.Milliseconds()
+	tt := TestTime + 24*time.Hour.Nanoseconds()
 
-	txs, err := cli.QueryAllNotYetLockedUpTxNextPeriod(tt)
+	txs, err := cli.QueryAllNotYetLockedUpTxNextPeriod(tt, types.TimeWheelSize)
 	if err != nil {
 		t.Fatalf("QueryAllNotYetLockedUpTxNextPeriod err:%s", err)
 	}

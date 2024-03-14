@@ -19,7 +19,7 @@ func (c *Backend) CreateStake(
 	receiverSignature string,
 	timestamp int64,
 ) error {
-	fixedTime := start + 24*time.Hour.Milliseconds()
+	fixedTime := start + 24*time.Hour.Nanoseconds()
 
 	ts := utils.MakeTimestamp()
 	_, err := c.dbClient.Stake.Create().
@@ -48,7 +48,7 @@ func (c *Backend) UpdateStakeReleasingTime(staker, txID string) error {
 		return err
 	}
 
-	fixedTime := stakeInfo.ReleasingTime + 24*time.Hour.Milliseconds()
+	fixedTime := stakeInfo.ReleasingTime + 24*time.Hour.Nanoseconds()
 	_, err = c.dbClient.Stake.Update().
 		Where(stake.And(stake.Staker(staker), stake.Tx(txID))).
 		SetReleasingTime(fixedTime).
@@ -140,9 +140,11 @@ func (c *Backend) QueryAllAlreadyLockedUpTx(timeStamp int64) ([]string, error) {
 }
 
 // QueryAllNotYetLockedUpTxNextPeriod Addresses that need to be released in the next 5 minute
-func (c *Backend) QueryAllNotYetLockedUpTxNextPeriod(timeStamp int64) ([]*types.ReleaseTxsInfo, error) {
-	feture := timeStamp + 5*time.Minute.Milliseconds()
+func (c *Backend) QueryAllNotYetLockedUpTxNextPeriod(timeStamp int64, timeWheelSize time.Duration) ([]*types.ReleaseTxsInfo, error) {
+	feture := timeStamp + timeWheelSize.Nanoseconds()
 	stakeInfoList, err := c.dbClient.Stake.Query().
+		Where(stake.FinalizedStatus(2)).
+		Where(stake.ReleaseStatus(0)).
 		Where(stake.DeadlineGT(feture)).
 		Where(stake.And(stake.ReleasingTimeGTE(timeStamp), stake.ReleasingTimeLT(feture))).
 		All(context.Background())

@@ -15,7 +15,7 @@ func GetUnixEpoch() int64 {
 
 // Return now time in ms
 func MakeTimestamp() int64 {
-	return time.Now().UnixNano() / int64(time.Millisecond)
+	return time.Now().UnixNano()
 }
 
 // Return now time in nano second
@@ -24,15 +24,19 @@ func MakeNanoTimestamp() int64 {
 }
 
 func MakeFloat64Timestamp() float64 {
-	return float64(time.Now().UnixNano()) / (float64(time.Millisecond) / float64(time.Nanosecond))
+	return float64(time.Now().UnixNano()) / float64(time.Nanosecond)
 }
 
 func TimeTOTimestamp(t time.Time) int64 {
-	return t.UnixNano() / int64(time.Millisecond)
+	return t.UnixNano()
 }
 
 func TimestampToTime(timestamp int64) time.Time {
-	return time.Unix(timestamp/1000, (timestamp%1000)*1000000)
+	seconds := timestamp / 1e9
+	nanoseconds := timestamp % 1e9
+
+	return time.Unix(seconds, nanoseconds)
+	//return time.Unix(timestamp/1000, (timestamp%1000)*1000000)
 }
 
 func TimeToDailyFixedTime(t time.Time) time.Time {

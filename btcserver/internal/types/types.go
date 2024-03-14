@@ -1,5 +1,11 @@
 package types
 
+import "time"
+
+const (
+	TimeWheelSize = 5 * time.Minute
+)
+
 type StakerReq struct {
 	Staker string `form:"staker" binding:"required"`
 	Page   int    `form:"page" binding:"required"`

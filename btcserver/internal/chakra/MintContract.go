@@ -2,6 +2,7 @@ package chakra
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"math/big"
 
@@ -104,7 +105,10 @@ func RewardTo(ctx context.Context, cAccount *account.Account, contractAddressHex
 	if err != nil {
 		return nil, err
 	}
+
+	lenP := utils.BigIntToFelt(big.NewInt(int64(len(txIDs))))
 	callData := make([]*felt.Felt, 0)
+	callData = append(callData, lenP)
 	callData = append(callData, params...)
 
 	// Make read contract call
@@ -164,7 +168,7 @@ func SubmitTXInfo(ctx context.Context, cAccount *account.Account, contractAddres
 	}
 
 	callData := make([]*felt.Felt, 0)
-	callData = append(callData, BtcTxIDToFelt(txID))
+	callData = append(callData, BtcTxIDToFelt(txID)...)
 	callData = append(callData, AmountToFelt(amount)...)
 	callData = append(callData, utils.BigIntToFelt(big.NewInt(int64(startAt))))
 	callData = append(callData, utils.BigIntToFelt(big.NewInt(int64(expireAt))))
@@ -233,10 +237,15 @@ func AddressToFelt(addr string) *felt.Felt {
 	return utils.BigIntToFelt(utils.StrToBig(addr))
 }
 
-func BtcTxIDToFelt(txID string) *felt.Felt {
+func NewBtcTxIDToFelt(txID string) *felt.Felt {
 	fb := utils.HexToBN(txID)
 	f := utils.BigIntToFelt(fb)
 	return f
+}
+
+func BtcTxIDToFelt(amount string) []*felt.Felt {
+	firstPart, secondPart := Uint256ToFelt252(utils.HexToBN(amount))
+	return []*felt.Felt{utils.BigIntToFelt(firstPart), utils.BigIntToFelt(secondPart)}
 }
 
 func ArrBtcTxIDToFelt(txIDS []string) []*felt.Felt {
