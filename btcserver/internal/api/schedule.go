@@ -11,6 +11,26 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+func InitTimeWheel() time.Time {
+	currentTime := time.Now()
+	minute := currentTime.Minute()
+	second := currentTime.Second()
+
+	if minute%5 != 0 {
+		nearestFiveMultiple := minute - (minute % 5)
+		minute = nearestFiveMultiple
+		second = 0
+	}
+
+	nearestTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), currentTime.Hour(), minute, second, 0, currentTime.Location())
+
+	if nearestTime.After(currentTime) {
+		nearestTime = nearestTime.Add(-5 * time.Minute)
+	}
+
+	return nearestTime
+}
+
 func (s *Server) TimeWheelSchedule() {
 	exist, err := s.backend.IsTimeWheelExist()
 	if err != nil {
@@ -30,7 +50,7 @@ func (s *Server) TimeWheelSchedule() {
 		stw := utils.TimestampToTime(int64(v))
 		s.ScheduleTimeWheel = stw
 	} else {
-		s.ScheduleTimeWheel = time.Now()
+		s.ScheduleTimeWheel = InitTimeWheel()
 		err = s.backend.CreateTimeWheel(s.ScheduleTimeWheel.UnixNano())
 		if err != nil {
 			log.Error().Msgf("❌ error create time wheel exist: %s ", err)
