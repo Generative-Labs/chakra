@@ -1,9 +1,9 @@
 btc:
-  network-name: "regtest"
-  rpc-host: "localhost:18332"
-  rpc-user: "rpcuser"
-  rpc-pass: "rpcpass"
-  disable-tls: true
+  network-name: "testnet3"
+  rpc-host: "bitcoin-testnet.blastapi.io/97d216a1-c44b-461d-9624-2231e517a4c6"
+  rpc-user: "rpc-user"
+  rpc-pass: "rpc-user"
+  disable-tls: false
 
 chakra:
   http-url: "https://madara.to3.io"
