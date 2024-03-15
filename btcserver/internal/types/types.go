@@ -55,6 +55,7 @@ const (
 )
 
 type StakeVerificationParam struct {
+	Staker          string            `json:"staker,omitempty"`
 	TxID            string            `json:"tx,omitempty"`
 	StakerPublicKey string            `json:"staker_public_key,omitempty"`
 	Amount          uint64            `json:"amount,omitempty"`

@@ -92,46 +92,58 @@ func (c *Client) CheckRewardAddressSignature(stakerPubKeyStr, rewardReceiver,
 	return nil
 }
 
+func (c *Client) CheckTxID(txID string) error {
+	_, err := chainhash.NewHashFromStr(strings.TrimPrefix(txID, "0x"))
+	if err != nil {
+		return errors.New("invalid tx id")
+	}
+	return nil
+}
+
 func (c *Client) UpdateStakeRecordFinalizedStatus(stakeRecords []*types.StakeVerificationParam) ([]types.StakeRecordStatus, error) {
-	var recordStatuses []types.StakeRecordStatus
-	var rawTxFutures []rpcclient.FutureGetRawTransactionVerboseResult
-	for _, record := range stakeRecords {
+	recordStatuses := make([]types.StakeRecordStatus, len(stakeRecords))
+	rawTxFutures := make([]*rpcclient.FutureGetRawTransactionVerboseResult, len(stakeRecords))
+	for i, record := range stakeRecords {
 		txHash, err := chainhash.NewHashFromStr(record.TxID)
 		if err != nil {
-			return nil, err
+			recordStatuses[i] = types.Mismatch
+			rawTxFutures[i] = nil
+			continue
 		}
 		rawTxFuture := c.rpcClient.GetRawTransactionVerboseAsync(txHash)
-		rawTxFutures = append(rawTxFutures, rawTxFuture)
+		rawTxFutures[i] = &rawTxFuture
 	}
 
-	for i, future := range rawTxFutures {
+	for i := 0; i < len(rawTxFutures); i++ {
+		future := rawTxFutures[i]
+		if future == nil {
+			continue
+		}
 		txRes, err := future.Receive()
 		if err != nil {
-			recordStatuses = append(recordStatuses, stakeRecords[i].FinalizedStatus)
+			recordStatuses[i] = stakeRecords[i].FinalizedStatus
 			continue
 		}
 		if stakeRecords[i].FinalizedStatus == types.Mismatch || stakeRecords[i].FinalizedStatus == types.TxFinalized {
 			// TODO should not come here. Mismatch/Finalized tx record should't been checked again.
-			recordStatuses = append(recordStatuses, stakeRecords[i].FinalizedStatus)
+			recordStatuses[i] = stakeRecords[i].FinalizedStatus
 			continue
 		}
-
 		if stakeRecords[i].FinalizedStatus == types.TxPending {
 			err = c.CheckStake(txRes, stakeRecords[i].StakerPublicKey, stakeRecords[i].Amount, stakeRecords[i].Duration)
 			if err != nil {
-				recordStatuses = append(recordStatuses, types.Mismatch)
+				recordStatuses[i] = types.Mismatch
 				continue
 			}
 		}
 
 		if txRes.Confirmations >= TxFinalizedConfirmations { //nolint
-			recordStatuses = append(recordStatuses, types.TxFinalized)
+			recordStatuses[i] = types.TxFinalized
 		} else if txRes.Confirmations == 0 {
-			recordStatuses = append(recordStatuses, types.TxPending)
+			recordStatuses[i] = types.TxPending
 		} else {
-			recordStatuses = append(recordStatuses, types.TxIncluded)
+			recordStatuses[i] = types.TxIncluded
 		}
-
 	}
 
 	return recordStatuses, nil

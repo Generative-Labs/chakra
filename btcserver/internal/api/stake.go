@@ -75,10 +75,16 @@ func (s *Server) SubmitProofOfStake(c *gin.Context) {
 		return
 	}
 
-	//verify reward
+	// verify reward
 	reward := utils.CalculateReward(float64(stakeInfo.Amount), float64(stakeInfo.Duration))
 	if reward != float64(stakeInfo.Reward) {
 		respData.Msg = errors.New("reward calculation error").Error()
+		JSONResp(c, http.StatusBadRequest, respData)
+		return
+	}
+
+	if err := s.btcClient.CheckTxID(stakeInfo.TxID); err != nil {
+		respData.Msg = err.Error()
 		JSONResp(c, http.StatusBadRequest, respData)
 		return
 	}
