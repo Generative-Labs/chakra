@@ -37,6 +37,7 @@ var (
 		{Name: "reward", Type: field.TypeInt64},
 		{Name: "finalized_status", Type: field.TypeInt, Default: 0},
 		{Name: "release_status", Type: field.TypeInt, Default: 0},
+		{Name: "submit_status", Type: field.TypeInt, Default: 0},
 		{Name: "receiver_sig", Type: field.TypeString},
 		{Name: "timestamp", Type: field.TypeInt64},
 		{Name: "create_at", Type: field.TypeInt64},
@@ -62,6 +63,11 @@ var (
 				Name:    "stake_finalized_status_tx",
 				Unique:  false,
 				Columns: []*schema.Column{StakesColumns[11], StakesColumns[3]},
+			},
+			{
+				Name:    "stake_submit_status",
+				Unique:  false,
+				Columns: []*schema.Column{StakesColumns[13]},
 			},
 		},
 	}

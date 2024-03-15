@@ -35,6 +35,8 @@ const (
 	FieldFinalizedStatus = "finalized_status"
 	// FieldReleaseStatus holds the string denoting the releasestatus field in the database.
 	FieldReleaseStatus = "release_status"
+	// FieldSubmitStatus holds the string denoting the submitstatus field in the database.
+	FieldSubmitStatus = "submit_status"
 	// FieldReceiverSig holds the string denoting the receiversig field in the database.
 	FieldReceiverSig = "receiver_sig"
 	// FieldTimestamp holds the string denoting the timestamp field in the database.
@@ -62,6 +64,7 @@ var Columns = []string{
 	FieldReward,
 	FieldFinalizedStatus,
 	FieldReleaseStatus,
+	FieldSubmitStatus,
 	FieldReceiverSig,
 	FieldTimestamp,
 	FieldCreateAt,
@@ -89,6 +92,8 @@ var (
 	DefaultFinalizedStatus int
 	// DefaultReleaseStatus holds the default value on creation for the "ReleaseStatus" field.
 	DefaultReleaseStatus int
+	// DefaultSubmitStatus holds the default value on creation for the "SubmitStatus" field.
+	DefaultSubmitStatus int
 	// DefaultUpdateAt holds the default value on creation for the "UpdateAt" field.
 	DefaultUpdateAt int64
 )
@@ -159,6 +164,11 @@ func ByFinalizedStatus(opts ...sql.OrderTermOption) OrderOption {
 // ByReleaseStatus orders the results by the ReleaseStatus field.
 func ByReleaseStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldReleaseStatus, opts...).ToFunc()
+}
+
+// BySubmitStatus orders the results by the SubmitStatus field.
+func BySubmitStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSubmitStatus, opts...).ToFunc()
 }
 
 // ByReceiverSig orders the results by the ReceiverSig field.

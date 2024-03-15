@@ -40,8 +40,12 @@ func init() {
 	stakeDescReleaseStatus := stakeFields[11].Descriptor()
 	// stake.DefaultReleaseStatus holds the default value on creation for the ReleaseStatus field.
 	stake.DefaultReleaseStatus = stakeDescReleaseStatus.Default.(int)
+	// stakeDescSubmitStatus is the schema descriptor for SubmitStatus field.
+	stakeDescSubmitStatus := stakeFields[12].Descriptor()
+	// stake.DefaultSubmitStatus holds the default value on creation for the SubmitStatus field.
+	stake.DefaultSubmitStatus = stakeDescSubmitStatus.Default.(int)
 	// stakeDescUpdateAt is the schema descriptor for UpdateAt field.
-	stakeDescUpdateAt := stakeFields[15].Descriptor()
+	stakeDescUpdateAt := stakeFields[16].Descriptor()
 	// stake.DefaultUpdateAt holds the default value on creation for the UpdateAt field.
 	stake.DefaultUpdateAt = stakeDescUpdateAt.Default.(int64)
 }

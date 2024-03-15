@@ -24,6 +24,7 @@ func (Stake) Fields() []ent.Field {
 		field.Int64("Reward"),                     // btc stake reward
 		field.Int("FinalizedStatus").Default(0),   // btc transaction weather finalized(0 means not on the chain; 1 means it has been uploaded but not finalized; 2 is finalized, 3 is mismatch).
 		field.Int("ReleaseStatus").Default(0),     // stake epoch is over(0 means the rewards have not been released yet; 1 means rewards have been released).
+		field.Int("SubmitStatus").Default(0),      // Indicates the status of whether the pledge information has been submitted to the chakra chain (0: not submitted; 1: submitted)
 		field.String("ReceiverSig"),               // signature for receiver address.
 		field.Int64("Timestamp"),
 		field.Int64("CreateAt").Immutable(),
@@ -36,5 +37,6 @@ func (Stake) Indexes() []ent.Index {
 		index.Fields("Staker", "Tx"),
 		index.Fields("ReleaseStatus", "Tx"),
 		index.Fields("FinalizedStatus", "Tx"),
+		index.Fields("SubmitStatus"),
 	}
 }

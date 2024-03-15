@@ -107,6 +107,20 @@ func (sc *StakeCreate) SetNillableReleaseStatus(i *int) *StakeCreate {
 	return sc
 }
 
+// SetSubmitStatus sets the "SubmitStatus" field.
+func (sc *StakeCreate) SetSubmitStatus(i int) *StakeCreate {
+	sc.mutation.SetSubmitStatus(i)
+	return sc
+}
+
+// SetNillableSubmitStatus sets the "SubmitStatus" field if the given value is not nil.
+func (sc *StakeCreate) SetNillableSubmitStatus(i *int) *StakeCreate {
+	if i != nil {
+		sc.SetSubmitStatus(*i)
+	}
+	return sc
+}
+
 // SetReceiverSig sets the "ReceiverSig" field.
 func (sc *StakeCreate) SetReceiverSig(s string) *StakeCreate {
 	sc.mutation.SetReceiverSig(s)
@@ -182,6 +196,10 @@ func (sc *StakeCreate) defaults() {
 		v := stake.DefaultReleaseStatus
 		sc.mutation.SetReleaseStatus(v)
 	}
+	if _, ok := sc.mutation.SubmitStatus(); !ok {
+		v := stake.DefaultSubmitStatus
+		sc.mutation.SetSubmitStatus(v)
+	}
 	if _, ok := sc.mutation.UpdateAt(); !ok {
 		v := stake.DefaultUpdateAt
 		sc.mutation.SetUpdateAt(v)
@@ -240,6 +258,9 @@ func (sc *StakeCreate) check() error {
 	}
 	if _, ok := sc.mutation.ReleaseStatus(); !ok {
 		return &ValidationError{Name: "ReleaseStatus", err: errors.New(`ent: missing required field "Stake.ReleaseStatus"`)}
+	}
+	if _, ok := sc.mutation.SubmitStatus(); !ok {
+		return &ValidationError{Name: "SubmitStatus", err: errors.New(`ent: missing required field "Stake.SubmitStatus"`)}
 	}
 	if _, ok := sc.mutation.ReceiverSig(); !ok {
 		return &ValidationError{Name: "ReceiverSig", err: errors.New(`ent: missing required field "Stake.ReceiverSig"`)}
@@ -326,6 +347,10 @@ func (sc *StakeCreate) createSpec() (*Stake, *sqlgraph.CreateSpec) {
 	if value, ok := sc.mutation.ReleaseStatus(); ok {
 		_spec.SetField(stake.FieldReleaseStatus, field.TypeInt, value)
 		_node.ReleaseStatus = value
+	}
+	if value, ok := sc.mutation.SubmitStatus(); ok {
+		_spec.SetField(stake.FieldSubmitStatus, field.TypeInt, value)
+		_node.SubmitStatus = value
 	}
 	if value, ok := sc.mutation.ReceiverSig(); ok {
 		_spec.SetField(stake.FieldReceiverSig, field.TypeString, value)

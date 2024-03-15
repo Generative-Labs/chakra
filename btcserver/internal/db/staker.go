@@ -179,3 +179,22 @@ func (c *Backend) QueryNoFinalizedStakeTx() ([]*types.StakeVerificationParam, er
 
 	return verifyParams, nil
 }
+
+func (c *Backend) UpdateCanBeSubmitStatus(staker, txID string, status int) error {
+	_, err := c.dbClient.Stake.Update().
+		Where(stake.And(stake.Staker(staker), stake.Tx(txID))).
+		SetSubmitStatus(status).
+		Save(context.Background())
+	return err
+}
+
+func (c *Backend) QueryCanBeSubmitStakeTx() ([]*ent.Stake, error) {
+	list, err := c.dbClient.Stake.Query().Where(stake.FinalizedStatusLTE(int(types.TxFinalized))).
+		Where(stake.SubmitStatus(0)).
+		All(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	return list, nil
+}

@@ -40,6 +40,8 @@ type Stake struct {
 	FinalizedStatus int `json:"FinalizedStatus,omitempty"`
 	// ReleaseStatus holds the value of the "ReleaseStatus" field.
 	ReleaseStatus int `json:"ReleaseStatus,omitempty"`
+	// SubmitStatus holds the value of the "SubmitStatus" field.
+	SubmitStatus int `json:"SubmitStatus,omitempty"`
 	// ReceiverSig holds the value of the "ReceiverSig" field.
 	ReceiverSig string `json:"ReceiverSig,omitempty"`
 	// Timestamp holds the value of the "Timestamp" field.
@@ -56,7 +58,7 @@ func (*Stake) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case stake.FieldID, stake.FieldStart, stake.FieldDuration, stake.FieldDeadline, stake.FieldReleasingTime, stake.FieldAmount, stake.FieldReward, stake.FieldFinalizedStatus, stake.FieldReleaseStatus, stake.FieldTimestamp, stake.FieldCreateAt, stake.FieldUpdateAt:
+		case stake.FieldID, stake.FieldStart, stake.FieldDuration, stake.FieldDeadline, stake.FieldReleasingTime, stake.FieldAmount, stake.FieldReward, stake.FieldFinalizedStatus, stake.FieldReleaseStatus, stake.FieldSubmitStatus, stake.FieldTimestamp, stake.FieldCreateAt, stake.FieldUpdateAt:
 			values[i] = new(sql.NullInt64)
 		case stake.FieldStaker, stake.FieldStakerPublicKey, stake.FieldTx, stake.FieldRewardReceiver, stake.FieldReceiverSig:
 			values[i] = new(sql.NullString)
@@ -153,6 +155,12 @@ func (s *Stake) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				s.ReleaseStatus = int(value.Int64)
 			}
+		case stake.FieldSubmitStatus:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field SubmitStatus", values[i])
+			} else if value.Valid {
+				s.SubmitStatus = int(value.Int64)
+			}
 		case stake.FieldReceiverSig:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field ReceiverSig", values[i])
@@ -248,6 +256,9 @@ func (s *Stake) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("ReleaseStatus=")
 	builder.WriteString(fmt.Sprintf("%v", s.ReleaseStatus))
+	builder.WriteString(", ")
+	builder.WriteString("SubmitStatus=")
+	builder.WriteString(fmt.Sprintf("%v", s.SubmitStatus))
 	builder.WriteString(", ")
 	builder.WriteString("ReceiverSig=")
 	builder.WriteString(s.ReceiverSig)

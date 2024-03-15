@@ -251,6 +251,27 @@ func (su *StakeUpdate) AddReleaseStatus(i int) *StakeUpdate {
 	return su
 }
 
+// SetSubmitStatus sets the "SubmitStatus" field.
+func (su *StakeUpdate) SetSubmitStatus(i int) *StakeUpdate {
+	su.mutation.ResetSubmitStatus()
+	su.mutation.SetSubmitStatus(i)
+	return su
+}
+
+// SetNillableSubmitStatus sets the "SubmitStatus" field if the given value is not nil.
+func (su *StakeUpdate) SetNillableSubmitStatus(i *int) *StakeUpdate {
+	if i != nil {
+		su.SetSubmitStatus(*i)
+	}
+	return su
+}
+
+// AddSubmitStatus adds i to the "SubmitStatus" field.
+func (su *StakeUpdate) AddSubmitStatus(i int) *StakeUpdate {
+	su.mutation.AddSubmitStatus(i)
+	return su
+}
+
 // SetReceiverSig sets the "ReceiverSig" field.
 func (su *StakeUpdate) SetReceiverSig(s string) *StakeUpdate {
 	su.mutation.SetReceiverSig(s)
@@ -430,6 +451,12 @@ func (su *StakeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := su.mutation.AddedReleaseStatus(); ok {
 		_spec.AddField(stake.FieldReleaseStatus, field.TypeInt, value)
+	}
+	if value, ok := su.mutation.SubmitStatus(); ok {
+		_spec.SetField(stake.FieldSubmitStatus, field.TypeInt, value)
+	}
+	if value, ok := su.mutation.AddedSubmitStatus(); ok {
+		_spec.AddField(stake.FieldSubmitStatus, field.TypeInt, value)
 	}
 	if value, ok := su.mutation.ReceiverSig(); ok {
 		_spec.SetField(stake.FieldReceiverSig, field.TypeString, value)
@@ -690,6 +717,27 @@ func (suo *StakeUpdateOne) AddReleaseStatus(i int) *StakeUpdateOne {
 	return suo
 }
 
+// SetSubmitStatus sets the "SubmitStatus" field.
+func (suo *StakeUpdateOne) SetSubmitStatus(i int) *StakeUpdateOne {
+	suo.mutation.ResetSubmitStatus()
+	suo.mutation.SetSubmitStatus(i)
+	return suo
+}
+
+// SetNillableSubmitStatus sets the "SubmitStatus" field if the given value is not nil.
+func (suo *StakeUpdateOne) SetNillableSubmitStatus(i *int) *StakeUpdateOne {
+	if i != nil {
+		suo.SetSubmitStatus(*i)
+	}
+	return suo
+}
+
+// AddSubmitStatus adds i to the "SubmitStatus" field.
+func (suo *StakeUpdateOne) AddSubmitStatus(i int) *StakeUpdateOne {
+	suo.mutation.AddSubmitStatus(i)
+	return suo
+}
+
 // SetReceiverSig sets the "ReceiverSig" field.
 func (suo *StakeUpdateOne) SetReceiverSig(s string) *StakeUpdateOne {
 	suo.mutation.SetReceiverSig(s)
@@ -899,6 +947,12 @@ func (suo *StakeUpdateOne) sqlSave(ctx context.Context) (_node *Stake, err error
 	}
 	if value, ok := suo.mutation.AddedReleaseStatus(); ok {
 		_spec.AddField(stake.FieldReleaseStatus, field.TypeInt, value)
+	}
+	if value, ok := suo.mutation.SubmitStatus(); ok {
+		_spec.SetField(stake.FieldSubmitStatus, field.TypeInt, value)
+	}
+	if value, ok := suo.mutation.AddedSubmitStatus(); ok {
+		_spec.AddField(stake.FieldSubmitStatus, field.TypeInt, value)
 	}
 	if value, ok := suo.mutation.ReceiverSig(); ok {
 		_spec.SetField(stake.FieldReceiverSig, field.TypeString, value)

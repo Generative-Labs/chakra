@@ -112,6 +112,11 @@ func ReleaseStatus(v int) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldReleaseStatus, v))
 }
 
+// SubmitStatus applies equality check predicate on the "SubmitStatus" field. It's identical to SubmitStatusEQ.
+func SubmitStatus(v int) predicate.Stake {
+	return predicate.Stake(sql.FieldEQ(FieldSubmitStatus, v))
+}
+
 // ReceiverSig applies equality check predicate on the "ReceiverSig" field. It's identical to ReceiverSigEQ.
 func ReceiverSig(v string) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldReceiverSig, v))
@@ -710,6 +715,46 @@ func ReleaseStatusLT(v int) predicate.Stake {
 // ReleaseStatusLTE applies the LTE predicate on the "ReleaseStatus" field.
 func ReleaseStatusLTE(v int) predicate.Stake {
 	return predicate.Stake(sql.FieldLTE(FieldReleaseStatus, v))
+}
+
+// SubmitStatusEQ applies the EQ predicate on the "SubmitStatus" field.
+func SubmitStatusEQ(v int) predicate.Stake {
+	return predicate.Stake(sql.FieldEQ(FieldSubmitStatus, v))
+}
+
+// SubmitStatusNEQ applies the NEQ predicate on the "SubmitStatus" field.
+func SubmitStatusNEQ(v int) predicate.Stake {
+	return predicate.Stake(sql.FieldNEQ(FieldSubmitStatus, v))
+}
+
+// SubmitStatusIn applies the In predicate on the "SubmitStatus" field.
+func SubmitStatusIn(vs ...int) predicate.Stake {
+	return predicate.Stake(sql.FieldIn(FieldSubmitStatus, vs...))
+}
+
+// SubmitStatusNotIn applies the NotIn predicate on the "SubmitStatus" field.
+func SubmitStatusNotIn(vs ...int) predicate.Stake {
+	return predicate.Stake(sql.FieldNotIn(FieldSubmitStatus, vs...))
+}
+
+// SubmitStatusGT applies the GT predicate on the "SubmitStatus" field.
+func SubmitStatusGT(v int) predicate.Stake {
+	return predicate.Stake(sql.FieldGT(FieldSubmitStatus, v))
+}
+
+// SubmitStatusGTE applies the GTE predicate on the "SubmitStatus" field.
+func SubmitStatusGTE(v int) predicate.Stake {
+	return predicate.Stake(sql.FieldGTE(FieldSubmitStatus, v))
+}
+
+// SubmitStatusLT applies the LT predicate on the "SubmitStatus" field.
+func SubmitStatusLT(v int) predicate.Stake {
+	return predicate.Stake(sql.FieldLT(FieldSubmitStatus, v))
+}
+
+// SubmitStatusLTE applies the LTE predicate on the "SubmitStatus" field.
+func SubmitStatusLTE(v int) predicate.Stake {
+	return predicate.Stake(sql.FieldLTE(FieldSubmitStatus, v))
 }
 
 // ReceiverSigEQ applies the EQ predicate on the "ReceiverSig" field.

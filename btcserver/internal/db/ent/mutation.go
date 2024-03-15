@@ -611,6 +611,8 @@ type StakeMutation struct {
 	add_FinalizedStatus *int
 	_ReleaseStatus      *int
 	add_ReleaseStatus   *int
+	_SubmitStatus       *int
+	add_SubmitStatus    *int
 	_ReceiverSig        *string
 	_Timestamp          *int64
 	add_Timestamp       *int64
@@ -1314,6 +1316,62 @@ func (m *StakeMutation) ResetReleaseStatus() {
 	m.add_ReleaseStatus = nil
 }
 
+// SetSubmitStatus sets the "SubmitStatus" field.
+func (m *StakeMutation) SetSubmitStatus(i int) {
+	m._SubmitStatus = &i
+	m.add_SubmitStatus = nil
+}
+
+// SubmitStatus returns the value of the "SubmitStatus" field in the mutation.
+func (m *StakeMutation) SubmitStatus() (r int, exists bool) {
+	v := m._SubmitStatus
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSubmitStatus returns the old "SubmitStatus" field's value of the Stake entity.
+// If the Stake object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StakeMutation) OldSubmitStatus(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSubmitStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSubmitStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSubmitStatus: %w", err)
+	}
+	return oldValue.SubmitStatus, nil
+}
+
+// AddSubmitStatus adds i to the "SubmitStatus" field.
+func (m *StakeMutation) AddSubmitStatus(i int) {
+	if m.add_SubmitStatus != nil {
+		*m.add_SubmitStatus += i
+	} else {
+		m.add_SubmitStatus = &i
+	}
+}
+
+// AddedSubmitStatus returns the value that was added to the "SubmitStatus" field in this mutation.
+func (m *StakeMutation) AddedSubmitStatus() (r int, exists bool) {
+	v := m.add_SubmitStatus
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSubmitStatus resets all changes to the "SubmitStatus" field.
+func (m *StakeMutation) ResetSubmitStatus() {
+	m._SubmitStatus = nil
+	m.add_SubmitStatus = nil
+}
+
 // SetReceiverSig sets the "ReceiverSig" field.
 func (m *StakeMutation) SetReceiverSig(s string) {
 	m._ReceiverSig = &s
@@ -1552,7 +1610,7 @@ func (m *StakeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *StakeMutation) Fields() []string {
-	fields := make([]string, 0, 16)
+	fields := make([]string, 0, 17)
 	if m._Staker != nil {
 		fields = append(fields, stake.FieldStaker)
 	}
@@ -1588,6 +1646,9 @@ func (m *StakeMutation) Fields() []string {
 	}
 	if m._ReleaseStatus != nil {
 		fields = append(fields, stake.FieldReleaseStatus)
+	}
+	if m._SubmitStatus != nil {
+		fields = append(fields, stake.FieldSubmitStatus)
 	}
 	if m._ReceiverSig != nil {
 		fields = append(fields, stake.FieldReceiverSig)
@@ -1633,6 +1694,8 @@ func (m *StakeMutation) Field(name string) (ent.Value, bool) {
 		return m.FinalizedStatus()
 	case stake.FieldReleaseStatus:
 		return m.ReleaseStatus()
+	case stake.FieldSubmitStatus:
+		return m.SubmitStatus()
 	case stake.FieldReceiverSig:
 		return m.ReceiverSig()
 	case stake.FieldTimestamp:
@@ -1674,6 +1737,8 @@ func (m *StakeMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldFinalizedStatus(ctx)
 	case stake.FieldReleaseStatus:
 		return m.OldReleaseStatus(ctx)
+	case stake.FieldSubmitStatus:
+		return m.OldSubmitStatus(ctx)
 	case stake.FieldReceiverSig:
 		return m.OldReceiverSig(ctx)
 	case stake.FieldTimestamp:
@@ -1775,6 +1840,13 @@ func (m *StakeMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetReleaseStatus(v)
 		return nil
+	case stake.FieldSubmitStatus:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSubmitStatus(v)
+		return nil
 	case stake.FieldReceiverSig:
 		v, ok := value.(string)
 		if !ok {
@@ -1835,6 +1907,9 @@ func (m *StakeMutation) AddedFields() []string {
 	if m.add_ReleaseStatus != nil {
 		fields = append(fields, stake.FieldReleaseStatus)
 	}
+	if m.add_SubmitStatus != nil {
+		fields = append(fields, stake.FieldSubmitStatus)
+	}
 	if m.add_Timestamp != nil {
 		fields = append(fields, stake.FieldTimestamp)
 	}
@@ -1868,6 +1943,8 @@ func (m *StakeMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedFinalizedStatus()
 	case stake.FieldReleaseStatus:
 		return m.AddedReleaseStatus()
+	case stake.FieldSubmitStatus:
+		return m.AddedSubmitStatus()
 	case stake.FieldTimestamp:
 		return m.AddedTimestamp()
 	case stake.FieldCreateAt:
@@ -1938,6 +2015,13 @@ func (m *StakeMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddReleaseStatus(v)
+		return nil
+	case stake.FieldSubmitStatus:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSubmitStatus(v)
 		return nil
 	case stake.FieldTimestamp:
 		v, ok := value.(int64)
@@ -2022,6 +2106,9 @@ func (m *StakeMutation) ResetField(name string) error {
 		return nil
 	case stake.FieldReleaseStatus:
 		m.ResetReleaseStatus()
+		return nil
+	case stake.FieldSubmitStatus:
+		m.ResetSubmitStatus()
 		return nil
 	case stake.FieldReceiverSig:
 		m.ResetReceiverSig()
