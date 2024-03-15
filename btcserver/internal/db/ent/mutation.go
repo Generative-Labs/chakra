@@ -602,10 +602,10 @@ type StakeMutation struct {
 	add_Deadline        *int64
 	_ReleasingTime      *int64
 	add_ReleasingTime   *int64
-	_Amount             *int64
+	_Amount             *uint64
 	add_Amount          *int64
 	_RewardReceiver     *string
-	_Reward             *int64
+	_Reward             *uint64
 	add_Reward          *int64
 	_FinalizedStatus    *int
 	add_FinalizedStatus *int
@@ -1057,13 +1057,13 @@ func (m *StakeMutation) ResetReleasingTime() {
 }
 
 // SetAmount sets the "Amount" field.
-func (m *StakeMutation) SetAmount(i int64) {
-	m._Amount = &i
+func (m *StakeMutation) SetAmount(u uint64) {
+	m._Amount = &u
 	m.add_Amount = nil
 }
 
 // Amount returns the value of the "Amount" field in the mutation.
-func (m *StakeMutation) Amount() (r int64, exists bool) {
+func (m *StakeMutation) Amount() (r uint64, exists bool) {
 	v := m._Amount
 	if v == nil {
 		return
@@ -1074,7 +1074,7 @@ func (m *StakeMutation) Amount() (r int64, exists bool) {
 // OldAmount returns the old "Amount" field's value of the Stake entity.
 // If the Stake object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StakeMutation) OldAmount(ctx context.Context) (v int64, err error) {
+func (m *StakeMutation) OldAmount(ctx context.Context) (v uint64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAmount is only allowed on UpdateOne operations")
 	}
@@ -1088,12 +1088,12 @@ func (m *StakeMutation) OldAmount(ctx context.Context) (v int64, err error) {
 	return oldValue.Amount, nil
 }
 
-// AddAmount adds i to the "Amount" field.
-func (m *StakeMutation) AddAmount(i int64) {
+// AddAmount adds u to the "Amount" field.
+func (m *StakeMutation) AddAmount(u int64) {
 	if m.add_Amount != nil {
-		*m.add_Amount += i
+		*m.add_Amount += u
 	} else {
-		m.add_Amount = &i
+		m.add_Amount = &u
 	}
 }
 
@@ -1149,13 +1149,13 @@ func (m *StakeMutation) ResetRewardReceiver() {
 }
 
 // SetReward sets the "Reward" field.
-func (m *StakeMutation) SetReward(i int64) {
-	m._Reward = &i
+func (m *StakeMutation) SetReward(u uint64) {
+	m._Reward = &u
 	m.add_Reward = nil
 }
 
 // Reward returns the value of the "Reward" field in the mutation.
-func (m *StakeMutation) Reward() (r int64, exists bool) {
+func (m *StakeMutation) Reward() (r uint64, exists bool) {
 	v := m._Reward
 	if v == nil {
 		return
@@ -1166,7 +1166,7 @@ func (m *StakeMutation) Reward() (r int64, exists bool) {
 // OldReward returns the old "Reward" field's value of the Stake entity.
 // If the Stake object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StakeMutation) OldReward(ctx context.Context) (v int64, err error) {
+func (m *StakeMutation) OldReward(ctx context.Context) (v uint64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldReward is only allowed on UpdateOne operations")
 	}
@@ -1180,12 +1180,12 @@ func (m *StakeMutation) OldReward(ctx context.Context) (v int64, err error) {
 	return oldValue.Reward, nil
 }
 
-// AddReward adds i to the "Reward" field.
-func (m *StakeMutation) AddReward(i int64) {
+// AddReward adds u to the "Reward" field.
+func (m *StakeMutation) AddReward(u int64) {
 	if m.add_Reward != nil {
-		*m.add_Reward += i
+		*m.add_Reward += u
 	} else {
-		m.add_Reward = &i
+		m.add_Reward = &u
 	}
 }
 
@@ -1806,7 +1806,7 @@ func (m *StakeMutation) SetField(name string, value ent.Value) error {
 		m.SetReleasingTime(v)
 		return nil
 	case stake.FieldAmount:
-		v, ok := value.(int64)
+		v, ok := value.(uint64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -1820,7 +1820,7 @@ func (m *StakeMutation) SetField(name string, value ent.Value) error {
 		m.SetRewardReceiver(v)
 		return nil
 	case stake.FieldReward:
-		v, ok := value.(int64)
+		v, ok := value.(uint64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

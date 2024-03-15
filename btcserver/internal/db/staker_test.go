@@ -38,7 +38,7 @@ func MockBatchStakeInfo(size int) []*types.StakeInfoReq {
 			TxID:              "txidxxxxxxxxxxxxxxxxxxxxx" + strconv.Itoa(i),
 			Start:             st,
 			Duration:          7 * 24 * time.Hour.Nanoseconds(),
-			Amount:            int64(5),
+			Amount:            uint64(5),
 			RewardReceiver:    "0x1111111111",
 			ReceiverSignature: "receiverSignature",
 			Timestamp:         start + 10*time.Minute.Nanoseconds(),
@@ -61,9 +61,9 @@ func TestCreateStake(t *testing.T) {
 	txID := "txid00000000000000000000"
 	start := time.Now().UnixNano() + 4*time.Minute.Nanoseconds()
 	duration := 7 * 24 * time.Hour.Nanoseconds()
-	amount := int64(5)
+	amount := uint64(5)
 	rewardReceiver := "0x1111111111"
-	reward := int64(500)
+	reward := uint64(500)
 	receiverSignature := "receiverSignature"
 	timestamp := start + 10*time.Minute.Nanoseconds()
 
@@ -84,9 +84,9 @@ func TestUpdateStakeReleasingTime(t *testing.T) {
 	txID := "txid00000000000000000000"
 	start := time.Now().UnixNano() + 4*time.Minute.Nanoseconds()
 	duration := 7 * 24 * time.Hour.Nanoseconds()
-	amount := int64(5)
+	amount := uint64(5)
 	rewardReceiver := "0x1111111111"
-	reward := int64(500)
+	reward := uint64(500)
 	receiverSignature := "receiverSignature"
 	timestamp := start + 10*time.Minute.Nanoseconds()
 

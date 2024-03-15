@@ -62,8 +62,8 @@ func (sc *StakeCreate) SetReleasingTime(i int64) *StakeCreate {
 }
 
 // SetAmount sets the "Amount" field.
-func (sc *StakeCreate) SetAmount(i int64) *StakeCreate {
-	sc.mutation.SetAmount(i)
+func (sc *StakeCreate) SetAmount(u uint64) *StakeCreate {
+	sc.mutation.SetAmount(u)
 	return sc
 }
 
@@ -74,8 +74,8 @@ func (sc *StakeCreate) SetRewardReceiver(s string) *StakeCreate {
 }
 
 // SetReward sets the "Reward" field.
-func (sc *StakeCreate) SetReward(i int64) *StakeCreate {
-	sc.mutation.SetReward(i)
+func (sc *StakeCreate) SetReward(u uint64) *StakeCreate {
+	sc.mutation.SetReward(u)
 	return sc
 }
 
@@ -329,7 +329,7 @@ func (sc *StakeCreate) createSpec() (*Stake, *sqlgraph.CreateSpec) {
 		_node.ReleasingTime = value
 	}
 	if value, ok := sc.mutation.Amount(); ok {
-		_spec.SetField(stake.FieldAmount, field.TypeInt64, value)
+		_spec.SetField(stake.FieldAmount, field.TypeUint64, value)
 		_node.Amount = value
 	}
 	if value, ok := sc.mutation.RewardReceiver(); ok {
@@ -337,7 +337,7 @@ func (sc *StakeCreate) createSpec() (*Stake, *sqlgraph.CreateSpec) {
 		_node.RewardReceiver = value
 	}
 	if value, ok := sc.mutation.Reward(); ok {
-		_spec.SetField(stake.FieldReward, field.TypeInt64, value)
+		_spec.SetField(stake.FieldReward, field.TypeUint64, value)
 		_node.Reward = value
 	}
 	if value, ok := sc.mutation.FinalizedStatus(); ok {

@@ -66,7 +66,7 @@ func TestCheckStakeTx(t *testing.T) {
 		description   string
 		pubKeyStr     string
 		stakeAmount   uint64
-		lockDuration  uint64
+		lockDuration  int64
 		expectedError error
 	}{
 		{

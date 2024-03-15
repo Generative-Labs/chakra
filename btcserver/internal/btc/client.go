@@ -149,7 +149,7 @@ func (c *Client) UpdateStakeRecordFinalizedStatus(stakeRecords []*types.StakeVer
 	return recordStatuses, nil
 }
 
-func (c *Client) CheckStake(tx *btcjson.TxRawResult, stakerPubKeyStr string, amount uint64, duration uint64) error {
+func (c *Client) CheckStake(tx *btcjson.TxRawResult, stakerPubKeyStr string, amount uint64, duration int64) error {
 	if len(tx.Vout) != 1 {
 		return errors.New("stake tx should has 1 out")
 	}
@@ -194,9 +194,9 @@ func (c *Client) CheckStake(tx *btcjson.TxRawResult, stakerPubKeyStr string, amo
 	return errors.New("verify stake tx failed")
 }
 
-func (c *Client) calculateAddressRedeemScriptHash(stakerPubKey *secp256k1.PublicKey, duration uint64) (*btcutil.AddressScriptHash, error) {
+func (c *Client) calculateAddressRedeemScriptHash(stakerPubKey *secp256k1.PublicKey, duration int64) (*btcutil.AddressScriptHash, error) {
 	builder := txscript.NewScriptBuilder()
-	builder.AddInt64(int64(duration))
+	builder.AddInt64(duration)
 	builder.AddOp(txscript.OP_CHECKSEQUENCEVERIFY)
 	builder.AddOp(txscript.OP_DROP)
 	builder.AddData(stakerPubKey.SerializeCompressed())

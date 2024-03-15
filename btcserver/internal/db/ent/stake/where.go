@@ -88,7 +88,7 @@ func ReleasingTime(v int64) predicate.Stake {
 }
 
 // Amount applies equality check predicate on the "Amount" field. It's identical to AmountEQ.
-func Amount(v int64) predicate.Stake {
+func Amount(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldAmount, v))
 }
 
@@ -98,7 +98,7 @@ func RewardReceiver(v string) predicate.Stake {
 }
 
 // Reward applies equality check predicate on the "Reward" field. It's identical to RewardEQ.
-func Reward(v int64) predicate.Stake {
+func Reward(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldReward, v))
 }
 
@@ -493,42 +493,42 @@ func ReleasingTimeLTE(v int64) predicate.Stake {
 }
 
 // AmountEQ applies the EQ predicate on the "Amount" field.
-func AmountEQ(v int64) predicate.Stake {
+func AmountEQ(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldAmount, v))
 }
 
 // AmountNEQ applies the NEQ predicate on the "Amount" field.
-func AmountNEQ(v int64) predicate.Stake {
+func AmountNEQ(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldNEQ(FieldAmount, v))
 }
 
 // AmountIn applies the In predicate on the "Amount" field.
-func AmountIn(vs ...int64) predicate.Stake {
+func AmountIn(vs ...uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldIn(FieldAmount, vs...))
 }
 
 // AmountNotIn applies the NotIn predicate on the "Amount" field.
-func AmountNotIn(vs ...int64) predicate.Stake {
+func AmountNotIn(vs ...uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldNotIn(FieldAmount, vs...))
 }
 
 // AmountGT applies the GT predicate on the "Amount" field.
-func AmountGT(v int64) predicate.Stake {
+func AmountGT(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldGT(FieldAmount, v))
 }
 
 // AmountGTE applies the GTE predicate on the "Amount" field.
-func AmountGTE(v int64) predicate.Stake {
+func AmountGTE(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldGTE(FieldAmount, v))
 }
 
 // AmountLT applies the LT predicate on the "Amount" field.
-func AmountLT(v int64) predicate.Stake {
+func AmountLT(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldLT(FieldAmount, v))
 }
 
 // AmountLTE applies the LTE predicate on the "Amount" field.
-func AmountLTE(v int64) predicate.Stake {
+func AmountLTE(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldLTE(FieldAmount, v))
 }
 
@@ -598,42 +598,42 @@ func RewardReceiverContainsFold(v string) predicate.Stake {
 }
 
 // RewardEQ applies the EQ predicate on the "Reward" field.
-func RewardEQ(v int64) predicate.Stake {
+func RewardEQ(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldEQ(FieldReward, v))
 }
 
 // RewardNEQ applies the NEQ predicate on the "Reward" field.
-func RewardNEQ(v int64) predicate.Stake {
+func RewardNEQ(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldNEQ(FieldReward, v))
 }
 
 // RewardIn applies the In predicate on the "Reward" field.
-func RewardIn(vs ...int64) predicate.Stake {
+func RewardIn(vs ...uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldIn(FieldReward, vs...))
 }
 
 // RewardNotIn applies the NotIn predicate on the "Reward" field.
-func RewardNotIn(vs ...int64) predicate.Stake {
+func RewardNotIn(vs ...uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldNotIn(FieldReward, vs...))
 }
 
 // RewardGT applies the GT predicate on the "Reward" field.
-func RewardGT(v int64) predicate.Stake {
+func RewardGT(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldGT(FieldReward, v))
 }
 
 // RewardGTE applies the GTE predicate on the "Reward" field.
-func RewardGTE(v int64) predicate.Stake {
+func RewardGTE(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldGTE(FieldReward, v))
 }
 
 // RewardLT applies the LT predicate on the "Reward" field.
-func RewardLT(v int64) predicate.Stake {
+func RewardLT(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldLT(FieldReward, v))
 }
 
 // RewardLTE applies the LTE predicate on the "Reward" field.
-func RewardLTE(v int64) predicate.Stake {
+func RewardLTE(v uint64) predicate.Stake {
 	return predicate.Stake(sql.FieldLTE(FieldReward, v))
 }
 

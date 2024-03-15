@@ -154,23 +154,23 @@ func (su *StakeUpdate) AddReleasingTime(i int64) *StakeUpdate {
 }
 
 // SetAmount sets the "Amount" field.
-func (su *StakeUpdate) SetAmount(i int64) *StakeUpdate {
+func (su *StakeUpdate) SetAmount(u uint64) *StakeUpdate {
 	su.mutation.ResetAmount()
-	su.mutation.SetAmount(i)
+	su.mutation.SetAmount(u)
 	return su
 }
 
 // SetNillableAmount sets the "Amount" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableAmount(i *int64) *StakeUpdate {
-	if i != nil {
-		su.SetAmount(*i)
+func (su *StakeUpdate) SetNillableAmount(u *uint64) *StakeUpdate {
+	if u != nil {
+		su.SetAmount(*u)
 	}
 	return su
 }
 
-// AddAmount adds i to the "Amount" field.
-func (su *StakeUpdate) AddAmount(i int64) *StakeUpdate {
-	su.mutation.AddAmount(i)
+// AddAmount adds u to the "Amount" field.
+func (su *StakeUpdate) AddAmount(u int64) *StakeUpdate {
+	su.mutation.AddAmount(u)
 	return su
 }
 
@@ -189,23 +189,23 @@ func (su *StakeUpdate) SetNillableRewardReceiver(s *string) *StakeUpdate {
 }
 
 // SetReward sets the "Reward" field.
-func (su *StakeUpdate) SetReward(i int64) *StakeUpdate {
+func (su *StakeUpdate) SetReward(u uint64) *StakeUpdate {
 	su.mutation.ResetReward()
-	su.mutation.SetReward(i)
+	su.mutation.SetReward(u)
 	return su
 }
 
 // SetNillableReward sets the "Reward" field if the given value is not nil.
-func (su *StakeUpdate) SetNillableReward(i *int64) *StakeUpdate {
-	if i != nil {
-		su.SetReward(*i)
+func (su *StakeUpdate) SetNillableReward(u *uint64) *StakeUpdate {
+	if u != nil {
+		su.SetReward(*u)
 	}
 	return su
 }
 
-// AddReward adds i to the "Reward" field.
-func (su *StakeUpdate) AddReward(i int64) *StakeUpdate {
-	su.mutation.AddReward(i)
+// AddReward adds u to the "Reward" field.
+func (su *StakeUpdate) AddReward(u int64) *StakeUpdate {
+	su.mutation.AddReward(u)
 	return su
 }
 
@@ -426,19 +426,19 @@ func (su *StakeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.AddField(stake.FieldReleasingTime, field.TypeInt64, value)
 	}
 	if value, ok := su.mutation.Amount(); ok {
-		_spec.SetField(stake.FieldAmount, field.TypeInt64, value)
+		_spec.SetField(stake.FieldAmount, field.TypeUint64, value)
 	}
 	if value, ok := su.mutation.AddedAmount(); ok {
-		_spec.AddField(stake.FieldAmount, field.TypeInt64, value)
+		_spec.AddField(stake.FieldAmount, field.TypeUint64, value)
 	}
 	if value, ok := su.mutation.RewardReceiver(); ok {
 		_spec.SetField(stake.FieldRewardReceiver, field.TypeString, value)
 	}
 	if value, ok := su.mutation.Reward(); ok {
-		_spec.SetField(stake.FieldReward, field.TypeInt64, value)
+		_spec.SetField(stake.FieldReward, field.TypeUint64, value)
 	}
 	if value, ok := su.mutation.AddedReward(); ok {
-		_spec.AddField(stake.FieldReward, field.TypeInt64, value)
+		_spec.AddField(stake.FieldReward, field.TypeUint64, value)
 	}
 	if value, ok := su.mutation.FinalizedStatus(); ok {
 		_spec.SetField(stake.FieldFinalizedStatus, field.TypeInt, value)
@@ -620,23 +620,23 @@ func (suo *StakeUpdateOne) AddReleasingTime(i int64) *StakeUpdateOne {
 }
 
 // SetAmount sets the "Amount" field.
-func (suo *StakeUpdateOne) SetAmount(i int64) *StakeUpdateOne {
+func (suo *StakeUpdateOne) SetAmount(u uint64) *StakeUpdateOne {
 	suo.mutation.ResetAmount()
-	suo.mutation.SetAmount(i)
+	suo.mutation.SetAmount(u)
 	return suo
 }
 
 // SetNillableAmount sets the "Amount" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableAmount(i *int64) *StakeUpdateOne {
-	if i != nil {
-		suo.SetAmount(*i)
+func (suo *StakeUpdateOne) SetNillableAmount(u *uint64) *StakeUpdateOne {
+	if u != nil {
+		suo.SetAmount(*u)
 	}
 	return suo
 }
 
-// AddAmount adds i to the "Amount" field.
-func (suo *StakeUpdateOne) AddAmount(i int64) *StakeUpdateOne {
-	suo.mutation.AddAmount(i)
+// AddAmount adds u to the "Amount" field.
+func (suo *StakeUpdateOne) AddAmount(u int64) *StakeUpdateOne {
+	suo.mutation.AddAmount(u)
 	return suo
 }
 
@@ -655,23 +655,23 @@ func (suo *StakeUpdateOne) SetNillableRewardReceiver(s *string) *StakeUpdateOne 
 }
 
 // SetReward sets the "Reward" field.
-func (suo *StakeUpdateOne) SetReward(i int64) *StakeUpdateOne {
+func (suo *StakeUpdateOne) SetReward(u uint64) *StakeUpdateOne {
 	suo.mutation.ResetReward()
-	suo.mutation.SetReward(i)
+	suo.mutation.SetReward(u)
 	return suo
 }
 
 // SetNillableReward sets the "Reward" field if the given value is not nil.
-func (suo *StakeUpdateOne) SetNillableReward(i *int64) *StakeUpdateOne {
-	if i != nil {
-		suo.SetReward(*i)
+func (suo *StakeUpdateOne) SetNillableReward(u *uint64) *StakeUpdateOne {
+	if u != nil {
+		suo.SetReward(*u)
 	}
 	return suo
 }
 
-// AddReward adds i to the "Reward" field.
-func (suo *StakeUpdateOne) AddReward(i int64) *StakeUpdateOne {
-	suo.mutation.AddReward(i)
+// AddReward adds u to the "Reward" field.
+func (suo *StakeUpdateOne) AddReward(u int64) *StakeUpdateOne {
+	suo.mutation.AddReward(u)
 	return suo
 }
 
@@ -922,19 +922,19 @@ func (suo *StakeUpdateOne) sqlSave(ctx context.Context) (_node *Stake, err error
 		_spec.AddField(stake.FieldReleasingTime, field.TypeInt64, value)
 	}
 	if value, ok := suo.mutation.Amount(); ok {
-		_spec.SetField(stake.FieldAmount, field.TypeInt64, value)
+		_spec.SetField(stake.FieldAmount, field.TypeUint64, value)
 	}
 	if value, ok := suo.mutation.AddedAmount(); ok {
-		_spec.AddField(stake.FieldAmount, field.TypeInt64, value)
+		_spec.AddField(stake.FieldAmount, field.TypeUint64, value)
 	}
 	if value, ok := suo.mutation.RewardReceiver(); ok {
 		_spec.SetField(stake.FieldRewardReceiver, field.TypeString, value)
 	}
 	if value, ok := suo.mutation.Reward(); ok {
-		_spec.SetField(stake.FieldReward, field.TypeInt64, value)
+		_spec.SetField(stake.FieldReward, field.TypeUint64, value)
 	}
 	if value, ok := suo.mutation.AddedReward(); ok {
-		_spec.AddField(stake.FieldReward, field.TypeInt64, value)
+		_spec.AddField(stake.FieldReward, field.TypeUint64, value)
 	}
 	if value, ok := suo.mutation.FinalizedStatus(); ok {
 		_spec.SetField(stake.FieldFinalizedStatus, field.TypeInt, value)

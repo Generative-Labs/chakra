@@ -31,11 +31,11 @@ type Stake struct {
 	// ReleasingTime holds the value of the "ReleasingTime" field.
 	ReleasingTime int64 `json:"ReleasingTime,omitempty"`
 	// Amount holds the value of the "Amount" field.
-	Amount int64 `json:"Amount,omitempty"`
+	Amount uint64 `json:"Amount,omitempty"`
 	// RewardReceiver holds the value of the "RewardReceiver" field.
 	RewardReceiver string `json:"RewardReceiver,omitempty"`
 	// Reward holds the value of the "Reward" field.
-	Reward int64 `json:"Reward,omitempty"`
+	Reward uint64 `json:"Reward,omitempty"`
 	// FinalizedStatus holds the value of the "FinalizedStatus" field.
 	FinalizedStatus int `json:"FinalizedStatus,omitempty"`
 	// ReleaseStatus holds the value of the "ReleaseStatus" field.
@@ -129,7 +129,7 @@ func (s *Stake) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field Amount", values[i])
 			} else if value.Valid {
-				s.Amount = value.Int64
+				s.Amount = uint64(value.Int64)
 			}
 		case stake.FieldRewardReceiver:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -141,7 +141,7 @@ func (s *Stake) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field Reward", values[i])
 			} else if value.Valid {
-				s.Reward = value.Int64
+				s.Reward = uint64(value.Int64)
 			}
 		case stake.FieldFinalizedStatus:
 			if value, ok := values[i].(*sql.NullInt64); !ok {

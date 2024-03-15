@@ -14,9 +14,9 @@ func (c *Backend) CreateStake(
 	staker, stakerPublicKey, txID string,
 	start int64,
 	duration int64,
-	amount int64,
+	amount uint64,
 	rewardReceiver string,
-	reward int64,
+	reward uint64,
 	receiverSignature string,
 	timestamp int64,
 ) error {
@@ -171,7 +171,7 @@ func (c *Backend) QueryNoFinalizedStakeTx() ([]*types.StakeVerificationParam, er
 	verifyParams := make([]*types.StakeVerificationParam, 0)
 
 	err := c.dbClient.Stake.Query().Where(stake.FinalizedStatusLTE(int(types.TxIncluded))).
-		Select(stake.FieldStaker, stake.FieldTx, stake.FieldStakerPublicKey, stake.FieldAmount, stake.FieldDuration).
+		Select(stake.FieldStaker, stake.FieldTx, stake.FieldStakerPublicKey, stake.FieldAmount, stake.FieldStart, stake.FieldDuration, stake.FieldRewardReceiver).
 		Scan(context.Background(), &verifyParams)
 	if err != nil {
 		return nil, err

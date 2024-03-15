@@ -62,7 +62,7 @@ func (s *Server) TimeWheelSchedule() {
 		}
 	}
 
-	log.Info().Msgf("🔵🔵🔵 Start time wheel schedule, time wheel: %s", s.ScheduleTimeWheel)
+	log.Info().Msgf("🔵 Start time wheel schedule, time wheel: %s", s.ScheduleTimeWheel)
 
 	for {
 		// Start from the global timestamp, query every 5 minutes, and query all users to be released within 5 minutes
@@ -74,7 +74,7 @@ func (s *Server) TimeWheelSchedule() {
 		}
 
 		if len(txs) == 0 {
-			if time.Now().Sub(s.ScheduleTimeWheel) > types.TimeWheelSize {
+			if time.Since(s.ScheduleTimeWheel) > types.TimeWheelSize {
 				err = s.UpdateTimeWheelForDB()
 				if err != nil {
 					log.Error().Msgf("❌ error update time wheel: %s ", err)
@@ -86,8 +86,8 @@ func (s *Server) TimeWheelSchedule() {
 			}
 
 			oldScheduleTimeWheel := s.ScheduleTimeWheel
-			log.Info().Msgf("🔵🔵🔵 No tx to be released, now %s sleep Until next Wheel %s", time.Now().String(), oldScheduleTimeWheel.Add(types.TimeWheelSize).String())
-			time.Sleep(time.Until(oldScheduleTimeWheel.Add(types.TimeWheelSize))) //nolint
+			log.Info().Msgf("🔵 No tx to be released, now %s sleep Until next Wheel %s", time.Now().String(), oldScheduleTimeWheel.Add(types.TimeWheelSize).String())
+			time.Sleep(time.Until(oldScheduleTimeWheel.Add(types.TimeWheelSize)))
 			err = s.UpdateTimeWheelForDB()
 			if err != nil {
 				log.Error().Msgf("❌ error update time wheel: %s ", err)
@@ -97,7 +97,7 @@ func (s *Server) TimeWheelSchedule() {
 			continue
 		}
 
-		log.Info().Msgf("🔵🔵🔵 In the next time period %s - %s, find %d txids that are about to be released: %v", s.ScheduleTimeWheel, s.ScheduleTimeWheel.Add(types.TimeWheelSize), len(txs), txs)
+		log.Info().Msgf("🔵 In the next time period %s - %s, find %d txids that are about to be released: %v", s.ScheduleTimeWheel, s.ScheduleTimeWheel.Add(types.TimeWheelSize), len(txs), txs)
 		s.RewardTasksSchedule(txs)
 	}
 }
@@ -123,7 +123,7 @@ func (s *Server) RewardTasksSchedule(txs []*types.ReleaseTxsInfo) {
 func (s *Server) RewardTasks(txs []*types.ReleaseTxsInfo) error {
 	rt := utils.TimestampToTime(txs[0].ReleasingTime)
 	timer := time.NewTimer(time.Until(rt))
-	log.Info().Msgf("🔵🔵🔵 Start the timer and prepare to wait %v min [%v]", time.Until(rt).Minutes(), txs[0])
+	log.Info().Msgf("🔵 Start the timer and prepare to wait %v min [%v]", time.Until(rt).Minutes(), txs[0])
 
 	for { //nolint
 		select {
@@ -133,17 +133,17 @@ func (s *Server) RewardTasks(txs []*types.ReleaseTxsInfo) error {
 				txIDs = append(txIDs, tx.Tx)
 			}
 
-			log.Info().Msgf("🔵🔵🔵 Start reward to %v ", txIDs)
+			log.Info().Msgf("🔵 Start reward to %v ", txIDs)
 			res, err := chakra.RewardTo(s.Ctx, s.ChakraAccount, s.ContractAddress, txIDs)
 			if err != nil {
 				log.Error().Msgf("❌ error reward to txIDs %v: %s ", txIDs, err)
 				// todo deal err task
 				return err
 			}
-			log.Info().Msgf("🔵🔵🔵 Chakra reward success, txs hash: %s ", res.TransactionHash)
+			log.Info().Msgf("🔵 Chakra reward success, txs hash: %s ", res.TransactionHash)
 
 			for _, tx := range txs {
-				log.Info().Msgf("🔵🔵🔵 Start update stake ReleasingTime %v ", tx)
+				log.Info().Msgf("🔵 Start update stake ReleasingTime %v ", tx)
 				err := s.backend.UpdateStakeReleasingTime(tx.Staker, tx.Tx)
 				if err != nil {
 					log.Error().Msgf("❌ error %s update stake releasing time to txID %s: %s ", tx.Staker, tx.Tx, err)
@@ -161,7 +161,6 @@ func (s *Server) UpdateTimeWheel() {
 	log.Info().Msgf("Update time wheel to %s ", utils.TimestampToTime(newScheduleTimeWheel))
 
 	s.ScheduleTimeWheel = s.ScheduleTimeWheel.Add(types.TimeWheelSize)
-	return
 }
 
 func (s *Server) UpdateTimeWheelForDB() error {
@@ -202,13 +201,34 @@ func (s *Server) UpdateStakeFinalizedStatus() {
 		}
 
 		for i, status := range newStatuses {
+			staker := stakeVerifyParams[i].Staker
+			txID := stakeVerifyParams[i].TxID
+			amount := strconv.Itoa(int(stakeVerifyParams[i].Amount))
+			start := stakeVerifyParams[i].Start
+			expireAt := stakeVerifyParams[i].Start + stakeVerifyParams[i].Duration
+			rewardReceiver := stakeVerifyParams[i].RewardReceiver
+
 			if status == stakeVerifyParams[i].FinalizedStatus {
 				continue
 			}
 
-			err := s.backend.UpdateStakeFinalizedStatus(stakeVerifyParams[i].Staker, stakeVerifyParams[i].TxID, int(status))
+			err := s.backend.UpdateStakeFinalizedStatus(staker, txID, int(status))
 			if err != nil {
 				log.Error().Msgf("💥 error when update state finalize status %s", err)
+				continue
+			}
+
+			log.Info().Msgf("🔵 start submit btc stake tx info to chakra %+v", stakeVerifyParams[i])
+			res, err := chakra.SubmitTXInfo(s.Ctx, s.ChakraAccount, s.ContractAddress, txID, amount, start, expireAt, rewardReceiver)
+			if err != nil {
+				log.Error().Msgf("💥 error submit stake tx infos %s", err)
+				continue
+			}
+			err = s.backend.UpdateCanBeSubmitStatus(staker, txID, 1)
+			if err != nil {
+				log.Error().Msgf("💥 error update stake %s txid %s txhash %s submit status %s",
+					staker, txID, res.TransactionHash, err)
+				continue
 			}
 		}
 	}

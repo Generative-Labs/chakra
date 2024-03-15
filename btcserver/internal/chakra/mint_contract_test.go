@@ -85,17 +85,9 @@ func TestTxRewardsof(t *testing.T) {
 
 	txIDs := BTCTxID
 	params := utils.BigIntToFelt(utils.HexToBN(txIDs))
-	//params, err := utils.HexToFelt(txIDs)
-	//if err != nil {
-	//	t.Fatalf("HexToFelt err:%s", err)
-	//}
-
-	//lenP := utils.BigIntToFelt(big.NewInt(int64(len(txIDs))))
 	callData := make([]*felt.Felt, 0)
-	//callData = append(callData, lenP)
 	callData = append(callData, params)
 
-	// RPCCall
 	res, err := RPCCall(acc, contractAddr, "rewardsOf", callData)
 	if err != nil {
 		t.Fatalf("RPCCall err:%s", err)
