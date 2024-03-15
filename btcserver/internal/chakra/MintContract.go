@@ -164,10 +164,7 @@ func SubmitTXInfo(ctx context.Context, cAccount *account.Account, contractAddres
 	}
 
 	callData := make([]*felt.Felt, 0)
-	txIDFelt, err := utils.HexToFelt(txID)
-	if err != nil {
-		return nil, err
-	}
+	txIDFelt := utils.BigIntToFelt(utils.HexToBN(txID))
 
 	callData = append(callData, txIDFelt)
 	callData = append(callData, AmountToFelt(amount)...)
