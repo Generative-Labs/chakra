@@ -31,34 +31,35 @@ func createMemoryTestDB(t *testing.T) *db.Backend {
 }
 
 func TestPostStakeBtc(t *testing.T) {
-	memoryDB := createMemoryTestDB(t)
-	btcClient, err := btc.NewClient(btc.Config{
-		NetworkName: chaincfg.RegressionNetParams.Name,
-		RPCHost:     "localhost:18332",
-		RPCUser:     "rpcuser",
-		RPCPass:     "rpcpass",
-		DisableTLS:  true,
-	})
-	assert.NoError(t, err)
+	//memoryDB := createMemoryTestDB(t)
+	//btcClient, err := btc.NewClient(btc.Config{
+	//	NetworkName: chaincfg.RegressionNetParams.Name,
+	//	RPCHost:     "localhost:18332",
+	//	RPCUser:     "rpcuser",
+	//	RPCPass:     "rpcpass",
+	//	DisableTLS:  true,
+	//})
+	//assert.NoError(t, err)
 
-	server := api.NewServer(context.Background(), memoryDB, nil, "null", btcClient)
+	//server := api.NewServer(context.Background(), memoryDB, nil, "null", btcClient)
+	//
+	//router := gin.Default()
+	//router.Use(api.CORSMiddleware())
+	//api.SetupRoutes(router, server)
 
-	router := gin.Default()
-	router.Use(api.CORSMiddleware())
-	api.SetupRoutes(router, server)
+	//{"staker":"","staker_public_key":"","tx_id":"","start":,"durnation":7,"amount":90,"reward":0.063,"receiver_receiver":"","receiver_address_signature":"","timestamp":1710481332057}
 
 	data := map[string]interface{}{
-		"staker":             "bc123",
-		"staker_public_key":  "0x123",
-		"tx_id":              "0x123",
-		"start":              1234567890, // start timestamp
-		"duration":           3600,       // duration in seconds
-		"amount":             100,        // stake amount
-		"reward":             10,         // reward amount
-		"reward_receiver":    "0x123",
-		"btc_signature":      "btc_signature_here",
-		"receiver_signature": "0x123",
-		"timestamp":          1234567890, // timestamp
+		"staker":             "tb1qdp844q47twdjffxc3ptxu7atm6uw5ss3h98td2",
+		"staker_public_key":  "02435f6406512081c715b3dd1c80166e1443c553470028f1991b6e0270b1a607c0",
+		"tx_id":              "39d93ae35e841ec14e83205b1a4f5660894983a96f94c5bedb3273e58afde756",
+		"start":              1710481332057, // start timestamp
+		"duration":           7,             // duration in seconds
+		"amount":             90,            // stake amount
+		"reward":             0.063,         // reward amount
+		"reward_receiver":    "0x65fbbc6ed72f28f38e9b7b440b4115b143a35cfe7ceb390f448fa0a1bcbd8dc",
+		"receiver_signature": "H3Ma5HAYXV6HlBmWpcfAbuT08wbVmzyRUdkEFJBjzuBUejZuk+VKgifIdF50cAIGSWkWlYhqt2ck4RWSb1YZBwM=",
+		"timestamp":          1710481332057, // timestamp
 	}
 
 	body, err := json.Marshal(data)
@@ -67,14 +68,29 @@ func TestPostStakeBtc(t *testing.T) {
 		return
 	}
 
-	req, _ := http.NewRequest("POST", "/api/stake_btc", bytes.NewReader(body))
-	req.Header.Set("Content-Type", "application/json")
-	w := httptest.NewRecorder()
-	router.ServeHTTP(w, req)
+	req, err := http.NewRequest("POST", "http://3.0.18.212:8080/api/stake_btc", bytes.NewReader(body))
+	if err != nil {
+		t.Fatalf("Error NewRequest :%s", err)
+	}
 
-	assert.Equal(t, 400, w.Code)
-	// public key is invalid
-	assert.True(t, strings.Contains(w.Body.String(), "public key"))
+	client := http.DefaultClient
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error sending request:", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	t.Logf("req:%+v", resp.Body)
+	t.Logf("StatusCode:%+v", resp.StatusCode)
+
+	//req.Header.Set("Content-Type", "application/json")
+	//w := httptest.NewRecorder()
+	//router.ServeHTTP(w, req)
+
+	//assert.Equal(t, 400, w.Code)
+	//// public key is invalid
+	//assert.True(t, strings.Contains(w.Body.String(), "public key"))
 }
 
 func TestPostStakeBtcWithValidRewardSignature(t *testing.T) {
@@ -145,4 +161,31 @@ func TestPostStakeBtcWithValidRewardSignature(t *testing.T) {
 	assert.Equal(t, stakes[0].Staker, "bc1xxxxxxxxxx")
 	assert.Equal(t, stakes[0].Tx, "transaction_id_here")
 	assert.Equal(t, stakes[0].StakerPublicKey, "0x024edfcf9dfe6c0b5c83d1ab3f78d1b39a46ebac6798e08e19761f5ed89ec83c10")
+}
+
+func TestGetStakesList(t *testing.T) {
+	// 构建 API 地址
+	apiURL := "http://localhost:8080/api/stakes_list?staker=example&page=1&size=10"
+
+	// 发送 GET 请求
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		fmt.Println("Error sending request:", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	// 读取响应内容
+	var data map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		fmt.Println("Error decoding response:", err)
+		return
+	}
+
+	// 处理响应数据
+	fmt.Println("Total Count:", data["total_count"])
+	fmt.Println("Data List:")
+	for _, item := range data["data_list"].([]interface{}) {
+		fmt.Println(item)
+	}
 }

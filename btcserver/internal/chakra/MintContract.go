@@ -168,8 +168,8 @@ func SubmitTXInfo(ctx context.Context, cAccount *account.Account, contractAddres
 
 	callData = append(callData, txIDFelt)
 	callData = append(callData, AmountToFelt(amount)...)
-	callData = append(callData, utils.BigIntToFelt(big.NewInt(startAt)))
-	callData = append(callData, utils.BigIntToFelt(big.NewInt(expireAt)))
+	callData = append(callData, utils.BigIntToFelt(big.NewInt(startAt/1e9)))
+	callData = append(callData, utils.BigIntToFelt(big.NewInt(expireAt/1e9)))
 	receiver, err := utils.HexToFelt(rewardReceiver)
 	if err != nil {
 		return nil, err

@@ -12,7 +12,6 @@ import (
 
 func (c *Backend) CreateStake(
 	staker, stakerPublicKey, txID string,
-	start int64,
 	duration int64,
 	amount uint64,
 	rewardReceiver string,
@@ -20,17 +19,12 @@ func (c *Backend) CreateStake(
 	receiverSignature string,
 	timestamp int64,
 ) error {
-	fixedTime := start + 24*time.Hour.Nanoseconds()
-
 	ts := utils.MakeTimestamp()
 	_, err := c.dbClient.Stake.Create().
 		SetStaker(staker).
 		SetStakerPublicKey(stakerPublicKey).
 		SetTx(txID).
-		SetStart(start).
 		SetDuration(duration).
-		SetDeadline(start + duration).
-		SetReleasingTime(fixedTime).
 		SetAmount(amount).
 		SetRewardReceiver(rewardReceiver).
 		SetReward(reward).

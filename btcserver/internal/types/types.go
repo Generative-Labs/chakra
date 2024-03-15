@@ -16,7 +16,6 @@ type StakeInfoReq struct {
 	Staker            string `form:"staker" json:"staker,omitempty"`
 	StakerPublicKey   string `form:"staker_public_key" json:"staker_public_key,omitempty"`
 	TxID              string `from:"tx_id" json:"tx_id,omitempty"`
-	Start             int64  `from:"start" json:"start,omitempty"`
 	Duration          int64  `from:"duration" json:"duration,omitempty"`
 	Amount            uint64 `from:"amount" json:"amount,omitempty"`
 	Reward            uint64 `from:"reward" json:"reward,omitempty"`

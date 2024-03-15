@@ -3,6 +3,7 @@ package api
 import (
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/generativelabs/btcserver/internal/types"
 	"github.com/generativelabs/btcserver/internal/utils"
@@ -99,11 +100,13 @@ func (s *Server) SubmitProofOfStake(c *gin.Context) {
 	}
 
 	log.Info().Msgf("[HTTP] SubmitProofOfStake: %+v ", stakeInfo)
-	// storage
+	if stakeInfo.Duration > 0 {
+		stakeInfo.Duration = stakeInfo.Duration * 24 * time.Hour.Nanoseconds()
+	}
+
 	err := s.backend.CreateStake(stakeInfo.Staker,
 		stakeInfo.StakerPublicKey,
 		stakeInfo.TxID,
-		stakeInfo.Start,
 		stakeInfo.Duration,
 		stakeInfo.Amount,
 		stakeInfo.RewardReceiver,
@@ -111,7 +114,8 @@ func (s *Server) SubmitProofOfStake(c *gin.Context) {
 		stakeInfo.ReceiverSignature,
 		stakeInfo.Timestamp)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		respData.Msg = err.Error()
+		JSONResp(c, http.StatusInternalServerError, respData)
 		return
 	}
 
