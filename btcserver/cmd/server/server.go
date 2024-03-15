@@ -4,8 +4,6 @@ import (
 	"context"
 	"os"
 
-	"github.com/NethermindEth/starknet.go/curve"
-	"github.com/NethermindEth/starknet.go/utils"
 	"github.com/generativelabs/btcserver/internal/api"
 	"github.com/generativelabs/btcserver/internal/btc"
 	"github.com/generativelabs/btcserver/internal/chakra"
@@ -58,18 +56,4 @@ func Run() {
 	if err != nil {
 		log.Fatal().Msgf("❌ Fatal error in api server: %s ", err)
 	}
-}
-
-func GetPublickeyFromPrivateKey(privateKey string) string {
-	privInt := utils.HexToBN(privateKey)
-
-	pubX, _, err := curve.Curve.PrivateToPoint(privInt)
-	if err != nil {
-		log.Fatal().Msgf("❌ Fatal error generate public key: %s ", err)
-		panic(err)
-	}
-
-	pubKey := utils.BigToHex(pubX)
-
-	return pubKey
 }

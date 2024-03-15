@@ -136,7 +136,7 @@ func RewardTo(ctx context.Context, cAccount *account.Account, contractAddressHex
 }
 
 // SubmitTXInfo tx_id, btc_amount, startAt, expire_at, recipient_address
-func SubmitTXInfo(ctx context.Context, cAccount *account.Account, contractAddressHex string, txID string, amount string, startAt, expireAt uint64, rewardReceiver string) (*starknetrpc.AddInvokeTransactionResponse, error) {
+func SubmitTXInfo(ctx context.Context, cAccount *account.Account, contractAddressHex string, txID string, amount string, startAt, expireAt int64, rewardReceiver string) (*starknetrpc.AddInvokeTransactionResponse, error) {
 	contractAddress, err := utils.HexToFelt(contractAddressHex)
 	if err != nil {
 		panic(err)
@@ -164,10 +164,15 @@ func SubmitTXInfo(ctx context.Context, cAccount *account.Account, contractAddres
 	}
 
 	callData := make([]*felt.Felt, 0)
-	callData = append(callData, BtcTxIDToFelt(txID)...)
+	txIDFelt, err := utils.HexToFelt(txID)
+	if err != nil {
+		return nil, err
+	}
+
+	callData = append(callData, txIDFelt)
 	callData = append(callData, AmountToFelt(amount)...)
-	callData = append(callData, utils.BigIntToFelt(big.NewInt(int64(startAt))))
-	callData = append(callData, utils.BigIntToFelt(big.NewInt(int64(expireAt))))
+	callData = append(callData, utils.BigIntToFelt(big.NewInt(startAt)))
+	callData = append(callData, utils.BigIntToFelt(big.NewInt(expireAt)))
 	receiver, err := utils.HexToFelt(rewardReceiver)
 	if err != nil {
 		return nil, err

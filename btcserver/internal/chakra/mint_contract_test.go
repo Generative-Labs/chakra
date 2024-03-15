@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"testing"
+	"time"
 
 	"github.com/NethermindEth/juno/core/felt"
 	"github.com/NethermindEth/starknet.go/utils"
@@ -15,30 +16,36 @@ func TestSubmitTXInfo(t *testing.T) {
 	url := "https://madara.to3.io"                                                    //nolint
 	priKeyt := "0x00c1cf1490de1352865301bb8705143f3ef938f97fdf892f1090dcb5ac7bcd1d"   //nolint
 	addr := "0x3"                                                                     //nolint
-	contractAddr := "0x2c38b9a62cabbcb1c8e0041ac96bff436c0805e1adfee2137a2bf41f8bf68" //nolint
-
+	contractAddr := "0x4ca7cade3c35486817d8a0880cc8919cb82d92dd79208ffdecc31328f6174" //nolint
+	startAt := time.Now().UnixNano()
+	expireAt := time.Now().Add(time.Hour * 72).UnixNano()
 	acc, err := NewChakraAccount(context.Background(), url, priKeyt, addr)
 	if err != nil {
 		t.Fatalf("New chakra account err:%s", err)
 	}
 
 	// ab44db940bdd7ededefd8b452a219c146b742161fe48512eb370d8b681e1b048
-	txID := "0x1"
+	txID := "0x11"
 
 	// SubmitTXInfo
-	res, err := SubmitTXInfo(context.Background(), acc, contractAddr, txID, "111111", 11111111, 111111111, "0x1")
+	res, err := SubmitTXInfo(context.Background(), acc, contractAddr, txID, "2", startAt, expireAt, "0x1")
 	if err != nil {
 		t.Fatalf("Submit TX Info err:%s", err)
 	}
-
 	t.Logf("res %v", res)
+
+	receipt, err := acc.WaitForTransactionReceipt(context.Background(), res.TransactionHash, time.Second)
+	if err != nil {
+		t.Fatalf("Submit TX Info transactionReceipt err:%s", err)
+	}
+	t.Logf("receipt %v", *receipt)
 }
 
 func TestRewardTo(t *testing.T) {
 	url := "https://madara.to3.io"
 	priKeyt := "0x00c1cf1490de1352865301bb8705143f3ef938f97fdf892f1090dcb5ac7bcd1d"
 	addr := "0x3"
-	contractAddr := "0x2c38b9a62cabbcb1c8e0041ac96bff436c0805e1adfee2137a2bf41f8bf68"
+	contractAddr := "0x4ca7cade3c35486817d8a0880cc8919cb82d92dd79208ffdecc31328f6174"
 
 	acc, err := NewChakraAccount(context.Background(), url, priKeyt, addr)
 	if err != nil {
@@ -46,7 +53,7 @@ func TestRewardTo(t *testing.T) {
 	}
 
 	// ab44db940bdd7ededefd8b452a219c146b742161fe48512eb370d8b681e1b047
-	txID := []string{"0x1"}
+	txID := []string{"0x11"}
 
 	// RewardTo
 	res, err := RewardTo(context.Background(), acc, contractAddr, txID)
@@ -55,6 +62,12 @@ func TestRewardTo(t *testing.T) {
 	}
 
 	t.Logf("res %v", res)
+
+	receipt, err := acc.WaitForTransactionReceipt(context.Background(), res.TransactionHash, time.Second)
+	if err != nil {
+		t.Fatalf("RewardTo transactionReceipt err:%s", err)
+	}
+	t.Logf("receipt %v", *receipt)
 }
 
 func TestTxRewardsof(t *testing.T) {
@@ -68,7 +81,7 @@ func TestTxRewardsof(t *testing.T) {
 		t.Fatalf("New chakra account err:%s", err)
 	}
 
-	txIDs := "0x1"
+	txIDs := "0x11"
 	params, err := utils.HexToFelt(txIDs)
 	if err != nil {
 		t.Fatalf("HexToFelt err:%s", err)
@@ -98,15 +111,14 @@ func TestTxReceipt(t *testing.T) {
 	}
 
 	// RewardTo
-	// 0x5d4f285810fcb00facdc67e3b10ef35c631d2b886191871c4e2f144487bbdf4
-	// 0x79ac97faa71ac1c9b9a86d3f814735d0a3ff4cc9469395a580af72e7a9aa969
-	// 0x180e1b78954a76c8e450a6f3b2e58c4537a1c333efdcfa0575966bdf07a1145
-	// 0x48bc822784e5b25347d18fdccf83db0bbbb5ae29c97d718663cf276f8bab8d9
+	// 0x41f88729384193e8a51892d8e0bb815420f4a0b047cc852134e1a63fa261f0f
+	// 0x51967d02a9d2dd355f1ab7a9f56f50728ce55927b6d22f32603d5dd05880d6e
 
 	// submit
-	// 0x13496bf70f595ed5e80c83241e73c4eeaaa49b78e1df0e0f2e83f9db6952f11
-	// 0x2b142e0547bbd6272a865abf7628f7870633e7b3274c0c870718111b98118a
-	hash, err := utils.HexToFelt("0x48bc822784e5b25347d18fdccf83db0bbbb5ae29c97d718663cf276f8bab8d9")
+	// 0x754821689f87e4ceb3fb54701fe08889edc5f842160ea2c8e6d5ec24a709ff0
+	// 0x68e8676e2098828cc54401c30e57c34e564685f9f0161dff4cf8c5159dccc97
+
+	hash, err := utils.HexToFelt("0x51967d02a9d2dd355f1ab7a9f56f50728ce55927b6d22f32603d5dd05880d6e")
 	if err != nil {
 		t.Fatalf("HexToFelt err:%s", err)
 	}
