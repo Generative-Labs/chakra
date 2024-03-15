@@ -43,8 +43,8 @@ func NewClient(config Config) (*Client, error) {
 	switch config.NetworkName {
 	case chaincfg.RegressionNetParams.Name:
 		networkParams = &chaincfg.RegressionNetParams
-	case chaincfg.SigNetParams.Name:
-		networkParams = &chaincfg.SigNetParams
+	case chaincfg.TestNet3Params.Name:
+		networkParams = &chaincfg.TestNet3Params
 	case chaincfg.MainNetParams.Name:
 		networkParams = &chaincfg.MainNetParams
 	default:
