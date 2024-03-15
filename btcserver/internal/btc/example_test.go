@@ -251,7 +251,7 @@ func Example_checkStakeTxs() {
 		FinalizedStatus: types.TxPending,
 	}
 
-	res, err := client.UpdateStakeRecordFinalizedStatus([]*types.StakeVerificationParam{&stakeRecord})
+	res, err := client.UpdateStakeRecords([]*types.StakeVerificationParam{&stakeRecord})
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -262,7 +262,7 @@ func Example_checkStakeTxs() {
 		return
 	}
 
-	if res[0] != types.Mismatch {
+	if res[0].Status != types.Mismatch {
 		fmt.Println("check include tx failed")
 		return
 	}

@@ -182,53 +182,55 @@ func (s *Server) UpdateStakeFinalizedStatus() {
 	log.Info().Msgf("🔨 Start update stake finalized status with a 5 minute ticker")
 
 	for range timer.C {
-		stakeVerifyParams, err := s.backend.QueryNoFinalizedStakeTx()
+		oldStateRecords, err := s.backend.QueryNoFinalizedStakeTx()
 		if err != nil {
 			log.Error().Msgf("💥 error when query no finalized stake tx %s", err)
 			continue
 		}
 
-		if len(stakeVerifyParams) == 0 {
+		if len(oldStateRecords) == 0 {
 			log.Info().Msgf("💤 there is't no finalize states from db.")
 			continue
 		}
-		log.Info().Msgf("🔨get %d no finalize states from db. prepare check them", len(stakeVerifyParams))
+		log.Info().Msgf("🔨get %d no finalize states from db. prepare check them", len(oldStateRecords))
 
-		newStatuses, err := s.btcClient.UpdateStakeRecordFinalizedStatus(stakeVerifyParams)
+		newStateRecords, err := s.btcClient.UpdateStakeRecords(oldStateRecords)
 		if err != nil {
 			log.Error().Msgf("💥 error when check state records %s", err)
 			continue
 		}
 
-		for i, status := range newStatuses {
-			staker := stakeVerifyParams[i].Staker
-			txID := stakeVerifyParams[i].TxID
-			amount := strconv.Itoa(int(stakeVerifyParams[i].Amount))
-			start := stakeVerifyParams[i].Start
-			expireAt := stakeVerifyParams[i].Start + stakeVerifyParams[i].Duration
-			rewardReceiver := stakeVerifyParams[i].RewardReceiver
+		for i, record := range newStateRecords {
+			staker := oldStateRecords[i].Staker
+			txID := oldStateRecords[i].TxID
+			amount := strconv.Itoa(int(oldStateRecords[i].Amount))
+			start := record.Start
+			deadline := record.Start + oldStateRecords[i].Duration
+			releasingTime := record.Start + 24*time.Hour.Nanoseconds()
+			rewardReceiver := oldStateRecords[i].RewardReceiver
 
-			if status == stakeVerifyParams[i].FinalizedStatus {
+			if record.Status == oldStateRecords[i].FinalizedStatus {
 				continue
 			}
 
-			err := s.backend.UpdateStakeFinalizedStatus(staker, txID, int(status))
+			err := s.backend.UpdateStakeFinalizedStatus(staker, txID, int(record.Status), record.Start, deadline, releasingTime)
 			if err != nil {
 				log.Error().Msgf("💥 error when update state finalize status %s", err)
 				continue
 			}
 
-			log.Info().Msgf("🔵 start submit btc stake tx info to chakra %+v", stakeVerifyParams[i])
-			res, err := chakra.SubmitTXInfo(s.Ctx, s.ChakraAccount, s.ContractAddress, txID, amount, start, expireAt, rewardReceiver)
-			if err != nil {
-				log.Error().Msgf("💥 error submit stake tx infos %s", err)
-				continue
-			}
-			err = s.backend.UpdateCanBeSubmitStatus(staker, txID, 1)
-			if err != nil {
-				log.Error().Msgf("💥 error update stake %s txid %s txhash %s submit status %s",
-					staker, txID, res.TransactionHash, err)
-				continue
+			if record.Status == types.TxFinalized {
+				log.Info().Msgf("🔵 start submit btc stake tx info to chakra %+v", oldStateRecords[i])
+				res, err := chakra.SubmitTXInfo(s.Ctx, s.ChakraAccount, s.ContractAddress, txID, amount, start, deadline, rewardReceiver)
+				if err != nil {
+					log.Error().Msgf("💥 error submit stake tx infos %s", err)
+					continue
+				}
+				err = s.backend.UpdateCanBeSubmitStatus(staker, txID, 1)
+				if err != nil {
+					log.Error().Msgf("💥 error update stake %s txid %s txhash %s submit status %s",
+						staker, txID, res.TransactionHash, err)
+				}
 			}
 		}
 	}

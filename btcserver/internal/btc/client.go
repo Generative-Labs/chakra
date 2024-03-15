@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/btcsuite/btcd/btcec/v2/ecdsa"
@@ -100,13 +101,13 @@ func (c *Client) CheckTxID(txID string) error {
 	return nil
 }
 
-func (c *Client) UpdateStakeRecordFinalizedStatus(stakeRecords []*types.StakeVerificationParam) ([]types.StakeRecordStatus, error) {
-	recordStatuses := make([]types.StakeRecordStatus, len(stakeRecords))
+func (c *Client) UpdateStakeRecords(stakeRecords []*types.StakeVerificationParam) ([]types.StakeRecordUpdates, error) {
+	recordStatuses := make([]types.StakeRecordUpdates, len(stakeRecords))
 	rawTxFutures := make([]*rpcclient.FutureGetRawTransactionVerboseResult, len(stakeRecords))
 	for i, record := range stakeRecords {
 		txHash, err := chainhash.NewHashFromStr(record.TxID)
 		if err != nil {
-			recordStatuses[i] = types.Mismatch
+			recordStatuses[i].Status = types.Mismatch
 			rawTxFutures[i] = nil
 			continue
 		}
@@ -121,29 +122,32 @@ func (c *Client) UpdateStakeRecordFinalizedStatus(stakeRecords []*types.StakeVer
 		}
 		txRes, err := future.Receive()
 		if err != nil {
-			recordStatuses[i] = stakeRecords[i].FinalizedStatus
+			recordStatuses[i].Status = stakeRecords[i].FinalizedStatus
 			continue
 		}
 		if stakeRecords[i].FinalizedStatus == types.Mismatch || stakeRecords[i].FinalizedStatus == types.TxFinalized {
 			// TODO should not come here. Mismatch/Finalized tx record should't been checked again.
-			recordStatuses[i] = stakeRecords[i].FinalizedStatus
+			recordStatuses[i].Status = stakeRecords[i].FinalizedStatus
 			continue
 		}
 		if stakeRecords[i].FinalizedStatus == types.TxPending {
 			err = c.CheckStake(txRes, stakeRecords[i].StakerPublicKey, stakeRecords[i].Amount, stakeRecords[i].Duration)
 			if err != nil {
-				recordStatuses[i] = types.Mismatch
+				recordStatuses[i].Status = types.Mismatch
 				continue
 			}
 		}
 
 		if txRes.Confirmations >= TxFinalizedConfirmations { //nolint
-			recordStatuses[i] = types.TxFinalized
+			recordStatuses[i].Status = types.TxFinalized
+			recordStatuses[i].Start = txRes.Blocktime - int64(10*time.Minute.Seconds())*int64(txRes.Confirmations)
 		} else if txRes.Confirmations == 0 {
-			recordStatuses[i] = types.TxPending
+			recordStatuses[i].Status = types.TxPending
 		} else {
-			recordStatuses[i] = types.TxIncluded
+			recordStatuses[i].Status = types.TxIncluded
+			recordStatuses[i].Start = txRes.Blocktime - int64(10*time.Minute.Seconds())*int64(txRes.Confirmations)
 		}
+
 	}
 
 	return recordStatuses, nil

@@ -42,6 +42,11 @@ type ReleaseTxsInfo struct {
 
 type StakeRecordStatus int
 
+type StakeRecordUpdates struct {
+	Start  int64
+	Status StakeRecordStatus
+}
+
 const (
 	// TxPending defines the StakeRecord status where the Tx has not been included in a block yet.
 	TxPending StakeRecordStatus = iota

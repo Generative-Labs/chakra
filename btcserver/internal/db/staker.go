@@ -60,10 +60,15 @@ func (c *Backend) UpdateStakeReleaseStatus(staker, txID string, status int) erro
 	return err
 }
 
-func (c *Backend) UpdateStakeFinalizedStatus(staker, txID string, status int) error {
+func (c *Backend) UpdateStakeFinalizedStatus(staker, txID string, status int, start int64,
+	deadline int64, releasingTime int64,
+) error {
 	_, err := c.dbClient.Stake.Update().
 		Where(stake.And(stake.StakerEQ(staker), stake.TxEQ(txID))).
 		SetFinalizedStatus(status).
+		SetStart(start).
+		SetDeadline(deadline).
+		SetReleasingTime(releasingTime).
 		Save(context.Background())
 	return err
 }
