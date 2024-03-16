@@ -43,6 +43,14 @@ func (sc *StakeCreate) SetStart(i int64) *StakeCreate {
 	return sc
 }
 
+// SetNillableStart sets the "Start" field if the given value is not nil.
+func (sc *StakeCreate) SetNillableStart(i *int64) *StakeCreate {
+	if i != nil {
+		sc.SetStart(*i)
+	}
+	return sc
+}
+
 // SetDuration sets the "Duration" field.
 func (sc *StakeCreate) SetDuration(i int64) *StakeCreate {
 	sc.mutation.SetDuration(i)
@@ -55,9 +63,25 @@ func (sc *StakeCreate) SetDeadline(i int64) *StakeCreate {
 	return sc
 }
 
+// SetNillableDeadline sets the "Deadline" field if the given value is not nil.
+func (sc *StakeCreate) SetNillableDeadline(i *int64) *StakeCreate {
+	if i != nil {
+		sc.SetDeadline(*i)
+	}
+	return sc
+}
+
 // SetReleasingTime sets the "ReleasingTime" field.
 func (sc *StakeCreate) SetReleasingTime(i int64) *StakeCreate {
 	sc.mutation.SetReleasingTime(i)
+	return sc
+}
+
+// SetNillableReleasingTime sets the "ReleasingTime" field if the given value is not nil.
+func (sc *StakeCreate) SetNillableReleasingTime(i *int64) *StakeCreate {
+	if i != nil {
+		sc.SetReleasingTime(*i)
+	}
 	return sc
 }
 
@@ -188,6 +212,18 @@ func (sc *StakeCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (sc *StakeCreate) defaults() {
+	if _, ok := sc.mutation.Start(); !ok {
+		v := stake.DefaultStart
+		sc.mutation.SetStart(v)
+	}
+	if _, ok := sc.mutation.Deadline(); !ok {
+		v := stake.DefaultDeadline
+		sc.mutation.SetDeadline(v)
+	}
+	if _, ok := sc.mutation.ReleasingTime(); !ok {
+		v := stake.DefaultReleasingTime
+		sc.mutation.SetReleasingTime(v)
+	}
 	if _, ok := sc.mutation.FinalizedStatus(); !ok {
 		v := stake.DefaultFinalizedStatus
 		sc.mutation.SetFinalizedStatus(v)

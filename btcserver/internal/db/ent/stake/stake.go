@@ -86,6 +86,12 @@ var (
 	StakerValidator func(string) error
 	// TxValidator is a validator for the "Tx" field. It is called by the builders before save.
 	TxValidator func(string) error
+	// DefaultStart holds the default value on creation for the "Start" field.
+	DefaultStart int64
+	// DefaultDeadline holds the default value on creation for the "Deadline" field.
+	DefaultDeadline int64
+	// DefaultReleasingTime holds the default value on creation for the "ReleasingTime" field.
+	DefaultReleasingTime int64
 	// RewardReceiverValidator is a validator for the "RewardReceiver" field. It is called by the builders before save.
 	RewardReceiverValidator func(string) error
 	// DefaultFinalizedStatus holds the default value on creation for the "FinalizedStatus" field.

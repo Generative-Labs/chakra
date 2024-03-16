@@ -5,7 +5,9 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"strings"
 
+	"github.com/btcsuite/btcd/btcec/v2/ecdsa"
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
@@ -269,6 +271,57 @@ func Example_checkStakeTxs() {
 
 	fmt.Println("end")
 
+	// Output:
+	// end
+}
+
+const (
+	messageSignatureHeader = "Bitcoin Signed Message:\n"
+)
+
+func Example_signAndVerifyMessage() {
+	bobPrivKey, err := btcutil.DecodeWIF(bobPrivateKey)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	bobPk := "024edfcf9dfe6c0b5c83d1ab3f78d1b39a46ebac6798e08e19761f5ed89ec83c10"
+
+	message := "0x65fbbc6ed72f28f38e9b7b440b4115b143a35cfe7ceb390f448fa0a1bcbd8dc/1710587088607000"
+	var buf bytes.Buffer
+	_ = wire.WriteVarString(&buf, 0, messageSignatureHeader)
+	_ = wire.WriteVarString(&buf, 0, message)
+	messageHash := chainhash.DoubleHashB(buf.Bytes())
+
+	sigB, err := ecdsa.SignCompact(bobPrivKey.PrivKey, messageHash, true)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	recoverPK, ok, err := ecdsa.RecoverCompact(sigB, messageHash)
+	if !ok {
+		fmt.Println("no compact signature")
+		return
+	}
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	addressPK, err := btcutil.NewAddressPubKey(recoverPK.SerializeCompressed(), &chaincfg.TestNet3Params)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	if addressPK.String() != strings.TrimPrefix(bobPk, "0x") {
+		fmt.Println("mismatch public key")
+		return
+	}
+
+	fmt.Println("end")
 	// Output:
 	// end
 }

@@ -28,6 +28,18 @@ func init() {
 	stakeDescTx := stakeFields[2].Descriptor()
 	// stake.TxValidator is a validator for the "Tx" field. It is called by the builders before save.
 	stake.TxValidator = stakeDescTx.Validators[0].(func(string) error)
+	// stakeDescStart is the schema descriptor for Start field.
+	stakeDescStart := stakeFields[3].Descriptor()
+	// stake.DefaultStart holds the default value on creation for the Start field.
+	stake.DefaultStart = stakeDescStart.Default.(int64)
+	// stakeDescDeadline is the schema descriptor for Deadline field.
+	stakeDescDeadline := stakeFields[5].Descriptor()
+	// stake.DefaultDeadline holds the default value on creation for the Deadline field.
+	stake.DefaultDeadline = stakeDescDeadline.Default.(int64)
+	// stakeDescReleasingTime is the schema descriptor for ReleasingTime field.
+	stakeDescReleasingTime := stakeFields[6].Descriptor()
+	// stake.DefaultReleasingTime holds the default value on creation for the ReleasingTime field.
+	stake.DefaultReleasingTime = stakeDescReleasingTime.Default.(int64)
 	// stakeDescRewardReceiver is the schema descriptor for RewardReceiver field.
 	stakeDescRewardReceiver := stakeFields[8].Descriptor()
 	// stake.RewardReceiverValidator is a validator for the "RewardReceiver" field. It is called by the builders before save.
