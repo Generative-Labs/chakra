@@ -90,8 +90,8 @@ func (s *Server) SubmitProofOfStake(c *gin.Context) {
 	}
 
 	// verify reward receiver signature
-	if err := s.btcClient.CheckRewardAddressSignature(stakeInfo.StakerPublicKey, stakeInfo.ReceiverAddress,
-		stakeInfo.ReceiverAddressSignature, stakeInfo.Timestamp,
+	if err := s.btcClient.CheckRewardAddressSignature(stakeInfo.StakerPublicKey, stakeInfo.RewardReceiver,
+		stakeInfo.RewardReceiverSignature, stakeInfo.Timestamp,
 	); err != nil {
 		respData.Msg = err.Error()
 		JSONResp(c, http.StatusBadRequest, respData)
@@ -108,9 +108,9 @@ func (s *Server) SubmitProofOfStake(c *gin.Context) {
 		stakeInfo.TxID,
 		stakeInfo.Duration,
 		stakeInfo.Amount,
-		stakeInfo.ReceiverAddress,
+		stakeInfo.RewardReceiver,
 		stakeInfo.Reward,
-		stakeInfo.ReceiverAddressSignature,
+		stakeInfo.RewardReceiverSignature,
 		stakeInfo.Timestamp)
 	if err != nil {
 		respData.Msg = err.Error()

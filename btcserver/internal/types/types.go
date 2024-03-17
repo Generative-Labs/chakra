@@ -13,15 +13,15 @@ type StakerReq struct {
 }
 
 type StakeInfoReq struct {
-	Staker                   string `form:"staker" json:"staker,omitempty"`
-	StakerPublicKey          string `form:"staker_public_key" json:"staker_public_key,omitempty"`
-	TxID                     string `from:"tx_id" json:"tx_id,omitempty"`
-	Duration                 int64  `from:"duration" json:"duration,omitempty"`
-	Amount                   uint64 `from:"amount" json:"amount,omitempty"`
-	Reward                   uint64 `from:"reward" json:"reward,omitempty"`
-	ReceiverAddress          string `from:"receiver_address" json:"receiver_address,omitempty"`
-	ReceiverAddressSignature string `from:"receiver_address_signature" json:"receiver_address_signature,omitempty"`
-	Timestamp                int64  `from:"timestamp" json:"timestamp,omitempty"`
+	Staker                  string `form:"staker" json:"staker,omitempty"`
+	StakerPublicKey         string `form:"staker_public_key" json:"staker_public_key,omitempty"`
+	TxID                    string `from:"tx_id" json:"tx_id,omitempty"`
+	Duration                int64  `from:"duration" json:"duration,omitempty"`
+	Amount                  uint64 `from:"amount" json:"amount,omitempty"`
+	Reward                  uint64 `from:"reward" json:"reward,omitempty"`
+	RewardReceiver          string `from:"reward_receiver" json:"reward_receiver,omitempty"`
+	RewardReceiverSignature string `from:"reward_receiver_signature" json:"reward_receiver_signature,omitempty"`
+	Timestamp               int64  `from:"timestamp" json:"timestamp,omitempty"`
 }
 
 type StakeInfoResp struct {

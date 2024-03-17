@@ -33,14 +33,14 @@ func MockBatchStakeInfo(size int) []*types.StakeInfoReq {
 		st := start + int64(i)*time.Minute.Nanoseconds()
 		fmt.Printf("== start %s\n", utils.TimestampToTime(st))
 		si := &types.StakeInfoReq{
-			Staker:                   "bc1xxxxxxxxxx",
-			StakerPublicKey:          "0x0000",
-			TxID:                     "txidxxxxxxxxxxxxxxxxxxxxx" + strconv.Itoa(i),
-			Duration:                 7 * 24 * time.Hour.Nanoseconds(),
-			Amount:                   uint64(5),
-			ReceiverAddress:          "0x1111111111",
-			ReceiverAddressSignature: "receiverSignature",
-			Timestamp:                start + 10*time.Minute.Nanoseconds(),
+			Staker:                  "bc1xxxxxxxxxx",
+			StakerPublicKey:         "0x0000",
+			TxID:                    "txidxxxxxxxxxxxxxxxxxxxxx" + strconv.Itoa(i),
+			Duration:                7 * 24 * time.Hour.Nanoseconds(),
+			Amount:                  uint64(5),
+			RewardReceiver:          "0x1111111111",
+			RewardReceiverSignature: "receiverSignature",
+			Timestamp:               start + 10*time.Minute.Nanoseconds(),
 		}
 
 		stakeInfoReqList = append(stakeInfoReqList, si)
@@ -123,7 +123,7 @@ func TestQueryAllNotYetLockedUpTxNextPeriod(t *testing.T) {
 
 	siList := MockBatchStakeInfo(10)
 	for _, si := range siList {
-		err = cli.CreateStake(si.Staker, si.StakerPublicKey, si.TxID, si.Duration, si.Amount, si.ReceiverAddress, si.Reward, si.ReceiverAddressSignature, si.Timestamp)
+		err = cli.CreateStake(si.Staker, si.StakerPublicKey, si.TxID, si.Duration, si.Amount, si.RewardReceiver, si.Reward, si.RewardReceiverSignature, si.Timestamp)
 		if err != nil {
 			t.Fatalf("CreateStake err:%s", err)
 		}
@@ -148,7 +148,7 @@ func TestQueryNoFinalizedStakeTx(t *testing.T) {
 	stakeRecordSize := 10
 	siList := MockBatchStakeInfo(stakeRecordSize)
 	for i, si := range siList {
-		err = cli.CreateStake(si.Staker, si.StakerPublicKey, si.TxID, si.Duration, si.Amount, si.ReceiverAddress, si.Reward, si.ReceiverAddressSignature, si.Timestamp)
+		err = cli.CreateStake(si.Staker, si.StakerPublicKey, si.TxID, si.Duration, si.Amount, si.RewardReceiver, si.Reward, si.RewardReceiverSignature, si.Timestamp)
 		if err != nil {
 			assert.NoError(t, err)
 		}
