@@ -25,13 +25,14 @@ type StakeInfoReq struct {
 }
 
 type StakeInfoResp struct {
-	Staker         string `json:"staker,omitempty"`
-	Tx             string `json:"tx,omitempty"`
-	Start          int64  `json:"start,omitempty"`
-	Durnation      int64  `json:"durnation,omitempty"`
-	Amount         uint64 `json:"amount,omitempty"`
-	RewardReceiver string `json:"reward_receiver,omitempty"`
-	Reward         uint64 `json:"reward,omitempty"`
+	Staker         string `json:"staker"`
+	Tx             string `json:"tx"`
+	Start          int64  `json:"start"`
+	Duration       int64  `json:"duration"`
+	Deadline       int64  `json:"deadline"`
+	Amount         uint64 `json:"amount"`
+	RewardReceiver string `json:"reward_receiver"`
+	Reward         uint64 `json:"reward"`
 }
 
 type ReleaseTxsInfo struct {
