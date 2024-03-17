@@ -120,7 +120,7 @@ func (c *Client) UpdateStakeRecords(stakeRecords []*types.StakeVerificationParam
 		}
 		txRes, err := future.Receive()
 		if err != nil {
-			log.Error().Msgf("💥 failed receive waits for the Response by txID(%s) on chain", stakeRecords[i].TxID)
+			log.Error().Msgf("💥 failed receive waits for the Response by txID(%s) on chain: %s", stakeRecords[i].TxID, err)
 			recordStatuses[i].Status = stakeRecords[i].FinalizedStatus
 			continue
 		}
