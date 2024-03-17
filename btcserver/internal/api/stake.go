@@ -1,13 +1,11 @@
 package api
 
 import (
-	"github.com/generativelabs/btcserver/internal/utils"
-	"net/http"
-	"time"
-
 	"github.com/generativelabs/btcserver/internal/types"
+	"github.com/generativelabs/btcserver/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
+	"net/http"
 )
 
 type HTTPResponse struct {
@@ -50,7 +48,7 @@ func (s *Server) GetStakeListByStaker(c *gin.Context) {
 			Staker:         s.Staker,
 			Tx:             s.Tx,
 			Start:          s.Start,
-			Duration:       int64(utils.TimestampToTime(s.Duration).Day()),
+			Duration:       utils.DurationToDay(s.Duration),
 			Deadline:       s.Deadline,
 			Amount:         s.Amount,
 			RewardReceiver: s.RewardReceiver,
@@ -101,7 +99,7 @@ func (s *Server) SubmitProofOfStake(c *gin.Context) {
 
 	log.Info().Msgf("[HTTP] SubmitProofOfStake: %+v ", stakeInfo)
 	if stakeInfo.Duration > 0 {
-		stakeInfo.Duration = stakeInfo.Duration * 24 * time.Hour.Nanoseconds()
+		stakeInfo.Duration = utils.DayToDuration(stakeInfo.Duration)
 	}
 
 	err := s.backend.CreateStake(stakeInfo.Staker,
