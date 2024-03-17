@@ -1,11 +1,12 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/generativelabs/btcserver/internal/types"
 	"github.com/generativelabs/btcserver/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
-	"net/http"
 )
 
 type HTTPResponse struct {

@@ -144,11 +144,13 @@ func (c *Client) UpdateStakeRecords(stakeRecords []*types.StakeVerificationParam
 		if txRes.Confirmations >= TxFinalizedConfirmations { //nolint
 			recordStatuses[i].Status = types.TxFinalized
 			recordStatuses[i].Start = txRes.Blocktime - int64(10*time.Minute.Seconds())*int64(txRes.Confirmations)
+			recordStatuses[i].Start *= 1000000000
 		} else if txRes.Confirmations == 0 {
 			recordStatuses[i].Status = types.TxPending
 		} else {
 			recordStatuses[i].Status = types.TxIncluded
 			recordStatuses[i].Start = txRes.Blocktime - int64(10*time.Minute.Seconds())*int64(txRes.Confirmations)
+			recordStatuses[i].Start *= 1000000000
 		}
 
 		log.Info().Msgf("🔨check stake on chain: %d stakeRecords[%+v] ", i, stakeRecords[i])

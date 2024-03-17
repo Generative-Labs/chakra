@@ -55,5 +55,5 @@ func DurationToDay(duration int64) int64 {
 }
 
 func DayToDuration(duration int64) int64 {
-	return duration * 24 * 3600 * 1000000000 //24 * time.Hour.Nanoseconds()
+	return duration * 24 * 3600 * 1000000000 // 24 * time.Hour.Nanoseconds()
 }
