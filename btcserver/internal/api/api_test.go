@@ -31,23 +31,23 @@ func createMemoryTestDB(t *testing.T) *db.Backend {
 }
 
 func TestPostStakeBtc(t *testing.T) {
-	//memoryDB := createMemoryTestDB(t)
-	//btcClient, err := btc.NewClient(btc.Config{
+	// memoryDB := createMemoryTestDB(t)
+	// btcClient, err := btc.NewClient(btc.Config{
 	//	NetworkName: chaincfg.RegressionNetParams.Name,
 	//	RPCHost:     "localhost:18332",
 	//	RPCUser:     "rpcuser",
 	//	RPCPass:     "rpcpass",
 	//	DisableTLS:  true,
-	//})
-	//assert.NoError(t, err)
+	// })
+	// assert.NoError(t, err)
 
-	//server := api.NewServer(context.Background(), memoryDB, nil, "null", btcClient)
+	// server := api.NewServer(context.Background(), memoryDB, nil, "null", btcClient)
 	//
-	//router := gin.Default()
-	//router.Use(api.CORSMiddleware())
-	//api.SetupRoutes(router, server)
+	// router := gin.Default()
+	// router.Use(api.CORSMiddleware())
+	// api.SetupRoutes(router, server)
 
-	//{"staker":"","staker_public_key":"","tx_id":"","start":,"durnation":7,"amount":90,"reward":0.063,"receiver_receiver":"","receiver_address_signature":"","timestamp":1710481332057}
+	// {"staker":"","staker_public_key":"","tx_id":"","start":,"durnation":7,"amount":90,"reward":0.063,"receiver_receiver":"","receiver_address_signature":"","timestamp":1710481332057}
 
 	data := map[string]interface{}{
 		"staker":             "tb1qdp844q47twdjffxc3ptxu7atm6uw5ss3h98td2",
@@ -84,13 +84,13 @@ func TestPostStakeBtc(t *testing.T) {
 	t.Logf("req:%+v", resp.Body)
 	t.Logf("StatusCode:%+v", resp.StatusCode)
 
-	//req.Header.Set("Content-Type", "application/json")
-	//w := httptest.NewRecorder()
-	//router.ServeHTTP(w, req)
+	// req.Header.Set("Content-Type", "application/json")
+	// w := httptest.NewRecorder()
+	// router.ServeHTTP(w, req)
 
-	//assert.Equal(t, 400, w.Code)
-	//// public key is invalid
-	//assert.True(t, strings.Contains(w.Body.String(), "public key"))
+	// assert.Equal(t, 400, w.Code)
+	// // public key is invalid
+	// assert.True(t, strings.Contains(w.Body.String(), "public key"))
 }
 
 func TestPostStakeBtcWithValidRewardSignature(t *testing.T) {
