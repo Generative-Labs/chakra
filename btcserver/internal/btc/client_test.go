@@ -114,10 +114,20 @@ func TestCheckRewardAddressSignature(t *testing.T) {
 	})
 	assert.NoError(t, err)
 
-	pubkeyStr := "02435f6406512081c715b3dd1c80166e1443c553470028f1991b6e0270b1a607c0"
-	cairoRewardAddr := "0x65fbbc6ed72f28f38e9b7b440b4115b143a35cfe7ceb390f448fa0a1bcbd8dc"
-	timestamp := int64(1710587088607000)
-	sigBase64 := "IPAl0/CTHAnbqR70r3POQyPzp1Y1hcmru80DF8l72HcOApucgbrMbS5xIx0appoiN8I7VnacRkNlzkxJv389u0c="
+	// pubkeyStr := "02435f6406512081c715b3dd1c80166e1443c553470028f1991b6e0270b1a607c0"
+	// cairoRewardAddr := "0x65fbbc6ed72f28f38e9b7b440b4115b143a35cfe7ceb390f448fa0a1bcbd8dc"
+	// timestamp := int64(1710587088607000)
+	// sigBase64 := "IPAl0/CTHAnbqR70r3POQyPzp1Y1hcmru80DF8l72HcOApucgbrMbS5xIx0appoiN8I7VnacRkNlzkxJv389u0c="
+
+	pubkeyStr := "03d87175c1ca3222d1500def9e79692fbd924b85c83e784907b1d1babded7cc72e"
+	cairoRewardAddr := "0x1f511713a342ebc4320982295a769dd3d5491ca6416315695b3f62d3e782b71"
+	timestamp := int64(1710643417776000)
+	sigBase64 := "H3Puyb97JIkLZp5MoiiJIjh65bNJ+25ophK61Bkkb22SDVvk5g3etNL5u0+vLwWXPe7gSSE/f22vOxOAb7LWyK0="
+
+	// pubkeyStr := "03d87175c1ca3222d1500def9e79692fbd924b85c83e784907b1d1babded7cc72e"
+	// cairoRewardAddr := "0x1f511713a342ebc4320982295a769dd3d5491ca6416315695b3f62d3e782b71"
+	// timestamp := int64(1710641568435000)
+	// sigBase64 := "HxZgPvzmYY5EB2d+4VDhEqNzX6zjPiabAKwZps5tunSHKg4l5JWOtKxEQkCcxYQecOm2R/S+iQy0ycPwJQCtUWg="
 
 	err = client.CheckRewardAddressSignature(pubkeyStr, cairoRewardAddr, sigBase64, timestamp)
 	assert.NoError(t, err)
