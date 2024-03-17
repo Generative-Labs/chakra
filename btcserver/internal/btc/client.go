@@ -20,6 +20,7 @@ import (
 	"github.com/btcsuite/btcd/wire"
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/generativelabs/btcserver/internal/types"
+	"github.com/rs/zerolog/log"
 )
 
 // Transaction requires the number of Confirmations for finalization
@@ -119,6 +120,7 @@ func (c *Client) UpdateStakeRecords(stakeRecords []*types.StakeVerificationParam
 		}
 		txRes, err := future.Receive()
 		if err != nil {
+			log.Error().Msgf("💥 failed receive waits for the Response by txID(%s) on chain", stakeRecords[i].TxID)
 			recordStatuses[i].Status = stakeRecords[i].FinalizedStatus
 			continue
 		}
@@ -136,6 +138,7 @@ func (c *Client) UpdateStakeRecords(stakeRecords []*types.StakeVerificationParam
 				recordStatuses[i].Status = types.Mismatch
 				continue
 			}
+			log.Info().Msgf("🔨check stake for txID(%s) on chain: %d durationBlock[%d] ", stakeRecords[i].TxID, i, durationBlock)
 		}
 
 		if txRes.Confirmations >= TxFinalizedConfirmations { //nolint
@@ -148,6 +151,7 @@ func (c *Client) UpdateStakeRecords(stakeRecords []*types.StakeVerificationParam
 			recordStatuses[i].Start = txRes.Blocktime - int64(10*time.Minute.Seconds())*int64(txRes.Confirmations)
 		}
 
+		log.Info().Msgf("🔨check stake on chain: %d stakeRecords[%+v] ", i, stakeRecords[i])
 	}
 
 	return recordStatuses, nil
