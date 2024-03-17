@@ -38,7 +38,7 @@ func MockBatchStakeInfo(size int) []*types.StakeInfoReq {
 			TxID:                     "txidxxxxxxxxxxxxxxxxxxxxx" + strconv.Itoa(i),
 			Duration:                 7 * 24 * time.Hour.Nanoseconds(),
 			Amount:                   uint64(5),
-			RewardReceiver:           "0x1111111111",
+			ReceiverAddress:          "0x1111111111",
 			ReceiverAddressSignature: "receiverSignature",
 			Timestamp:                start + 10*time.Minute.Nanoseconds(),
 		}
@@ -123,7 +123,7 @@ func TestQueryAllNotYetLockedUpTxNextPeriod(t *testing.T) {
 
 	siList := MockBatchStakeInfo(10)
 	for _, si := range siList {
-		err = cli.CreateStake(si.Staker, si.StakerPublicKey, si.TxID, si.Duration, si.Amount, si.RewardReceiver, si.Reward, si.ReceiverAddressSignature, si.Timestamp)
+		err = cli.CreateStake(si.Staker, si.StakerPublicKey, si.TxID, si.Duration, si.Amount, si.ReceiverAddress, si.Reward, si.ReceiverAddressSignature, si.Timestamp)
 		if err != nil {
 			t.Fatalf("CreateStake err:%s", err)
 		}
@@ -148,7 +148,7 @@ func TestQueryNoFinalizedStakeTx(t *testing.T) {
 	stakeRecordSize := 10
 	siList := MockBatchStakeInfo(stakeRecordSize)
 	for i, si := range siList {
-		err = cli.CreateStake(si.Staker, si.StakerPublicKey, si.TxID, si.Duration, si.Amount, si.RewardReceiver, si.Reward, si.ReceiverAddressSignature, si.Timestamp)
+		err = cli.CreateStake(si.Staker, si.StakerPublicKey, si.TxID, si.Duration, si.Amount, si.ReceiverAddress, si.Reward, si.ReceiverAddressSignature, si.Timestamp)
 		if err != nil {
 			assert.NoError(t, err)
 		}
