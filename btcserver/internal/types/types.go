@@ -19,7 +19,7 @@ type StakeInfoReq struct {
 	Duration                 int64  `from:"duration" json:"duration,omitempty"`
 	Amount                   uint64 `from:"amount" json:"amount,omitempty"`
 	Reward                   uint64 `from:"reward" json:"reward,omitempty"`
-	RewardReceiver           string `from:"receiver_receiver" json:"receiver_receiver,omitempty"`
+	ReceiverAddress          string `from:"receiver_address" json:"receiver_address,omitempty"`
 	ReceiverAddressSignature string `from:"receiver_address_signature" json:"receiver_address_signature,omitempty"`
 	Timestamp                int64  `from:"timestamp" json:"timestamp,omitempty"`
 }
