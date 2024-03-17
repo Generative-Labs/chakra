@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/generativelabs/btcserver/internal/utils"
 	"net/http"
 	"time"
 
@@ -49,7 +50,7 @@ func (s *Server) GetStakeListByStaker(c *gin.Context) {
 			Staker:         s.Staker,
 			Tx:             s.Tx,
 			Start:          s.Start,
-			Duration:       s.Duration,
+			Duration:       int64(utils.TimestampToTime(s.Duration).Day()),
 			Deadline:       s.Deadline,
 			Amount:         s.Amount,
 			RewardReceiver: s.RewardReceiver,
