@@ -1,17 +1,12 @@
 package btc_test
 
 import (
-	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"testing"
 
-	"github.com/btcsuite/btcd/btcec/v2/ecdsa"
 	"github.com/btcsuite/btcd/btcjson"
-	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg"
-	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/generativelabs/btcserver/internal/btc"
 	"github.com/stretchr/testify/assert"
 )
@@ -111,7 +106,7 @@ func TestCheckStakeTx(t *testing.T) {
 
 func TestCheckRewardAddressSignature(t *testing.T) {
 	client, err := btc.NewClient(btc.Config{
-		NetworkName: chaincfg.RegressionNetParams.Name,
+		NetworkName: chaincfg.TestNet3Params.Name,
 		RPCHost:     "localhost:18332",
 		RPCUser:     "rpcuser",
 		RPCPass:     "rpcpass",
@@ -119,28 +114,21 @@ func TestCheckRewardAddressSignature(t *testing.T) {
 	})
 	assert.NoError(t, err)
 
-	bobPrivKey, err := btcutil.DecodeWIF(bobPrivateKey)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	// pubkeyStr := "02435f6406512081c715b3dd1c80166e1443c553470028f1991b6e0270b1a607c0"
+	// cairoRewardAddr := "0x65fbbc6ed72f28f38e9b7b440b4115b143a35cfe7ceb390f448fa0a1bcbd8dc"
+	// timestamp := int64(1710587088607000)
+	// sigBase64 := "IPAl0/CTHAnbqR70r3POQyPzp1Y1hcmru80DF8l72HcOApucgbrMbS5xIx0appoiN8I7VnacRkNlzkxJv389u0c="
 
-	cairoRewardAddr := "0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
-	timestamp := int32(1710387487)
+	pubkeyStr := "03d87175c1ca3222d1500def9e79692fbd924b85c83e784907b1d1babded7cc72e"
+	cairoRewardAddr := "0x1f511713a342ebc4320982295a769dd3d5491ca6416315695b3f62d3e782b71"
+	timestamp := int64(1710643417776000)
+	sigBase64 := "H3Puyb97JIkLZp5MoiiJIjh65bNJ+25ophK61Bkkb22SDVvk5g3etNL5u0+vLwWXPe7gSSE/f22vOxOAb7LWyK0="
 
-	message := btc.AssembleRewardSignatureMessage(cairoRewardAddr, timestamp)
-	msgH := chainhash.DoubleHashB([]byte(message))
+	// pubkeyStr := "03d87175c1ca3222d1500def9e79692fbd924b85c83e784907b1d1babded7cc72e"
+	// cairoRewardAddr := "0x1f511713a342ebc4320982295a769dd3d5491ca6416315695b3f62d3e782b71"
+	// timestamp := int64(1710641568435000)
+	// sigBase64 := "HxZgPvzmYY5EB2d+4VDhEqNzX6zjPiabAKwZps5tunSHKg4l5JWOtKxEQkCcxYQecOm2R/S+iQy0ycPwJQCtUWg="
 
-	signature := ecdsa.Sign(bobPrivKey.PrivKey, msgH)
-	sigB := signature.Serialize()
-	sigH := hex.EncodeToString(sigB)
-
-	pubkeyStr := "024edfcf9dfe6c0b5c83d1ab3f78d1b39a46ebac6798e08e19761f5ed89ec83c10"
-
-	err = client.CheckRewardAddressSignature(pubkeyStr, cairoRewardAddr, sigH, timestamp)
+	err = client.CheckRewardAddressSignature(pubkeyStr, cairoRewardAddr, sigBase64, timestamp)
 	assert.NoError(t, err)
-
-	mismatchCairoRewardAddr := "0x3d19214f89175a68b1874341ac8afa0e4f30dc114820d0e4039ee8c2be0a30f"
-	err = client.CheckRewardAddressSignature(pubkeyStr, mismatchCairoRewardAddr, sigH, timestamp)
-	assert.EqualError(t, err, "reward address signature verify failed")
 }

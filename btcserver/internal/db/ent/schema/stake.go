@@ -15,10 +15,10 @@ func (Stake) Fields() []ent.Field {
 		field.String("Staker").MaxLen(90), // btc address
 		field.String("StakerPublicKey"),
 		field.String("Tx").MaxLen(66).Unique(),    // btc transaction id len is 64byte, and len of prefix "0x" is 2byte.
-		field.Int64("Start"),                      // btc stake start timestamp
+		field.Int64("Start").Default(0),           // btc stake start timestamp
 		field.Int64("Duration"),                   // btc stake duration
-		field.Int64("Deadline"),                   // btc stake end timestamp
-		field.Int64("ReleasingTime"),              // Time to release rewards every day
+		field.Int64("Deadline").Default(0),        // btc stake end timestamp
+		field.Int64("ReleasingTime").Default(0),   // Time to release rewards every day
 		field.Uint64("Amount"),                    // btc stake amount
 		field.String("RewardReceiver").MaxLen(66), // starknet address to receive reward. length is 64byte, and length of prefix "0x" is 2byte.
 		field.Uint64("Reward"),                    // btc stake reward

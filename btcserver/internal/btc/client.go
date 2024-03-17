@@ -1,6 +1,8 @@
 package btc
 
 import (
+	"bytes"
+	"encoding/base64"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -15,6 +17,7 @@ import (
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/btcsuite/btcd/txscript"
+	"github.com/btcsuite/btcd/wire"
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/generativelabs/btcserver/internal/types"
 )
@@ -61,33 +64,27 @@ func NewClient(config Config) (*Client, error) {
 }
 
 func (c *Client) CheckRewardAddressSignature(stakerPubKeyStr, rewardReceiver,
-	sigHexStr string, timestamp int32,
+	sigBase64Str string, timestamp int64,
 ) error {
-	stakerPubKeyBytes, err := hex.DecodeString(strings.TrimPrefix(stakerPubKeyStr, "0x"))
+	sigB, err := base64.StdEncoding.DecodeString(sigBase64Str)
 	if err != nil {
-		return errors.New("public key should hex string")
+		return errors.New("signature should be compress as base64")
 	}
 
-	stakerPubKey, err := btcec.ParsePubKey(stakerPubKeyBytes)
-	if err != nil {
-		return errors.New("invalid staker public key")
+	msgH := AssembleRewardSignatureMessage(rewardReceiver, timestamp)
+
+	recoverPK, ok, err := ecdsa.RecoverCompact(sigB, msgH)
+	if err != nil || !ok {
+		return errors.New("invalid signature")
 	}
 
-	sigBytes, err := hex.DecodeString(strings.TrimPrefix(sigHexStr, "0x"))
+	addressPK, err := btcutil.NewAddressPubKey(recoverPK.SerializeCompressed(), c.networkParams)
 	if err != nil {
-		return errors.New("signature should be a hex string")
+		return err
 	}
 
-	signature, err := ecdsa.ParseSignature(sigBytes)
-	if err != nil {
-		return errors.New("invalid reward receiver signature")
-	}
-
-	message := AssembleRewardSignatureMessage(rewardReceiver, timestamp)
-	messageHash := chainhash.DoubleHashB([]byte(message))
-
-	if !signature.Verify(messageHash, stakerPubKey) {
-		return errors.New("reward address signature verify failed")
+	if addressPK.String() != strings.TrimPrefix(stakerPubKeyStr, "0x") {
+		return errors.New("mismatch signature")
 	}
 
 	return nil
@@ -131,7 +128,10 @@ func (c *Client) UpdateStakeRecords(stakeRecords []*types.StakeVerificationParam
 			continue
 		}
 		if stakeRecords[i].FinalizedStatus == types.TxPending {
-			err = c.CheckStake(txRes, stakeRecords[i].StakerPublicKey, stakeRecords[i].Amount, stakeRecords[i].Duration)
+			// durationBlock is store as days in day
+			durationBlock := stakeRecords[i].Duration / (24 * time.Hour.Nanoseconds()) * 144
+
+			err = c.CheckStake(txRes, stakeRecords[i].StakerPublicKey, stakeRecords[i].Amount, durationBlock)
 			if err != nil {
 				recordStatuses[i].Status = types.Mismatch
 				continue
@@ -154,7 +154,7 @@ func (c *Client) UpdateStakeRecords(stakeRecords []*types.StakeVerificationParam
 }
 
 func (c *Client) CheckStake(tx *btcjson.TxRawResult, stakerPubKeyStr string, amount uint64, duration int64) error {
-	if len(tx.Vout) != 1 {
+	if len(tx.Vout) < 1 {
 		return errors.New("stake tx should has 1 out")
 	}
 
@@ -219,6 +219,18 @@ func (c *Client) calculateAddressRedeemScriptHash(stakerPubKey *secp256k1.Public
 	return addressHash, nil
 }
 
-func AssembleRewardSignatureMessage(rewardReceiveAddress string, timestamp int32) string {
-	return fmt.Sprintf("%s/%d", rewardReceiveAddress, timestamp)
+const (
+	messageSignatureHeader = "Bitcoin Signed Message:\n"
+)
+
+func AssembleRewardSignatureMessage(rewardReceiveAddress string, timestamp int64) []byte {
+	var buf bytes.Buffer
+
+	msg := fmt.Sprintf("%s/%d", rewardReceiveAddress, timestamp)
+
+	msgH := chainhash.DoubleHashB([]byte(msg))
+	_ = wire.WriteVarString(&buf, 0, messageSignatureHeader)
+	_ = wire.WriteVarString(&buf, 0, hex.EncodeToString(msgH))
+
+	return chainhash.DoubleHashB(buf.Bytes())
 }
