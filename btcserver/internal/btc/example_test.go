@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/btcsuite/btcd/btcec/v2/ecdsa"
 	"github.com/btcsuite/btcd/btcutil"
@@ -234,11 +235,11 @@ func createCSVRedeemTx(lockTxHash chainhash.Hash, receiverAddress btcutil.Addres
 // Example_checkStakeTxs tests check stake txs.
 func Example_checkStakeTxs() {
 	client, err := btc.NewClient(btc.Config{
-		NetworkName: chaincfg.RegressionNetParams.Name,
-		RPCHost:     "localhost:18332",
+		NetworkName: chaincfg.TestNet3Params.Name,
+		RPCHost:     "bitcoin-testnet.blastapi.io/97d216a1-c44b-461d-9624-2231e517a4c6",
 		RPCUser:     "rpcuser",
 		RPCPass:     "rpcpass",
-		DisableTLS:  true,
+		DisableTLS:  false,
 	})
 	if err != nil {
 		fmt.Println(err)
@@ -246,10 +247,10 @@ func Example_checkStakeTxs() {
 	}
 
 	stakeRecord := types.StakeVerificationParam{
-		TxID:            "1d408c886732300028d251b97abb79d09cae6858a471a70f2795d884fb59e4bd",
-		StakerPublicKey: "024edfcf9dfe6c0b5c83d1ab3f78d1b39a46ebac6798e08e19761f5ed89ec83c10",
-		Amount:          50000,
-		Duration:        20,
+		TxID:            "a598e6f74b4c709ab62b5c0217be8bae0ff969921aa7504f66397e8da48ae4cd",
+		StakerPublicKey: "03d87175c1ca3222d1500def9e79692fbd924b85c83e784907b1d1babded7cc72e",
+		Amount:          1000,
+		Duration:        7 * (24 * time.Hour.Nanoseconds()),
 		FinalizedStatus: types.TxPending,
 	}
 

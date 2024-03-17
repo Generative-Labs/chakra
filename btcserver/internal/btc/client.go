@@ -128,7 +128,10 @@ func (c *Client) UpdateStakeRecords(stakeRecords []*types.StakeVerificationParam
 			continue
 		}
 		if stakeRecords[i].FinalizedStatus == types.TxPending {
-			err = c.CheckStake(txRes, stakeRecords[i].StakerPublicKey, stakeRecords[i].Amount, stakeRecords[i].Duration)
+			// durationBlock is store as days in day
+			durationBlock := stakeRecords[i].Duration / (24 * time.Hour.Nanoseconds()) * 144
+
+			err = c.CheckStake(txRes, stakeRecords[i].StakerPublicKey, stakeRecords[i].Amount, durationBlock)
 			if err != nil {
 				recordStatuses[i].Status = types.Mismatch
 				continue
@@ -151,7 +154,7 @@ func (c *Client) UpdateStakeRecords(stakeRecords []*types.StakeVerificationParam
 }
 
 func (c *Client) CheckStake(tx *btcjson.TxRawResult, stakerPubKeyStr string, amount uint64, duration int64) error {
-	if len(tx.Vout) != 1 {
+	if len(tx.Vout) < 1 {
 		return errors.New("stake tx should has 1 out")
 	}
 

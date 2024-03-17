@@ -10,6 +10,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/btcsuite/btcd/btcec/v2/ecdsa"
 	"github.com/btcsuite/btcd/btcutil"
@@ -125,9 +126,9 @@ func TestPostStakeBtcWithValidRewardSignature(t *testing.T) {
 		"staker":                     "bc1xxxxxxxxxx",
 		"staker_public_key":          "0x024edfcf9dfe6c0b5c83d1ab3f78d1b39a46ebac6798e08e19761f5ed89ec83c10",
 		"tx_id":                      "39d93ae35e841ec14e83205b1a4f5660894983a96f94c5bedb3273e58afde756",
-		"duration":                   3600, // duration in seconds
-		"amount":                     100,  // stake amount
-		"reward":                     10,   // reward amount
+		"duration":                   7,   // duration in days
+		"amount":                     100, // stake amount
+		"reward":                     10,  // reward amount
 		"receiver_receiver":          "0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
 		"receiver_address_signature": rewardSigBase64,
 		"timestamp":                  1710387487, // timestamp
@@ -155,6 +156,7 @@ func TestPostStakeBtcWithValidRewardSignature(t *testing.T) {
 	assert.Equal(t, stakes[0].Staker, "bc1xxxxxxxxxx")
 	assert.Equal(t, stakes[0].Tx, "39d93ae35e841ec14e83205b1a4f5660894983a96f94c5bedb3273e58afde756")
 	assert.Equal(t, stakes[0].StakerPublicKey, "0x024edfcf9dfe6c0b5c83d1ab3f78d1b39a46ebac6798e08e19761f5ed89ec83c10")
+	assert.Equal(t, stakes[0].Duration, int64(7*(time.Hour*24)))
 }
 
 func TestGetStakesList(_ *testing.T) {
