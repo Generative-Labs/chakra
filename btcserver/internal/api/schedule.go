@@ -220,7 +220,8 @@ func (s *Server) UpdateStakeFinalizedStatus() {
 			}
 
 			if record.Status == types.TxFinalized {
-				log.Info().Msgf("🔵 start submit btc stake tx info to chakra %+v", oldStateRecords[i])
+				log.Info().Msgf("🔵 start submit btc stake tx info to chakra: txID %s amount %s start %d deadline %d rewardReceiver %s",
+					txID, amount, start, deadline, rewardReceiver)
 				res, err := chakra.SubmitTXInfo(s.Ctx, s.ChakraAccount, s.ContractAddress, txID, amount, start, deadline, rewardReceiver)
 				if err != nil {
 					log.Error().Msgf("💥 error submit stake tx infos %s", err)
@@ -231,6 +232,8 @@ func (s *Server) UpdateStakeFinalizedStatus() {
 					log.Error().Msgf("💥 error update stake %s txid %s txhash %s submit status %s",
 						staker, txID, res.TransactionHash, err)
 				}
+				log.Info().Msgf("🔵 Submit btc stake tx info to chakra successfully: txhash %s txID %s",
+					res.TransactionHash, txID)
 			}
 		}
 	}
