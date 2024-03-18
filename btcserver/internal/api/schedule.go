@@ -270,7 +270,7 @@ func (s *Server) FirstSendReward(txs []string) error {
 	}
 
 	if (*receipt).GetExecutionStatus() == rpc.TxnExecutionStatusSUCCEEDED {
-		log.Info().Msgf("🔵 Chakra first reward success, tx hash: %s", res.TransactionHash)
+		log.Info().Msgf("🔵 Chakra first reward success, tx hash: %s  txIDs %v", res.TransactionHash, txs)
 		//err = s.backend.UpdateStakeReleasingTime(staker, txs)
 		//if err != nil {
 		//	log.Error().Msgf("❌ error %s first update stake releasing time to txID %s: %s ", staker, txs, err)

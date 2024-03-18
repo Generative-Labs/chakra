@@ -138,7 +138,7 @@ func (c *Client) UpdateStakeRecords(stakeRecords []*types.StakeVerificationParam
 				recordStatuses[i].Status = types.Mismatch
 				continue
 			}
-			log.Info().Msgf("🔨check stake for txID(%s) on chain: %d durationBlock[%d] ", stakeRecords[i].TxID, i, durationBlock)
+			log.Info().Msgf("🔨check stake for txID(%s) on chain: durationBlock[%d] ", stakeRecords[i].TxID, durationBlock)
 		}
 
 		if txRes.Confirmations >= TxFinalizedConfirmations { //nolint
@@ -153,7 +153,7 @@ func (c *Client) UpdateStakeRecords(stakeRecords []*types.StakeVerificationParam
 			recordStatuses[i].Start *= 1000000000
 		}
 
-		log.Info().Msgf("🔨check stake on chain: %d stakeRecords[%+v] ", i, stakeRecords[i])
+		log.Info().Msgf("🔨check stake on chain: stakeRecords[%+v] ", recordStatuses[i])
 	}
 
 	return recordStatuses, nil
