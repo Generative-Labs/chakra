@@ -247,7 +247,7 @@ func Example_checkStakeTxs() {
 	}
 
 	stakeRecord := types.StakeVerificationParam{
-		TxID:            "a598e6f74b4c709ab62b5c0217be8bae0ff969921aa7504f66397e8da48ae4cd",
+		TxID:            "9750a37c3713cef0eb5169c932397589b82f15abc1af7354e62d1cf32263b708",
 		StakerPublicKey: "03d87175c1ca3222d1500def9e79692fbd924b85c83e784907b1d1babded7cc72e",
 		Amount:          1000,
 		Duration:        7 * (24 * time.Hour.Nanoseconds()),
