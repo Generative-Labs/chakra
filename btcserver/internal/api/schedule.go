@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/NethermindEth/starknet.go/rpc"
 	"github.com/generativelabs/btcserver/internal/chakra"
 	"github.com/generativelabs/btcserver/internal/types"
 	"github.com/generativelabs/btcserver/internal/utils"
@@ -219,6 +220,7 @@ func (s *Server) UpdateStakeFinalizedStatus() {
 				continue
 			}
 
+			successSubmitTxInfos := make([]string, 0)
 			if record.Status == types.TxFinalized {
 				log.Info().Msgf("🔵 start submit btc stake tx info to chakra: txID %s amount %s start %d deadline %d rewardReceiver %s",
 					txID, amount, start, deadline, rewardReceiver)
@@ -227,14 +229,56 @@ func (s *Server) UpdateStakeFinalizedStatus() {
 					log.Error().Msgf("💥 error submit stake tx infos %s", err)
 					continue
 				}
-				err = s.backend.UpdateCanBeSubmitStatus(staker, txID, 1)
+
+				receipt, err := s.ChakraAccount.WaitForTransactionReceipt(s.Ctx, res.TransactionHash, time.Second)
 				if err != nil {
-					log.Error().Msgf("💥 error update stake %s txid %s txhash %s submit status %s",
-						staker, txID, res.TransactionHash, err)
+					log.Error().Msgf("💥 error submit stake tx infos %s", err)
+					continue
 				}
-				log.Info().Msgf("🔵 Submit btc stake tx info to chakra successfully: txhash %s txID %s",
-					res.TransactionHash, txID)
+
+				if (*receipt).GetExecutionStatus() == rpc.TxnExecutionStatusSUCCEEDED {
+					err = s.backend.UpdateCanBeSubmitStatus(staker, txID, 1)
+					if err != nil {
+						log.Error().Msgf("💥 error update stake %s txid %s txhash %s submit status %s",
+							staker, txID, res.TransactionHash, err)
+					}
+					log.Info().Msgf("🔵 Submit btc stake tx info to chakra successfully: txhash %s txID %s",
+						res.TransactionHash, txID)
+
+					successSubmitTxInfos = append(successSubmitTxInfos, txID)
+				}
+			}
+			if len(successSubmitTxInfos) > 0 {
+				_ = s.FirstSendReward(successSubmitTxInfos)
 			}
 		}
 	}
+}
+
+func (s *Server) FirstSendReward(txs []string) error {
+	log.Info().Msgf("🔵 Start first reward to %v ", txs)
+	res, err := chakra.RewardTo(s.Ctx, s.ChakraAccount, s.ContractAddress, txs)
+	if err != nil {
+		log.Error().Msgf("❌ error first reward to txIDs %v: %s ", txs, err)
+		return err
+	}
+
+	receipt, err := s.ChakraAccount.WaitForTransactionReceipt(s.Ctx, res.TransactionHash, time.Second)
+	if err != nil {
+		log.Error().Msgf("💥 error wait for transaction receipt %s", err)
+		return err
+	}
+
+	if (*receipt).GetExecutionStatus() == rpc.TxnExecutionStatusSUCCEEDED {
+		log.Info().Msgf("🔵 Chakra first reward success, tx hash: %s", res.TransactionHash)
+		//err = s.backend.UpdateStakeReleasingTime(staker, txs)
+		//if err != nil {
+		//	log.Error().Msgf("❌ error %s first update stake releasing time to txID %s: %s ", staker, txs, err)
+		//	return err
+		//}
+		//return nil
+	} else {
+		log.Info().Msgf("🔵 Chakra first reward failed, err: %v ", *receipt)
+	}
+	return err
 }
