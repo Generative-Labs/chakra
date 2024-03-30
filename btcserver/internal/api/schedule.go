@@ -232,7 +232,7 @@ func (s *Server) UpdateStakeFinalizedStatus() {
 
 				receipt, err := s.ChakraAccount.WaitForTransactionReceipt(s.Ctx, res.TransactionHash, time.Second)
 				if err != nil {
-					log.Error().Msgf("💥 error submit stake tx infos %s", err)
+					log.Error().Msgf("💥 error wait submit stake tx infos %s", err)
 					continue
 				}
 
