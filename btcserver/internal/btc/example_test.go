@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/generativelabs/btcserver/internal/config"
 	"strings"
 	"testing"
 	"time"
@@ -269,7 +270,7 @@ func createCSVRedeemTx(lockTxHash chainhash.Hash, receiverAddress btcutil.Addres
 
 // Example_checkStakeTxs tests check stake txs.
 func Example_checkStakeTxs() {
-	client, err := btc.NewClient(btc.Config{
+	client, err := btc.NewClient(config.BtcConfig{
 		NetworkName: chaincfg.TestNet3Params.Name,
 		RPCHost:     "bitcoin-testnet.blastapi.io/97d216a1-c44b-461d-9624-2231e517a4c6",
 		RPCUser:     "rpcuser",

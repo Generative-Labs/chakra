@@ -103,6 +103,14 @@ func (sc *StakeCreate) SetReward(u uint64) *StakeCreate {
 	return sc
 }
 
+// SetNillableReward sets the "Reward" field if the given value is not nil.
+func (sc *StakeCreate) SetNillableReward(u *uint64) *StakeCreate {
+	if u != nil {
+		sc.SetReward(*u)
+	}
+	return sc
+}
+
 // SetFinalizedStatus sets the "FinalizedStatus" field.
 func (sc *StakeCreate) SetFinalizedStatus(i int) *StakeCreate {
 	sc.mutation.SetFinalizedStatus(i)
@@ -223,6 +231,10 @@ func (sc *StakeCreate) defaults() {
 	if _, ok := sc.mutation.ReleasingTime(); !ok {
 		v := stake.DefaultReleasingTime
 		sc.mutation.SetReleasingTime(v)
+	}
+	if _, ok := sc.mutation.Reward(); !ok {
+		v := stake.DefaultReward
+		sc.mutation.SetReward(v)
 	}
 	if _, ok := sc.mutation.FinalizedStatus(); !ok {
 		v := stake.DefaultFinalizedStatus

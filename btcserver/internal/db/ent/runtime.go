@@ -45,6 +45,10 @@ func init() {
 	stakeDescRewardReceiver := stakeFields[8].Descriptor()
 	// stake.RewardReceiverValidator is a validator for the "RewardReceiver" field. It is called by the builders before save.
 	stake.RewardReceiverValidator = stakeDescRewardReceiver.Validators[0].(func(string) error)
+	// stakeDescReward is the schema descriptor for Reward field.
+	stakeDescReward := stakeFields[9].Descriptor()
+	// stake.DefaultReward holds the default value on creation for the Reward field.
+	stake.DefaultReward = stakeDescReward.Default.(uint64)
 	// stakeDescFinalizedStatus is the schema descriptor for FinalizedStatus field.
 	stakeDescFinalizedStatus := stakeFields[10].Descriptor()
 	// stake.DefaultFinalizedStatus holds the default value on creation for the FinalizedStatus field.

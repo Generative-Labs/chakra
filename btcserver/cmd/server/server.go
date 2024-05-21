@@ -7,6 +7,7 @@ import (
 	"github.com/generativelabs/btcserver/internal/api"
 	"github.com/generativelabs/btcserver/internal/btc"
 	"github.com/generativelabs/btcserver/internal/chakra"
+	"github.com/generativelabs/btcserver/internal/config"
 	"github.com/generativelabs/btcserver/internal/db"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -27,35 +28,48 @@ func init() {
 	}
 }
 
-func Run() {
-	var config Config
-	err := viper.Unmarshal(&config)
+func Run(migrateFlag bool) {
+	var conf config.Config
+	err := viper.Unmarshal(&conf)
 	if err != nil {
 		log.Fatal().Msgf("❌ Fatal error decode config into struct: %s ", err)
 	}
 
-	backend, err := db.CreateBackend(config.DB)
+	if migrateFlag {
+		migrateDB(conf)
+		return
+	}
+
+	backend, err := db.CreateBackend(conf.DB)
 	if err != nil {
 		log.Fatal().Msgf("❌ Fatal error create db backend: %s ", err)
 	}
 
-	btcClient, err := btc.NewClient(config.Btc)
+	btcClient, err := btc.NewClient(conf.Btc)
 	if err != nil {
 		log.Fatal().Msgf("❌ Fatal error create btc client: %s ", err)
 	}
 
 	ctx := context.Background()
-	cAccount, err := chakra.NewChakraAccount(ctx, config.Chakra.URL, config.Chakra.PrivateKey, config.Chakra.Address)
+	cAccount, err := chakra.NewChakraAccount(ctx, conf.Chakra.URL, conf.Chakra.PrivateKey, conf.Chakra.Address)
 	if err != nil {
 		log.Fatal().Msgf("❌ Fatal error new chakra account: %s ", err)
 	}
 
-	log.Info().Msgf("👷 Start to run btc server, conf: %+v", config)
+	log.Info().Msgf("👷 Start to run btc server, conf: %+v", conf)
 
-	api.InitActivityConfig(config.Activity.Start, config.Activity.End)
+	api.InitActivityConfig(conf.Activity.Start, conf.Activity.End)
 
-	err = api.NewServer(ctx, backend, cAccount, config.Chakra.ContractAddress, btcClient).Run(config.ServicePort)
+	err = api.NewServer(ctx, backend, cAccount, conf.Chakra.ContractAddress, btcClient).Run(conf.ServicePort)
 	if err != nil {
 		log.Fatal().Msgf("❌ Fatal error in api server: %s ", err)
 	}
+}
+
+func migrateDB(conf config.Config) {
+	log.Info().Msg("MigrateEntDB...")
+	log.Info().Msgf("dbConf... %+v", conf)
+
+	db.MigrateEntDB(conf)
+	log.Info().Msg("Done")
 }

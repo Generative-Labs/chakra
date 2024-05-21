@@ -34,7 +34,7 @@ var (
 		{Name: "releasing_time", Type: field.TypeInt64, Default: 0},
 		{Name: "amount", Type: field.TypeUint64},
 		{Name: "reward_receiver", Type: field.TypeString, Size: 66},
-		{Name: "reward", Type: field.TypeUint64},
+		{Name: "reward", Type: field.TypeUint64, Default: 0},
 		{Name: "finalized_status", Type: field.TypeInt, Default: 0},
 		{Name: "release_status", Type: field.TypeInt, Default: 0},
 		{Name: "submit_status", Type: field.TypeInt, Default: 0},

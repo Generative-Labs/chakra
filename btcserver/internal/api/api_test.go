@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/generativelabs/btcserver/internal/config"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -95,7 +96,7 @@ func TestPostStakeBtc(t *testing.T) {
 
 func TestPostStakeBtcWithValidRewardSignature(t *testing.T) {
 	memoryDB := createMemoryTestDB(t)
-	btcClient, err := btc.NewClient(btc.Config{
+	btcClient, err := btc.NewClient(config.BtcConfig{
 		NetworkName: chaincfg.RegressionNetParams.Name,
 		RPCHost:     "localhost:18332",
 		RPCUser:     "rpcuser",

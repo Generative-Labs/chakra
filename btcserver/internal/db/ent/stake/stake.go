@@ -94,6 +94,8 @@ var (
 	DefaultReleasingTime int64
 	// RewardReceiverValidator is a validator for the "RewardReceiver" field. It is called by the builders before save.
 	RewardReceiverValidator func(string) error
+	// DefaultReward holds the default value on creation for the "Reward" field.
+	DefaultReward uint64
 	// DefaultFinalizedStatus holds the default value on creation for the "FinalizedStatus" field.
 	DefaultFinalizedStatus int
 	// DefaultReleaseStatus holds the default value on creation for the "ReleaseStatus" field.

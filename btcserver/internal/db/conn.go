@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/generativelabs/btcserver/internal/config"
 	"github.com/generativelabs/btcserver/internal/db/ent"
 	_ "github.com/go-sql-driver/mysql" // mysql driver
 	_ "github.com/mattn/go-sqlite3"    // sqlite3 driver
@@ -34,7 +35,7 @@ func CreateBackendWithDB(dbClient *ent.Client) *Backend {
 	return &backend
 }
 
-func CreateBackend(config Config) (*Backend, error) {
+func CreateBackend(config config.DBConfig) (*Backend, error) {
 	var client *ent.Client
 	var err error
 
@@ -62,7 +63,7 @@ func CreateBackend(config Config) (*Backend, error) {
 	return &dbClient, nil
 }
 
-func CreateMysqlDB(config Config) (*ent.Client, error) {
+func CreateMysqlDB(config config.DBConfig) (*ent.Client, error) {
 	client, err := ent.Open(MysqlDriver, fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=True",
 		config.User, config.Password, config.Host, config.Database))
 	if err != nil {

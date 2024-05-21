@@ -19,6 +19,7 @@ import (
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
+	"github.com/generativelabs/btcserver/internal/config"
 	"github.com/generativelabs/btcserver/internal/types"
 	"github.com/rs/zerolog/log"
 )
@@ -31,7 +32,7 @@ type Client struct {
 	networkParams *chaincfg.Params
 }
 
-func NewClient(config Config) (*Client, error) {
+func NewClient(config config.BtcConfig) (*Client, error) {
 	rpcClient, err := rpcclient.New(&rpcclient.ConnConfig{
 		Host:         config.RPCHost,
 		User:         config.RPCUser,
