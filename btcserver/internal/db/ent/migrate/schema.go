@@ -71,10 +71,27 @@ var (
 			},
 		},
 	}
+	// StakeIndexesColumns holds the columns for the "stake_indexes" table.
+	StakeIndexesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "staker", Type: field.TypeString, Unique: true, Size: 90},
+		{Name: "tx", Type: field.TypeString, Unique: true, Size: 66},
+		{Name: "index", Type: field.TypeUint64, Default: 0},
+		{Name: "start", Type: field.TypeInt64, Default: 0},
+		{Name: "create_at", Type: field.TypeInt64},
+		{Name: "update_at", Type: field.TypeInt64, Default: 0},
+	}
+	// StakeIndexesTable holds the schema information for the "stake_indexes" table.
+	StakeIndexesTable = &schema.Table{
+		Name:       "stake_indexes",
+		Columns:    StakeIndexesColumns,
+		PrimaryKey: []*schema.Column{StakeIndexesColumns[0]},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		GlobalStatesTable,
 		StakesTable,
+		StakeIndexesTable,
 	}
 )
 

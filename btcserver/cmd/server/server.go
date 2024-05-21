@@ -52,6 +52,8 @@ func Run() {
 
 	log.Info().Msgf("👷 Start to run btc server, conf: %+v", config)
 
+	api.InitActivityConfig(config.Activity.Start, config.Activity.End)
+
 	err = api.NewServer(ctx, backend, cAccount, config.Chakra.ContractAddress, btcClient).Run(config.ServicePort)
 	if err != nil {
 		log.Fatal().Msgf("❌ Fatal error in api server: %s ", err)

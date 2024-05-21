@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"sort"
 	"time"
 
 	"github.com/generativelabs/btcserver/internal/db/ent"
@@ -196,4 +197,40 @@ func (c *Backend) QueryCanBeSubmitStakeTx() ([]*ent.Stake, error) {
 	}
 
 	return list, nil
+}
+
+func (c *Backend) GetStakeListDuringActivity(start, end int64) ([]*ent.Stake, error) {
+	stakeInfo, err := c.dbClient.Stake.Query().
+		Where(stake.And(stake.FinalizedStatus(int(types.TxFinalized)), stake.StartGTE(start), stake.StartLTE(end))).
+		Order(ent.Asc(stake.FieldStart)). // Order by Start time
+		All(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	// Step 2: Remove duplicates and keep the earliest entry
+	uniqueStakes := make(map[string]*ent.Stake)
+	for _, stake := range stakeInfo {
+		key := stake.Staker // + "-" + stake.Tx
+		if existing, found := uniqueStakes[key]; found {
+			if stake.Start < existing.Start {
+				uniqueStakes[key] = stake
+			}
+		} else {
+			uniqueStakes[key] = stake
+		}
+	}
+
+	// Step 3: Convert map back to slice and sort by Start time
+	result := make([]*ent.Stake, 0, len(uniqueStakes))
+	for _, stake := range uniqueStakes {
+		result = append(result, stake)
+	}
+
+	// Optional: sort result slice by Start time if needed
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Start < result[j].Start
+	})
+
+	return result, nil
 }

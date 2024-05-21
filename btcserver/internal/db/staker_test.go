@@ -25,6 +25,17 @@ func CreateMemoryTestDB(t *testing.T) (*Backend, error) {
 	return dbClient, nil
 }
 
+func CreateTestDB(t *testing.T) *Backend {
+	t.Helper()
+
+	path := "/Users/jiaxingsun/go/chakra/btcserver/cmd/temp/chakrastake.db"
+	client := enttest.Open(t, "sqlite3", path+"?_fk=1")
+	dbClient := &Backend{
+		dbClient: client,
+	}
+	return dbClient
+}
+
 func MockBatchStakeInfo(size int) []*types.StakeInfoReq {
 	stakeInfoReqList := make([]*types.StakeInfoReq, 0)
 	start := TestTime - 24*time.Hour.Nanoseconds() //+ 5*time.Minute.Nanoseconds()
@@ -181,4 +192,81 @@ func TestQueryNoFinalizedStakeTx(t *testing.T) {
 	}
 
 	assert.Equal(t, len(noFinalizeStakes), stakeRecordSize-2)
+}
+
+func TestGetStakeListDuringActivity(t *testing.T) {
+	cli := CreateTestDB(t)
+
+	//for i := 0; i < 3; i++ {
+	//	staker := fmt.Sprintf("bc1xxxxxxxxxx%d", i)
+	//	stakerPublicKey := "0x0000"
+	//	txID := fmt.Sprintf("txid00000000000000000000%d", i)
+	//	start := time.Now().UnixNano() + (4+int64(i))*time.Hour.Nanoseconds()
+	//	t.Log("tttt:", start)
+	//	duration := 7 * 24 * time.Hour.Nanoseconds()
+	//	amount := uint64(5)
+	//	rewardReceiver := "0x1111111111"
+	//	reward := uint64(500)
+	//	receiverSignature := "receiverSignature"
+	//	timestamp := start + 10*time.Minute.Nanoseconds()
+	//
+	//	err := cli.CreateStake(staker, stakerPublicKey, txID, duration, amount, rewardReceiver, reward, receiverSignature, timestamp)
+	//	if err != nil {
+	//		t.Fatalf("CreateStake err:%s", err)
+	//	}
+	//
+	//	err = cli.UpdateStakeFinalizedStatus(staker, txID, int(types.TxFinalized), start, start+duration, 0)
+	//	if err != nil {
+	//		t.Fatalf("UpdateStakeFinalizedStatus err:%s", err)
+	//	}
+	//}
+	//
+	//for i := 0; i < 3; i++ {
+	//	staker := fmt.Sprintf("bc1xxxxxxxxxx%d", i)
+	//	stakerPublicKey := "0x0000"
+	//	txID := fmt.Sprintf("txid00000000000000000001%d", i)
+	//	start := time.Now().UnixNano() + (4+int64(i))*time.Hour.Nanoseconds()
+	//	t.Log("tttt:", start)
+	//	duration := 7 * 24 * time.Hour.Nanoseconds()
+	//	amount := uint64(5)
+	//	rewardReceiver := "0x1111111111"
+	//	reward := uint64(500)
+	//	receiverSignature := "receiverSignature"
+	//	timestamp := start + 10*time.Minute.Nanoseconds()
+	//
+	//	err := cli.CreateStake(staker, stakerPublicKey, txID, duration, amount, rewardReceiver, reward, receiverSignature, timestamp)
+	//	if err != nil {
+	//		t.Fatalf("CreateStake err:%s", err)
+	//	}
+	//
+	//	err = cli.UpdateStakeFinalizedStatus(staker, txID, int(types.TxFinalized), start, start+duration, 0)
+	//	if err != nil {
+	//		t.Fatalf("UpdateStakeFinalizedStatus err:%s", err)
+	//	}
+	//}
+
+	sList, err := cli.GetStakeListDuringActivity(int64(1716311269005570000), int64(1716318469009887000))
+	if err != nil {
+		t.Fatalf("GetStakeListDuringActivity err:%s", err)
+	}
+
+	for _, stakeInfo := range sList {
+		t.Logf("stake info :%+v", stakeInfo)
+
+		exist, err := cli.IsStakeExist(stakeInfo.Staker)
+		if err != nil {
+			t.Fatalf("IsStakeExist err:%s", err)
+		}
+		if exist {
+			t.Errorf("%s is exist", stakeInfo.Staker)
+			continue
+		}
+		si, err := cli.CreateStakeIndex(stakeInfo.Staker, stakeInfo.Tx, stakeInfo.Start)
+		if err != nil {
+			t.Fatalf("CreateStakeIndex err:%s", err)
+			continue
+		}
+		t.Logf("CreateStakeIndex :%+v", si)
+	}
+
 }

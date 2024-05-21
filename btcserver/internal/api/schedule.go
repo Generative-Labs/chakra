@@ -12,6 +12,11 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+var (
+	ActivityStartTime string
+	ActivityEndTIme   string
+)
+
 func InitTimeWheel() time.Time {
 	currentTime := time.Now()
 	minute := currentTime.Minute()
@@ -252,6 +257,53 @@ func (s *Server) UpdateStakeFinalizedStatus() {
 				_ = s.FirstSendReward(successSubmitTxInfos)
 			}
 		}
+		go s.ActivityRecord()
+	}
+}
+
+func InitActivityConfig(start string, end string) {
+	ActivityStartTime = start
+	ActivityEndTIme = end
+}
+
+func (s *Server) ActivityRecord() {
+	if ActivityStartTime == "" || ActivityEndTIme == "" {
+		return
+	}
+
+	activityStart, err := time.Parse("2006-01-02 15:04:05", ActivityStartTime)
+	if err != nil {
+		log.Error().Msgf("❌ error parse start time %s", err)
+		return
+	}
+
+	activityEnd, err := time.Parse("2006-01-02 15:04:05", ActivityEndTIme)
+	if err != nil {
+		log.Error().Msgf("❌ error parse end time %s", err)
+		return
+	}
+
+	sList, err := s.backend.GetStakeListDuringActivity(activityStart.Unix(), activityEnd.Unix())
+	if err != nil {
+		log.Error().Msgf("❌ error get stake list during activity %s", err)
+		return
+	}
+
+	for _, stakeInfo := range sList {
+		exist, err := s.backend.IsStakeExist(stakeInfo.Staker)
+		if err != nil {
+			log.Error().Msgf("❌ error get stake exist %s", err)
+		}
+		if exist {
+			log.Warn().Msgf("Stake %s already exists", stakeInfo.Staker)
+			continue
+		}
+		si, err := s.backend.CreateStakeIndex(stakeInfo.Staker, stakeInfo.Tx, stakeInfo.Start)
+		if err != nil {
+			log.Error().Msgf("❌ error create stake index %s", err)
+			continue
+		}
+		log.Info().Msgf("🔵 Start assigning NFT serial number %d to d %s ", si.ID, si.Staker)
 	}
 }
 

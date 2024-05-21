@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"testing"
 	"time"
 
 	"github.com/btcsuite/btcd/btcec/v2/ecdsa"
@@ -23,6 +24,37 @@ import (
 const (
 	bobPrivateKey = "5JoQtsKQuH8hC9MyvfJAqo6qmKLm8ePYNucs7tPu2YxG12trzBt"
 )
+
+func TestTxReciept(t *testing.T) {
+	rpcClient, err := rpcclient.New(&rpcclient.ConnConfig{
+		Host:         "localhost:18332",
+		User:         "rpcuser",
+		Pass:         "rpcpass",
+		HTTPPostMode: true,
+		DisableTLS:   true,
+	}, nil)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	//dee65f801974ec6fba817854f0324f99c18ad97435ab91a92b70d05eb4b2722f
+	//c0f7054cd6260021a8cc7df4ed5a68a1dd764b4b9b69874a240370f6d0b4c411
+	hash, err := chainhash.NewHashFromStr("c0f7054cd6260021a8cc7df4ed5a68a1dd764b4b9b69874a240370f6d0b4c411")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// Get transaction from transaction hash
+	tx, err := rpcClient.GetRawTransaction(hash)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println("tx : ", tx)
+}
 
 // Example_btc_lock_and_redeem tests that build and send a csv tx, then use a
 // redeem tx to spend it.
@@ -57,7 +89,7 @@ func Example_btc_lock_and_redeem() {
 		return
 	}
 
-	fmt.Println(address)
+	fmt.Println("bob address: ", address)
 
 	amount, err := btcutil.NewAmount(0.001)
 	if err != nil {
@@ -69,6 +101,9 @@ func Example_btc_lock_and_redeem() {
 		fmt.Println(err)
 	}
 
+	fmt.Println("bob send token tx hash:", hash.String())
+	fmt.Println("bob send token tx hash:", hash)
+
 	// Get transaction from transaction hash
 	tx, err := rpcClient.GetRawTransaction(hash)
 	if err != nil {
@@ -76,7 +111,7 @@ func Example_btc_lock_and_redeem() {
 		return
 	}
 
-	fmt.Println(tx)
+	fmt.Println("bob send token tx:", tx)
 
 	txRes, err := rpcClient.GetRawTransactionVerbose(hash)
 	if err != nil {
@@ -84,7 +119,7 @@ func Example_btc_lock_and_redeem() {
 		return
 	}
 	jtx1, _ := json.Marshal(txRes)
-	fmt.Println(string(jtx1))
+	fmt.Println("tx verbose: ", string(jtx1))
 
 	csvMsgTx, csvScript, err := createCSVLockTx(tx.MsgTx(), *hash, 1, 20, 50000, bobPrivKey.PrivKey, bobPubKey)
 	if err != nil {

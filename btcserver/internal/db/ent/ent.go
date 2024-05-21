@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/generativelabs/btcserver/internal/db/ent/globalstate"
 	"github.com/generativelabs/btcserver/internal/db/ent/stake"
+	"github.com/generativelabs/btcserver/internal/db/ent/stakeindex"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -76,6 +77,7 @@ func checkColumn(table, column string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			globalstate.Table: globalstate.ValidColumn,
 			stake.Table:       stake.ValidColumn,
+			stakeindex.Table:  stakeindex.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

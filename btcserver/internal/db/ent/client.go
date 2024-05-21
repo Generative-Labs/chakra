@@ -16,6 +16,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/generativelabs/btcserver/internal/db/ent/globalstate"
 	"github.com/generativelabs/btcserver/internal/db/ent/stake"
+	"github.com/generativelabs/btcserver/internal/db/ent/stakeindex"
 )
 
 // Client is the client that holds all ent builders.
@@ -27,6 +28,8 @@ type Client struct {
 	GlobalState *GlobalStateClient
 	// Stake is the client for interacting with the Stake builders.
 	Stake *StakeClient
+	// StakeIndex is the client for interacting with the StakeIndex builders.
+	StakeIndex *StakeIndexClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -40,6 +43,7 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.GlobalState = NewGlobalStateClient(c.config)
 	c.Stake = NewStakeClient(c.config)
+	c.StakeIndex = NewStakeIndexClient(c.config)
 }
 
 type (
@@ -134,6 +138,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:      cfg,
 		GlobalState: NewGlobalStateClient(cfg),
 		Stake:       NewStakeClient(cfg),
+		StakeIndex:  NewStakeIndexClient(cfg),
 	}, nil
 }
 
@@ -155,6 +160,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:      cfg,
 		GlobalState: NewGlobalStateClient(cfg),
 		Stake:       NewStakeClient(cfg),
+		StakeIndex:  NewStakeIndexClient(cfg),
 	}, nil
 }
 
@@ -185,6 +191,7 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	c.GlobalState.Use(hooks...)
 	c.Stake.Use(hooks...)
+	c.StakeIndex.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
@@ -192,6 +199,7 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.GlobalState.Intercept(interceptors...)
 	c.Stake.Intercept(interceptors...)
+	c.StakeIndex.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
@@ -201,6 +209,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.GlobalState.mutate(ctx, m)
 	case *StakeMutation:
 		return c.Stake.mutate(ctx, m)
+	case *StakeIndexMutation:
+		return c.StakeIndex.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -472,12 +482,145 @@ func (c *StakeClient) mutate(ctx context.Context, m *StakeMutation) (Value, erro
 	}
 }
 
+// StakeIndexClient is a client for the StakeIndex schema.
+type StakeIndexClient struct {
+	config
+}
+
+// NewStakeIndexClient returns a client for the StakeIndex from the given config.
+func NewStakeIndexClient(c config) *StakeIndexClient {
+	return &StakeIndexClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `stakeindex.Hooks(f(g(h())))`.
+func (c *StakeIndexClient) Use(hooks ...Hook) {
+	c.hooks.StakeIndex = append(c.hooks.StakeIndex, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `stakeindex.Intercept(f(g(h())))`.
+func (c *StakeIndexClient) Intercept(interceptors ...Interceptor) {
+	c.inters.StakeIndex = append(c.inters.StakeIndex, interceptors...)
+}
+
+// Create returns a builder for creating a StakeIndex entity.
+func (c *StakeIndexClient) Create() *StakeIndexCreate {
+	mutation := newStakeIndexMutation(c.config, OpCreate)
+	return &StakeIndexCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of StakeIndex entities.
+func (c *StakeIndexClient) CreateBulk(builders ...*StakeIndexCreate) *StakeIndexCreateBulk {
+	return &StakeIndexCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *StakeIndexClient) MapCreateBulk(slice any, setFunc func(*StakeIndexCreate, int)) *StakeIndexCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &StakeIndexCreateBulk{err: fmt.Errorf("calling to StakeIndexClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*StakeIndexCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &StakeIndexCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for StakeIndex.
+func (c *StakeIndexClient) Update() *StakeIndexUpdate {
+	mutation := newStakeIndexMutation(c.config, OpUpdate)
+	return &StakeIndexUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *StakeIndexClient) UpdateOne(si *StakeIndex) *StakeIndexUpdateOne {
+	mutation := newStakeIndexMutation(c.config, OpUpdateOne, withStakeIndex(si))
+	return &StakeIndexUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *StakeIndexClient) UpdateOneID(id int) *StakeIndexUpdateOne {
+	mutation := newStakeIndexMutation(c.config, OpUpdateOne, withStakeIndexID(id))
+	return &StakeIndexUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for StakeIndex.
+func (c *StakeIndexClient) Delete() *StakeIndexDelete {
+	mutation := newStakeIndexMutation(c.config, OpDelete)
+	return &StakeIndexDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *StakeIndexClient) DeleteOne(si *StakeIndex) *StakeIndexDeleteOne {
+	return c.DeleteOneID(si.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *StakeIndexClient) DeleteOneID(id int) *StakeIndexDeleteOne {
+	builder := c.Delete().Where(stakeindex.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &StakeIndexDeleteOne{builder}
+}
+
+// Query returns a query builder for StakeIndex.
+func (c *StakeIndexClient) Query() *StakeIndexQuery {
+	return &StakeIndexQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeStakeIndex},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a StakeIndex entity by its id.
+func (c *StakeIndexClient) Get(ctx context.Context, id int) (*StakeIndex, error) {
+	return c.Query().Where(stakeindex.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *StakeIndexClient) GetX(ctx context.Context, id int) *StakeIndex {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *StakeIndexClient) Hooks() []Hook {
+	return c.hooks.StakeIndex
+}
+
+// Interceptors returns the client interceptors.
+func (c *StakeIndexClient) Interceptors() []Interceptor {
+	return c.inters.StakeIndex
+}
+
+func (c *StakeIndexClient) mutate(ctx context.Context, m *StakeIndexMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&StakeIndexCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&StakeIndexUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&StakeIndexUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&StakeIndexDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown StakeIndex mutation op: %q", m.Op())
+	}
+}
+
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		GlobalState, Stake []ent.Hook
+		GlobalState, Stake, StakeIndex []ent.Hook
 	}
 	inters struct {
-		GlobalState, Stake []ent.Interceptor
+		GlobalState, Stake, StakeIndex []ent.Interceptor
 	}
 )

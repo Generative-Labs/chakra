@@ -33,6 +33,18 @@ func (f StakeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.StakeMutation", m)
 }
 
+// The StakeIndexFunc type is an adapter to allow the use of ordinary
+// function as StakeIndex mutator.
+type StakeIndexFunc func(context.Context, *ent.StakeIndexMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f StakeIndexFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.StakeIndexMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.StakeIndexMutation", m)
+}
+
 // Condition is a hook condition function.
 type Condition func(context.Context, ent.Mutation) bool
 

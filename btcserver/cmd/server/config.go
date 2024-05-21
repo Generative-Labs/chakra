@@ -19,4 +19,9 @@ type Config struct {
 	DB db.Config `mapstructure:"database"`
 
 	ServicePort int `mapstructure:"service-port"`
+
+	Activity struct {
+		Start string `mapstructure:"start"` // 2006-01-02 15:04:05
+		End   string `mapstructure:"end"`   // 2006-01-02 15:04:05
+	} `mapstructure:"activity"`
 }

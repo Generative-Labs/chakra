@@ -16,6 +16,8 @@ type Tx struct {
 	GlobalState *GlobalStateClient
 	// Stake is the client for interacting with the Stake builders.
 	Stake *StakeClient
+	// StakeIndex is the client for interacting with the StakeIndex builders.
+	StakeIndex *StakeIndexClient
 
 	// lazily loaded.
 	client     *Client
@@ -149,6 +151,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.GlobalState = NewGlobalStateClient(tx.config)
 	tx.Stake = NewStakeClient(tx.config)
+	tx.StakeIndex = NewStakeIndexClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

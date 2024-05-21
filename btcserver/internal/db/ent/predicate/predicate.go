@@ -11,3 +11,6 @@ type GlobalState func(*sql.Selector)
 
 // Stake is the predicate function for stake builders.
 type Stake func(*sql.Selector)
+
+// StakeIndex is the predicate function for stakeindex builders.
+type StakeIndex func(*sql.Selector)

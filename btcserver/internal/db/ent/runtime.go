@@ -6,6 +6,7 @@ import (
 	"github.com/generativelabs/btcserver/internal/db/ent/globalstate"
 	"github.com/generativelabs/btcserver/internal/db/ent/schema"
 	"github.com/generativelabs/btcserver/internal/db/ent/stake"
+	"github.com/generativelabs/btcserver/internal/db/ent/stakeindex"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -60,4 +61,26 @@ func init() {
 	stakeDescUpdateAt := stakeFields[16].Descriptor()
 	// stake.DefaultUpdateAt holds the default value on creation for the UpdateAt field.
 	stake.DefaultUpdateAt = stakeDescUpdateAt.Default.(int64)
+	stakeindexFields := schema.StakeIndex{}.Fields()
+	_ = stakeindexFields
+	// stakeindexDescStaker is the schema descriptor for Staker field.
+	stakeindexDescStaker := stakeindexFields[0].Descriptor()
+	// stakeindex.StakerValidator is a validator for the "Staker" field. It is called by the builders before save.
+	stakeindex.StakerValidator = stakeindexDescStaker.Validators[0].(func(string) error)
+	// stakeindexDescTx is the schema descriptor for Tx field.
+	stakeindexDescTx := stakeindexFields[1].Descriptor()
+	// stakeindex.TxValidator is a validator for the "Tx" field. It is called by the builders before save.
+	stakeindex.TxValidator = stakeindexDescTx.Validators[0].(func(string) error)
+	// stakeindexDescIndex is the schema descriptor for Index field.
+	stakeindexDescIndex := stakeindexFields[2].Descriptor()
+	// stakeindex.DefaultIndex holds the default value on creation for the Index field.
+	stakeindex.DefaultIndex = stakeindexDescIndex.Default.(uint64)
+	// stakeindexDescStart is the schema descriptor for Start field.
+	stakeindexDescStart := stakeindexFields[3].Descriptor()
+	// stakeindex.DefaultStart holds the default value on creation for the Start field.
+	stakeindex.DefaultStart = stakeindexDescStart.Default.(int64)
+	// stakeindexDescUpdateAt is the schema descriptor for UpdateAt field.
+	stakeindexDescUpdateAt := stakeindexFields[5].Descriptor()
+	// stakeindex.DefaultUpdateAt holds the default value on creation for the UpdateAt field.
+	stakeindex.DefaultUpdateAt = stakeindexDescUpdateAt.Default.(int64)
 }

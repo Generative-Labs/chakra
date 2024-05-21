@@ -120,3 +120,32 @@ func (s *Server) SubmitProofOfStake(c *gin.Context) {
 
 	c.JSON(http.StatusOK, respData)
 }
+
+// GetStakeIndexByStaker Get NFT serial number
+func (s *Server) GetStakeIndexByStaker(c *gin.Context) {
+	respData := &HTTPResponse{Msg: "Ok"}
+
+	staker := c.Query("staker")
+
+	exist, err := s.backend.IsStakeExist(staker)
+	if err != nil {
+		respData.Msg = err.Error()
+		JSONResp(c, http.StatusInternalServerError, respData)
+		return
+	}
+
+	if !exist {
+		respData.Data = 0
+
+	} else {
+		index, err := s.backend.GetStakeIndex(staker)
+		if err != nil {
+			respData.Msg = err.Error()
+			JSONResp(c, http.StatusInternalServerError, respData)
+			return
+		}
+		respData.Data = index
+	}
+
+	JSONResp(c, http.StatusOK, respData)
+}

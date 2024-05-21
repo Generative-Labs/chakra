@@ -96,7 +96,7 @@ func TestTxRewardsof(t *testing.T) {
 }
 
 func TestTxReceipt(t *testing.T) {
-	url := "https://madara.to3.io"
+	url := "https://stake-tn.chakrachain.io/"
 	priKeyt := "0x00c1cf1490de1352865301bb8705143f3ef938f97fdf892f1090dcb5ac7bcd1d"
 	addr := "0x3"
 
@@ -115,7 +115,7 @@ func TestTxReceipt(t *testing.T) {
 	// 0x68e8676e2098828cc54401c30e57c34e564685f9f0161dff4cf8c5159dccc97
 	// 0x642bf80a5d0e5c72ce6333e591e9ba6da4bfb1242fbad5b28d352b87799271c
 
-	hash, err := utils.HexToFelt("0x51967d02a9d2dd355f1ab7a9f56f50728ce55927b6d22f32603d5dd05880d6e")
+	hash, err := utils.HexToFelt("0x241e2fd9daed8fb00fa356f285650291e1e6e357881a76697679bbf97a8ad75")
 	if err != nil {
 		t.Fatalf("HexToFelt err:%s", err)
 	}

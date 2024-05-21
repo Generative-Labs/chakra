@@ -13,6 +13,7 @@ import (
 	"github.com/generativelabs/btcserver/internal/db/ent/globalstate"
 	"github.com/generativelabs/btcserver/internal/db/ent/predicate"
 	"github.com/generativelabs/btcserver/internal/db/ent/stake"
+	"github.com/generativelabs/btcserver/internal/db/ent/stakeindex"
 )
 
 const (
@@ -26,6 +27,7 @@ const (
 	// Node types.
 	TypeGlobalState = "GlobalState"
 	TypeStake       = "Stake"
+	TypeStakeIndex  = "StakeIndex"
 )
 
 // GlobalStateMutation represents an operation that mutates the GlobalState nodes in the graph.
@@ -2172,4 +2174,735 @@ func (m *StakeMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *StakeMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Stake edge %s", name)
+}
+
+// StakeIndexMutation represents an operation that mutates the StakeIndex nodes in the graph.
+type StakeIndexMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int
+	_Staker       *string
+	_Tx           *string
+	_Index        *uint64
+	add_Index     *int64
+	_Start        *int64
+	add_Start     *int64
+	_CreateAt     *int64
+	add_CreateAt  *int64
+	_UpdateAt     *int64
+	add_UpdateAt  *int64
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*StakeIndex, error)
+	predicates    []predicate.StakeIndex
+}
+
+var _ ent.Mutation = (*StakeIndexMutation)(nil)
+
+// stakeindexOption allows management of the mutation configuration using functional options.
+type stakeindexOption func(*StakeIndexMutation)
+
+// newStakeIndexMutation creates new mutation for the StakeIndex entity.
+func newStakeIndexMutation(c config, op Op, opts ...stakeindexOption) *StakeIndexMutation {
+	m := &StakeIndexMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeStakeIndex,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withStakeIndexID sets the ID field of the mutation.
+func withStakeIndexID(id int) stakeindexOption {
+	return func(m *StakeIndexMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *StakeIndex
+		)
+		m.oldValue = func(ctx context.Context) (*StakeIndex, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().StakeIndex.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withStakeIndex sets the old StakeIndex of the mutation.
+func withStakeIndex(node *StakeIndex) stakeindexOption {
+	return func(m *StakeIndexMutation) {
+		m.oldValue = func(context.Context) (*StakeIndex, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m StakeIndexMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m StakeIndexMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *StakeIndexMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *StakeIndexMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().StakeIndex.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetStaker sets the "Staker" field.
+func (m *StakeIndexMutation) SetStaker(s string) {
+	m._Staker = &s
+}
+
+// Staker returns the value of the "Staker" field in the mutation.
+func (m *StakeIndexMutation) Staker() (r string, exists bool) {
+	v := m._Staker
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStaker returns the old "Staker" field's value of the StakeIndex entity.
+// If the StakeIndex object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StakeIndexMutation) OldStaker(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStaker is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStaker requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStaker: %w", err)
+	}
+	return oldValue.Staker, nil
+}
+
+// ResetStaker resets all changes to the "Staker" field.
+func (m *StakeIndexMutation) ResetStaker() {
+	m._Staker = nil
+}
+
+// SetTx sets the "Tx" field.
+func (m *StakeIndexMutation) SetTx(s string) {
+	m._Tx = &s
+}
+
+// GetTx returns the value of the "Tx" field in the mutation.
+func (m *StakeIndexMutation) GetTx() (r string, exists bool) {
+	v := m._Tx
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTx returns the old "Tx" field's value of the StakeIndex entity.
+// If the StakeIndex object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StakeIndexMutation) OldTx(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTx is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTx requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTx: %w", err)
+	}
+	return oldValue.Tx, nil
+}
+
+// ResetTx resets all changes to the "Tx" field.
+func (m *StakeIndexMutation) ResetTx() {
+	m._Tx = nil
+}
+
+// SetIndex sets the "Index" field.
+func (m *StakeIndexMutation) SetIndex(u uint64) {
+	m._Index = &u
+	m.add_Index = nil
+}
+
+// Index returns the value of the "Index" field in the mutation.
+func (m *StakeIndexMutation) Index() (r uint64, exists bool) {
+	v := m._Index
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIndex returns the old "Index" field's value of the StakeIndex entity.
+// If the StakeIndex object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StakeIndexMutation) OldIndex(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIndex is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIndex requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIndex: %w", err)
+	}
+	return oldValue.Index, nil
+}
+
+// AddIndex adds u to the "Index" field.
+func (m *StakeIndexMutation) AddIndex(u int64) {
+	if m.add_Index != nil {
+		*m.add_Index += u
+	} else {
+		m.add_Index = &u
+	}
+}
+
+// AddedIndex returns the value that was added to the "Index" field in this mutation.
+func (m *StakeIndexMutation) AddedIndex() (r int64, exists bool) {
+	v := m.add_Index
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetIndex resets all changes to the "Index" field.
+func (m *StakeIndexMutation) ResetIndex() {
+	m._Index = nil
+	m.add_Index = nil
+}
+
+// SetStart sets the "Start" field.
+func (m *StakeIndexMutation) SetStart(i int64) {
+	m._Start = &i
+	m.add_Start = nil
+}
+
+// Start returns the value of the "Start" field in the mutation.
+func (m *StakeIndexMutation) Start() (r int64, exists bool) {
+	v := m._Start
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStart returns the old "Start" field's value of the StakeIndex entity.
+// If the StakeIndex object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StakeIndexMutation) OldStart(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStart is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStart requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStart: %w", err)
+	}
+	return oldValue.Start, nil
+}
+
+// AddStart adds i to the "Start" field.
+func (m *StakeIndexMutation) AddStart(i int64) {
+	if m.add_Start != nil {
+		*m.add_Start += i
+	} else {
+		m.add_Start = &i
+	}
+}
+
+// AddedStart returns the value that was added to the "Start" field in this mutation.
+func (m *StakeIndexMutation) AddedStart() (r int64, exists bool) {
+	v := m.add_Start
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetStart resets all changes to the "Start" field.
+func (m *StakeIndexMutation) ResetStart() {
+	m._Start = nil
+	m.add_Start = nil
+}
+
+// SetCreateAt sets the "CreateAt" field.
+func (m *StakeIndexMutation) SetCreateAt(i int64) {
+	m._CreateAt = &i
+	m.add_CreateAt = nil
+}
+
+// CreateAt returns the value of the "CreateAt" field in the mutation.
+func (m *StakeIndexMutation) CreateAt() (r int64, exists bool) {
+	v := m._CreateAt
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreateAt returns the old "CreateAt" field's value of the StakeIndex entity.
+// If the StakeIndex object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StakeIndexMutation) OldCreateAt(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreateAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreateAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreateAt: %w", err)
+	}
+	return oldValue.CreateAt, nil
+}
+
+// AddCreateAt adds i to the "CreateAt" field.
+func (m *StakeIndexMutation) AddCreateAt(i int64) {
+	if m.add_CreateAt != nil {
+		*m.add_CreateAt += i
+	} else {
+		m.add_CreateAt = &i
+	}
+}
+
+// AddedCreateAt returns the value that was added to the "CreateAt" field in this mutation.
+func (m *StakeIndexMutation) AddedCreateAt() (r int64, exists bool) {
+	v := m.add_CreateAt
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCreateAt resets all changes to the "CreateAt" field.
+func (m *StakeIndexMutation) ResetCreateAt() {
+	m._CreateAt = nil
+	m.add_CreateAt = nil
+}
+
+// SetUpdateAt sets the "UpdateAt" field.
+func (m *StakeIndexMutation) SetUpdateAt(i int64) {
+	m._UpdateAt = &i
+	m.add_UpdateAt = nil
+}
+
+// UpdateAt returns the value of the "UpdateAt" field in the mutation.
+func (m *StakeIndexMutation) UpdateAt() (r int64, exists bool) {
+	v := m._UpdateAt
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdateAt returns the old "UpdateAt" field's value of the StakeIndex entity.
+// If the StakeIndex object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StakeIndexMutation) OldUpdateAt(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdateAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdateAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdateAt: %w", err)
+	}
+	return oldValue.UpdateAt, nil
+}
+
+// AddUpdateAt adds i to the "UpdateAt" field.
+func (m *StakeIndexMutation) AddUpdateAt(i int64) {
+	if m.add_UpdateAt != nil {
+		*m.add_UpdateAt += i
+	} else {
+		m.add_UpdateAt = &i
+	}
+}
+
+// AddedUpdateAt returns the value that was added to the "UpdateAt" field in this mutation.
+func (m *StakeIndexMutation) AddedUpdateAt() (r int64, exists bool) {
+	v := m.add_UpdateAt
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUpdateAt resets all changes to the "UpdateAt" field.
+func (m *StakeIndexMutation) ResetUpdateAt() {
+	m._UpdateAt = nil
+	m.add_UpdateAt = nil
+}
+
+// Where appends a list predicates to the StakeIndexMutation builder.
+func (m *StakeIndexMutation) Where(ps ...predicate.StakeIndex) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the StakeIndexMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *StakeIndexMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.StakeIndex, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *StakeIndexMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *StakeIndexMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (StakeIndex).
+func (m *StakeIndexMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *StakeIndexMutation) Fields() []string {
+	fields := make([]string, 0, 6)
+	if m._Staker != nil {
+		fields = append(fields, stakeindex.FieldStaker)
+	}
+	if m._Tx != nil {
+		fields = append(fields, stakeindex.FieldTx)
+	}
+	if m._Index != nil {
+		fields = append(fields, stakeindex.FieldIndex)
+	}
+	if m._Start != nil {
+		fields = append(fields, stakeindex.FieldStart)
+	}
+	if m._CreateAt != nil {
+		fields = append(fields, stakeindex.FieldCreateAt)
+	}
+	if m._UpdateAt != nil {
+		fields = append(fields, stakeindex.FieldUpdateAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *StakeIndexMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case stakeindex.FieldStaker:
+		return m.Staker()
+	case stakeindex.FieldTx:
+		return m.GetTx()
+	case stakeindex.FieldIndex:
+		return m.Index()
+	case stakeindex.FieldStart:
+		return m.Start()
+	case stakeindex.FieldCreateAt:
+		return m.CreateAt()
+	case stakeindex.FieldUpdateAt:
+		return m.UpdateAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *StakeIndexMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case stakeindex.FieldStaker:
+		return m.OldStaker(ctx)
+	case stakeindex.FieldTx:
+		return m.OldTx(ctx)
+	case stakeindex.FieldIndex:
+		return m.OldIndex(ctx)
+	case stakeindex.FieldStart:
+		return m.OldStart(ctx)
+	case stakeindex.FieldCreateAt:
+		return m.OldCreateAt(ctx)
+	case stakeindex.FieldUpdateAt:
+		return m.OldUpdateAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown StakeIndex field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *StakeIndexMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case stakeindex.FieldStaker:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStaker(v)
+		return nil
+	case stakeindex.FieldTx:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTx(v)
+		return nil
+	case stakeindex.FieldIndex:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIndex(v)
+		return nil
+	case stakeindex.FieldStart:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStart(v)
+		return nil
+	case stakeindex.FieldCreateAt:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreateAt(v)
+		return nil
+	case stakeindex.FieldUpdateAt:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdateAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown StakeIndex field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *StakeIndexMutation) AddedFields() []string {
+	var fields []string
+	if m.add_Index != nil {
+		fields = append(fields, stakeindex.FieldIndex)
+	}
+	if m.add_Start != nil {
+		fields = append(fields, stakeindex.FieldStart)
+	}
+	if m.add_CreateAt != nil {
+		fields = append(fields, stakeindex.FieldCreateAt)
+	}
+	if m.add_UpdateAt != nil {
+		fields = append(fields, stakeindex.FieldUpdateAt)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *StakeIndexMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case stakeindex.FieldIndex:
+		return m.AddedIndex()
+	case stakeindex.FieldStart:
+		return m.AddedStart()
+	case stakeindex.FieldCreateAt:
+		return m.AddedCreateAt()
+	case stakeindex.FieldUpdateAt:
+		return m.AddedUpdateAt()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *StakeIndexMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case stakeindex.FieldIndex:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddIndex(v)
+		return nil
+	case stakeindex.FieldStart:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddStart(v)
+		return nil
+	case stakeindex.FieldCreateAt:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreateAt(v)
+		return nil
+	case stakeindex.FieldUpdateAt:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdateAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown StakeIndex numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *StakeIndexMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *StakeIndexMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *StakeIndexMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown StakeIndex nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *StakeIndexMutation) ResetField(name string) error {
+	switch name {
+	case stakeindex.FieldStaker:
+		m.ResetStaker()
+		return nil
+	case stakeindex.FieldTx:
+		m.ResetTx()
+		return nil
+	case stakeindex.FieldIndex:
+		m.ResetIndex()
+		return nil
+	case stakeindex.FieldStart:
+		m.ResetStart()
+		return nil
+	case stakeindex.FieldCreateAt:
+		m.ResetCreateAt()
+		return nil
+	case stakeindex.FieldUpdateAt:
+		m.ResetUpdateAt()
+		return nil
+	}
+	return fmt.Errorf("unknown StakeIndex field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *StakeIndexMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *StakeIndexMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *StakeIndexMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *StakeIndexMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *StakeIndexMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *StakeIndexMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *StakeIndexMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown StakeIndex unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *StakeIndexMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown StakeIndex edge %s", name)
 }

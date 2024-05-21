@@ -160,10 +160,8 @@ func TestPostStakeBtcWithValidRewardSignature(t *testing.T) {
 }
 
 func TestGetStakesList(_ *testing.T) {
-	// 构建 API 地址
 	apiURL := "http://localhost:8080/api/stakes_list?staker=example&page=1&size=10"
 
-	// 发送 GET 请求
 	resp, err := http.Get(apiURL)
 	if err != nil {
 		fmt.Println("Error sending request:", err)
@@ -171,14 +169,12 @@ func TestGetStakesList(_ *testing.T) {
 	}
 	defer resp.Body.Close()
 
-	// 读取响应内容
 	var data map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		fmt.Println("Error decoding response:", err)
 		return
 	}
 
-	// 处理响应数据
 	fmt.Println("Total Count:", data["total_count"])
 	fmt.Println("Data List:")
 	for _, item := range data["data_list"].([]interface{}) {
